@@ -40,15 +40,18 @@ function doPost(e) {
     sheet.appendRow([new Date(), email]);
 
     // NEW: Send Automatic Welcome Email
-    try {
-      sendWelcomeEmail(email);
-    } catch (e) {
-      Logger.log('Welcome email could not be sent: ' + e.message);
+    if (email) {
+      try {
+        sendWelcomeEmail(email);
+      } catch (e) {
+        Logger.log('Welcome email error: ' + e.message);
+      }
     }
 
     return buildResponse({ result: "success", message: "Successfully subscribed!" });
 
   } catch (err) {
+    Logger.log('General error: ' + err.message);
     return buildResponse({ result: "error", message: err.message });
   }
 }
@@ -57,6 +60,10 @@ function doPost(e) {
  * Sends a welcome email to a new subscriber.
  */
 function sendWelcomeEmail(toEmail) {
+  if (!toEmail || toEmail.indexOf('@') === -1) {
+    Logger.log('Skipping email: Invalid recipient.');
+    return;
+  }
   var subject = "🌱 Welcome to the YES Community!";
   var body = "Hi there,\n\n" +
              "We're thrilled to have you join the Youth Environment Society (YES) community! 🌱\n\n" +
