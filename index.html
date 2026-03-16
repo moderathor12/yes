@@ -994,7 +994,7 @@
           } else if (data.result === 'duplicate') {
             showMsg(msgEl, '✅ This email is already added!', 'dup');
           } else {
-            showMsg(msgEl, '⚠️ An error occurred: ' + (data.message || 'tekrar dene'), 'error');
+            showMsg(msgEl, '⚠️ An error occurred: ' + (data.message || 'try again'), 'error');
           }
         })
         .catch(function () {

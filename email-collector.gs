@@ -36,14 +36,40 @@ function doPost(e) {
       }
     }
 
-    // Yeni satır ekle
+    // Add new row
     sheet.appendRow([new Date(), email]);
 
-    return buildResponse({ result: "success", message: "Kaydınız alındı!" });
+    // NEW: Send Automatic Welcome Email
+    try {
+      sendWelcomeEmail(email);
+    } catch (e) {
+      Logger.log('Welcome email could not be sent: ' + e.message);
+    }
+
+    return buildResponse({ result: "success", message: "Successfully subscribed!" });
 
   } catch (err) {
     return buildResponse({ result: "error", message: err.message });
   }
+}
+
+/**
+ * Sends a welcome email to a new subscriber.
+ */
+function sendWelcomeEmail(toEmail) {
+  var subject = "🌱 Welcome to the YES Community!";
+  var body = "Hi there,\n\n" +
+             "We're thrilled to have you join the Youth Environment Society (YES) community! 🌱\n\n" +
+             "You're now on the list to be the first to hear about our environmental projects, upcoming events, and the steps we're taking toward a greener future.\n\n" +
+             "There's so much we can achieve together for a more sustainable world. You can always reach out to us by replying to this email or visiting our Instagram.\n\n" +
+             "Stay green,\n" +
+             "The YES Community Team";
+             
+  MailApp.sendEmail({
+    to: toEmail,
+    subject: subject,
+    body: body
+  });
 }
 
 function doGet(e) {
@@ -57,21 +83,21 @@ function buildResponse(data) {
 }
 
 // ============================================================
-//  YENİ: TOPLU EL-POSTA GÖNDERME ÖZELLİĞİ
+//  BULK EMAIL FEATURE
 // ============================================================
 
 /**
- * Google Tablo açıldığında üstte özel menü oluşturur.
+ * Creates a custom menu in Google Sheets.
  */
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
   ui.createMenu('🚀 YES Community')
-    .addItem('Toplu Mesaj Gönder', 'sendBulkEmail')
+    .addItem('Send Bulk Message', 'sendBulkEmail')
     .addToUi();
 }
 
 /**
- * Tablodaki tüm kullanıcılara toplu e-posta gönderir.
+ * Sends a bulk email to everyone in the list.
  */
 function sendBulkEmail() {
   var ui = SpreadsheetApp.getUi();
@@ -79,28 +105,28 @@ function sendBulkEmail() {
   var data = sheet.getDataRange().getValues();
   
   if (data.length <= 1) {
-    ui.alert('Hata', 'Tabloda hiç e-posta adresi bulunamadı!', ui.ButtonSet.OK);
+    ui.alert('Error', 'No email addresses found in the sheet!', ui.ButtonSet.OK);
     return;
   }
 
-  // 1. Konu Başlığını Sor
-  var subjectResponse = ui.prompt('E-posta Gönder', 'E-posta konusunu (Subject) girin:', ui.ButtonSet.OK_CANCEL);
+  // 1. Ask for Subject
+  var subjectResponse = ui.prompt('Send Email', 'Enter the email subject:', ui.ButtonSet.OK_CANCEL);
   if (subjectResponse.getSelectedButton() !== ui.Button.OK) return;
   var subject = subjectResponse.getResponseText();
 
-  // 2. Mesaj İçeriğini Sor
-  var messageResponse = ui.prompt('E-posta Gönder', 'Mesajınızı yazın (Tüm kullanıcılara gidecek):', ui.ButtonSet.OK_CANCEL);
+  // 2. Ask for Message
+  var messageResponse = ui.prompt('Send Email', 'Enter your message (this will be sent to everyone):', ui.ButtonSet.OK_CANCEL);
   if (messageResponse.getSelectedButton() !== ui.Button.OK) return;
   var message = messageResponse.getResponseText();
 
-  // 3. Onay Al
-  var confirm = ui.alert('Onay', (data.length - 1) + ' kişiye e-posta gönderilecek. Hazır mısın?', ui.ButtonSet.YES_NO);
+  // 3. Confirm
+  var confirm = ui.alert('Confirm', 'Email will be sent to ' + (data.length - 1) + ' people. Are you ready?', ui.ButtonSet.YES_NO);
   if (confirm !== ui.Button.YES) return;
 
   var sentCount = 0;
   var errorCount = 0;
 
-  // İlk satır başlık olduğu için 1. satırdan başla
+  // Start from row 1 since row 0 is headers
   for (var i = 1; i < data.length; i++) {
     var email = data[i][1];
     if (email && email.indexOf('@') > -1) {
@@ -113,11 +139,11 @@ function sendBulkEmail() {
         sentCount++;
       } catch (e) {
         errorCount++;
-        Logger.log('Gönderilemedi: ' + email + ' - Hata: ' + e.message);
+        Logger.log('Could not send to: ' + email + ' - Error: ' + e.message);
       }
     }
   }
 
-  ui.alert('Tamamlandı', sentCount + ' mesaj başarıyla gönderildi. ' + (errorCount > 0 ? errorCount + ' hata oluştu.' : ''), ui.ButtonSet.OK);
+  ui.alert('Completed', sentCount + ' messages sent successfully. ' + (errorCount > 0 ? errorCount + ' errors occurred.' : ''), ui.ButtonSet.OK);
 }
 
