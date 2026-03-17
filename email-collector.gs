@@ -94,6 +94,8 @@ function doGet(e) {
   var action = e.parameter.action;
   var email = e.parameter.email;
 
+  Logger.log('GET request received. Action: ' + action + ', Email: ' + email);
+
   if (action === 'unsubscribe' && email) {
     var result = unsubscribeUser(email);
     var message = result ? 
