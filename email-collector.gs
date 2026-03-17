@@ -98,12 +98,36 @@ function doGet(e) {
 
   if (action === 'unsubscribe' && email) {
     var result = unsubscribeUser(email);
-    var message = result ? 
-      "<h1>Success</h1><p>You have been unsubscribed from the YES Community list.</p>" : 
-      "<h1>Error</h1><p>Email not found or already unsubscribed.</p>";
+    var title = result ? "Unsubscribed Successfully" : "Unsubscribe Error";
+    var color = result ? "#2d6a4f" : "#e07a5f";
+    var icon = result ? "🌿" : "⚠️";
+    var heading = result ? "We're sorry to see you go!" : "Something went wrong";
+    var subtext = result ? 
+      "You have been successfully removed from the YES Community mailing list. We hope to see you again soon!" : 
+      "We couldn't find your email address or you've already unsubscribed.";
+
+    var htmlContent = 
+      "<!DOCTYPE html><html><head>" +
+      "<meta name='viewport' content='width=device-width, initial-scale=1'>" +
+      "<link href='https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=DM+Sans:wght@400;500&display=swap' rel='stylesheet'>" +
+      "<style>" +
+      "body { font-family: 'DM Sans', sans-serif; background: #f0f4f0; color: #1a2e1a; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }" +
+      ".container { background: white; padding: 3rem 2rem; border-radius: 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.06); max-width: 400px; width: 90%; }" +
+      ".icon { font-size: 3rem; margin-bottom: 1rem; }" +
+      "h1 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; margin-bottom: 1rem; color: " + color + "; }" +
+      "p { color: #555; line-height: 1.6; margin-bottom: 2rem; }" +
+      ".btn { display: inline-block; background: #2d6a4f; color: white; padding: 0.8rem 1.6rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: transform 0.2s; }" +
+      ".btn:hover { transform: translateY(-2px); }" +
+      "</style></head><body>" +
+      "<div class='container'>" +
+      "<div class='icon'>" + icon + "</div>" +
+      "<h1>" + heading + "</h1>" +
+      "<p>" + subtext + "</p>" +
+      "<a href='https://moderathor12.github.io/yes/' class='btn'>Return to Website</a>" +
+      "</div></body></html>";
     
-    return HtmlService.createHtmlOutput(message)
-      .setTitle("Unsubscribe — YES")
+    return HtmlService.createHtmlOutput(htmlContent)
+      .setTitle(title + " — YES")
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
   }
 
