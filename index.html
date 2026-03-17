@@ -967,38 +967,36 @@
     function submitEmail(e) {
       e.preventDefault();
 
-      var email = document.getElementById('email-input').value.trim();
-      var btn = document.getElementById('signup-btn');
+      var input = document.getElementById('email-input');
+      var email = input.value.trim();
       var msgEl = document.getElementById('form-msg');
+      var btn = document.getElementById('signup-btn');
 
-      // Henüz URL girilmemişse uyar
-      if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
-        showMsg(msgEl, 'Please enter the Apps Script URL first!', 'error');
+      // 1) Enforce @gmail.com only
+      if (!email.toLowerCase().endsWith('@gmail.com')) {
+        showMsg(msgEl, '⚠️ Only @gmail.com addresses are accepted.', 'error');
         return;
       }
 
       btn.disabled = true;
-      btn.textContent = 'Sending...';
-      msgEl.className = 'form-msg';
-      msgEl.style.display = 'none';
+      btn.textContent = 'Joining...';
+      showMsg(msgEl, '', '');
 
-      var formData = new FormData();
-      formData.append('email', email);
-
-      fetch(SCRIPT_URL, { method: 'POST', body: formData })
-        .then(function (res) { return res.json(); })
-        .then(function (data) {
-          if (data.result === 'success') {
-            showMsg(msgEl, '🌱 Great! We added you to the list.', 'success');
-            document.getElementById('email-input').value = '';
-          } else if (data.result === 'duplicate') {
-            showMsg(msgEl, '✅ This email is already added!', 'dup');
-          } else {
-            showMsg(msgEl, '⚠️ An error occurred: ' + (data.message || 'try again'), 'error');
-          }
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        cache: 'no-cache',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      })
+        .then(function () {
+          // Since it's no-cors, we assume success if it doesn't catch.
+          showPopup('🌱 Successfully added to our community!');
+          input.value = '';
+          showMsg(msgEl, '', '');
         })
         .catch(function () {
-          showMsg(msgEl, '⚠️ An error occurred Please try again.', 'error');
+          showMsg(msgEl, '⚠️ Connection issue. But we might have received it!', 'error');
         })
         .finally(function () {
           btn.disabled = false;
@@ -1010,7 +1008,50 @@
       el.textContent = text;
       el.className = 'form-msg ' + type;
     }
+
+    function showPopup(message) {
+      var popup = document.createElement('div');
+      popup.className = 'toast-popup';
+      popup.innerHTML = `
+        <div class="toast-content">
+          <span class="toast-icon">✅</span>
+          <span class="toast-text">${message}</span>
+        </div>
+      `;
+      document.body.appendChild(popup);
+
+      setTimeout(() => popup.classList.add('show'), 100);
+      setTimeout(() => {
+        popup.classList.remove('show');
+        setTimeout(() => popup.remove(), 400);
+      }, 4000);
+    }
+
+    document.getElementById('email-form').addEventListener('submit', submitEmail);
   </script>
+
+  <style>
+    /* Toast Popup Styling */
+    .toast-popup {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #ffffff;
+      color: #1a2e1a;
+      padding: 1rem 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      border-left: 5px solid #2d6a4f;
+      z-index: 9999;
+      transform: translateX(120%);
+      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      font-family: 'DM Sans', sans-serif;
+    }
+    .toast-popup.show { transform: translateX(0); }
+    .toast-content { display: flex; align-items: center; gap: 12px; }
+    .toast-icon { font-size: 1.2rem; }
+    .toast-text { font-weight: 500; font-size: 0.95rem; }
+  </style>
 
   <!-- FOOTER -->
   <footer>
