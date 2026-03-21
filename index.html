@@ -101,11 +101,16 @@
       transition: background 0.2s, transform 0.2s;
     }
 
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
     /* Language Dropdown */
     .lang-dropdown {
       position: relative;
       display: inline-block;
-      margin-left: 1.5rem;
       z-index: 1000;
     }
 
@@ -914,19 +919,21 @@
       <span class="logo-badge">YES</span>
       <span data-i18n="logo_text">Youth Environment Society</span>
     </a>
-    <ul class="nav-links">
-      <li><a href="#about" data-i18n="nav_about">Who We Are</a></li>
-      <li><a href="#pillars" data-i18n="nav_pillars">Our Work</a></li>
-      <li><a href="#join" data-i18n="nav_join">Join Us</a></li>
-    </ul>
-    <div class="lang-dropdown">
-      <button class="lang-current">
-        <span id="active-lang">EN</span>
-        <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-      </button>
-      <div class="lang-options">
-        <button onclick="setLang('en')" id="opt-en">EN</button>
-        <button onclick="setLang('az')" id="opt-az">AZ</button>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#about" data-i18n="nav_about">Who We Are</a></li>
+        <li><a href="#pillars" data-i18n="nav_pillars">Our Work</a></li>
+        <li><a href="#join" data-i18n="nav_join">Join Us</a></li>
+      </ul>
+      <div class="lang-dropdown">
+        <button class="lang-current">
+          <span id="active-lang">EN</span>
+          <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+        </button>
+        <div class="lang-options">
+          <button onclick="setLang('en')" id="opt-en">EN</button>
+          <button onclick="setLang('az')" id="opt-az">AZ</button>
+        </div>
       </div>
     </div>
   </nav>
