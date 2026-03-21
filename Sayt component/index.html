@@ -101,9 +101,43 @@
       transition: background 0.2s, transform 0.2s;
     }
 
-    .nav-cta:hover {
-      background: var(--dark);
-      transform: scale(1.05);
+    .lang-switch {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 50px;
+      border: 1px solid rgba(45, 106, 79, 0.15);
+      margin-left: 1rem;
+    }
+
+    .lang-switch button {
+      background: none;
+      border: none;
+      color: var(--dark);
+      cursor: pointer;
+      padding: 2px 4px;
+      transition: color 0.2s;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .lang-switch button.active {
+      color: var(--green);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .lang-switch button:hover:not(.active) {
+      color: var(--green);
+      opacity: 0.7;
+    }
+
+    .lang-divider {
+      opacity: 0.3;
+      user-select: none;
     }
 
     /* HERO */
@@ -831,13 +865,18 @@
   <nav>
     <a class="logo" href="#">
       <span class="logo-badge">YES</span>
-      Youth Environment Society
+      <span data-i18n="logo_text">Youth Environment Society</span>
     </a>
     <ul class="nav-links">
-      <li><a href="#about">Who We Are</a></li>
-      <li><a href="#pillars">Our Work</a></li>
-      <li><a href="#join">Join Us</a></li>
+      <li><a href="#about" data-i18n="nav_about">Who We Are</a></li>
+      <li><a href="#pillars" data-i18n="nav_pillars">Our Work</a></li>
+      <li><a href="#join" data-i18n="nav_join">Join Us</a></li>
     </ul>
+    <div class="lang-switch">
+      <button onclick="setLang('en')" id="lang-en" class="active">EN</button>
+      <span class="lang-divider">|</span>
+      <button onclick="setLang('az')" id="lang-az">AZ</button>
+    </div>
   </nav>
 
   <!-- HERO -->
@@ -852,15 +891,15 @@
 
 
     <div class="hero-content">
-      <div class="hero-tag">
+      <div class="hero-tag" data-i18n="hero_tag">
         <span></span> Youth-Led · Planet-Focused
       </div>
-      <h1>Empowering Youth for a <em>Sustainable</em> Future.</h1>
-      <p class="hero-sub">We are a community of young activists, thinkers, and doers united by one mission: to protect
+      <h1 data-i18n="hero_title">Empowering Youth for a <em>Sustainable</em> Future.</h1>
+      <p class="hero-sub" data-i18n="hero_sub">We are a community of young activists, thinkers, and doers united by one mission: to protect
         our environment and inspire the next generation of green leaders.</p>
       <div class="hero-btns">
-        <a href="#join" class="btn-primary">🌱 Join the Movement</a>
-        <a href="#about" class="btn-secondary">Learn More</a>
+        <a href="#join" class="btn-primary" data-i18n="btn_join">🌱 Join the Movement</a>
+        <a href="#about" class="btn-secondary" data-i18n="btn_learn">Learn More</a>
       </div>
     </div>
   </section>
@@ -869,19 +908,19 @@
   <div class="stats">
     <div class="stat">
       <div class="stat-number">100+</div>
-      <div class="stat-label">Community Members</div>
+      <div class="stat-label" data-i18n="stat_1_label">Community Members</div>
     </div>
     <div class="stat">
       <div class="stat-number">1</div>
-      <div class="stat-label">Active Goal</div>
+      <div class="stat-label" data-i18n="stat_2_label">Active Goal</div>
     </div>
     <div class="stat">
       <div class="stat-number">1</div>
-      <div class="stat-label">Shared Planet</div>
+      <div class="stat-label" data-i18n="stat_3_label">Shared Planet</div>
     </div>
     <div class="stat">
       <div class="stat-number">∞</div>
-      <div class="stat-label">Potential for Change</div>
+      <div class="stat-label" data-i18n="stat_4_label">Potential for Change</div>
     </div>
   </div>
 
@@ -891,68 +930,68 @@
       <div class="who-visual">
         <div class="who-card wc1">
           <div class="wc-icon">🌍</div>
-          <div class="wc-title">Environment First</div>
-          <div class="wc-desc">We put the planet at the center of every decision we make.</div>
+          <div class="wc-title" data-i18n="card_1_title">Environment First</div>
+          <div class="wc-desc" data-i18n="card_1_desc">We put the planet at the center of every decision we make.</div>
         </div>
         <div class="who-card wc3">
           <div class="wc-icon">✊</div>
-          <div class="wc-title">Youth Power</div>
-          <div class="wc-desc">Real change starts with the next generation — us.</div>
+          <div class="wc-title" data-i18n="card_2_title">Youth Power</div>
+          <div class="wc-desc" data-i18n="card_2_desc">Real change starts with the next generation — us.</div>
         </div>
         <div class="who-card wc2">
           <div class="wc-icon">⚡</div>
-          <div class="wc-title">Action-Oriented</div>
-          <div class="wc-desc">We don't just talk — we build, organize, and act.</div>
+          <div class="wc-title" data-i18n="card_3_title">Action-Oriented</div>
+          <div class="wc-desc" data-i18n="card_3_desc">We don't just talk — we build, organize, and act.</div>
         </div>
       </div>
 
       <div class="who-text">
-        <div class="section-tag">Who We Are</div>
-        <h2 class="section-title">A Generation That Refuses to Wait</h2>
-        <p>Youth Environment Society (YES) is a youth-led organization dedicated to empowering the next generation of
+        <div class="section-tag" data-i18n="who_tag">Who We Are</div>
+        <h2 class="section-title" data-i18n="who_title">A Generation That Refuses to Wait</h2>
+        <p data-i18n="who_p1">Youth Environment Society (YES) is a youth-led organization dedicated to empowering the next generation of
           environmental advocates. We believe the time for action is now — not tomorrow, not after graduation.</p>
-        <p>Through education, community organizing, and direct environmental action, we create meaningful change in our
+        <p data-i18n="who_p2">Through education, community organizing, and direct environmental action, we create meaningful change in our
           communities while building the skills and networks that will shape a greener future.</p>
-        <a href="#join" class="btn-primary" style="display:inline-block; margin-top: 1rem;">Join YES Today</a>
+        <a href="#join" class="btn-primary" style="display:inline-block; margin-top: 1rem;" data-i18n="who_btn">Join YES Today</a>
       </div>
     </div>
   </section>
 
   <!-- PILLARS -->
   <section class="section pillars" id="pillars">
-    <div class="section-tag">Our Work</div>
-    <h2 class="section-title">Three Pillars of Change</h2>
+    <div class="section-tag" data-i18n="nav_pillars">Our Work</div>
+    <h2 class="section-title" data-i18n="pillars_title">Three Pillars of Change</h2>
 
     <div class="pillars-grid">
       <div class="pillar">
         <div class="pillar-num">01</div>
         <div class="pillar-icon">🌿</div>
-        <h3>Environment</h3>
-        <p>Protecting ecosystems, reducing waste, and advocating for clean air, water, and land in our communities.</p>
+        <h3 data-i18n="pillar_1_title">Environment</h3>
+        <p data-i18n="pillar_1_desc">Protecting ecosystems, reducing waste, and advocating for clean air, water, and land in our communities.</p>
       </div>
       <div class="pillar">
         <div class="pillar-num">02</div>
         <div class="pillar-icon">🧠</div>
-        <h3>Youth</h3>
-        <p>Educating, inspiring, and mobilizing young people to become confident voices for our planet.</p>
+        <h3 data-i18n="pillar_2_title">Youth</h3>
+        <p data-i18n="pillar_2_desc">Educating, inspiring, and mobilizing young people to become confident voices for our planet.</p>
       </div>
       <div class="pillar">
         <div class="pillar-num">03</div>
         <div class="pillar-icon">🚀</div>
-        <h3>Action</h3>
-        <p>Running campaigns, events, and initiatives that create tangible, measurable impact where it matters most.</p>
+        <h3 data-i18n="pillar_3_title">Action</h3>
+        <p data-i18n="pillar_3_desc">Running campaigns, events, and initiatives that create tangible, measurable impact where it matters most.</p>
       </div>
     </div>
   </section>
 
   <!-- JOIN -->
   <section class="join" id="join">
-    <div class="section-tag" style="position:relative">Get Involved</div>
-    <h2 class="section-title">Ready to Say <em style="color:var(--green); font-style:normal">YES</em>?</h2>
-    <p>Sign up to stay updated on our events, campaigns, and opportunities to make a difference.</p>
-    <form id="signup-form" class="join-form" onsubmit="submitEmail(event)">
-      <input id="email-input" type="email" placeholder="Your email address" required>
-      <button id="signup-btn" type="submit">Sign Me Up 🌱</button>
+    <div class="section-tag" style="position:relative" data-i18n="join_tag">Get Involved</div>
+    <h2 class="section-title" data-i18n="join_title">Ready to Say <em style="color:var(--green); font-style:normal">YES</em>?</h2>
+    <p data-i18n="join_sub">Sign up to stay updated on our events, campaigns, and opportunities to make a difference.</p>
+    <form id="email-form" class="join-form" onsubmit="submitEmail(event)">
+      <input id="email-input" type="email" placeholder="Your email address" data-i18n="join_placeholder" required>
+      <button id="signup-btn" type="submit" data-i18n="join_btn">Sign Me Up 🌱</button>
       <div id="form-msg" class="form-msg"></div>
     </form>
   </section>
@@ -1028,7 +1067,121 @@
     }
 
     document.getElementById('email-form').addEventListener('submit', submitEmail);
-  </script>
+
+    // ──────────────────────────────────────────────────
+    //  2) Multi-Language Support (EN/AZ)
+    // ──────────────────────────────────────────────────
+    var translations = {
+      en: {
+        nav_about: "Who We Are",
+        nav_pillars: "Our Work",
+        nav_join: "Join Us",
+        hero_tag: "<span></span> Youth-Led · Planet-Focused",
+        hero_title: "Empowering Youth for a <em>Sustainable</em> Future.",
+        hero_sub: "We are a community of young activists, thinkers, and doers united by one mission: to protect our environment and inspire the next generation of green leaders.",
+        btn_join: "🌱 Join the Movement",
+        btn_learn: "Learn More",
+        stat_1_label: "Community Members",
+        stat_2_label: "Active Goal",
+        stat_3_label: "Shared Planet",
+        stat_4_label: "Potential for Change",
+        card_1_title: "Environment First",
+        card_1_desc: "We put the planet at the center of every decision we make.",
+        card_2_title: "Youth Power",
+        card_2_desc: "Real change starts with the next generation — us.",
+        card_3_title: "Action-Oriented",
+        card_3_desc: "We don't just talk — we build, organize, and act.",
+        who_tag: "Who We Are",
+        who_title: "A Generation That Refuses to Wait",
+        who_p1: "Youth Environment Society (YES) is a youth-led organization dedicated to empowering the next generation of environmental advocates. We believe the time for action is now — not tomorrow, not after graduation.",
+        who_p2: "Through education, community organizing, and direct environmental action, we create meaningful change in our communities while building the skills and networks that will shape a greener future.",
+        who_btn: "Join YES Today",
+        pillars_title: "Three Pillars of Change",
+        pillar_1_title: "Environment",
+        pillar_1_desc: "Protecting ecosystems, reducing waste, and advocating for clean air, water, and land in our communities.",
+        pillar_2_title: "Youth",
+        pillar_2_desc: "Educating, inspiring, and mobilizing young people to become confident voices for our planet.",
+        pillar_3_title: "Action",
+        pillar_3_desc: "Running campaigns, events, and initiatives that create tangible, measurable impact where it matters most.",
+        join_tag: "Get Involved",
+        join_title: "Ready to Say <em style='color:var(--green); font-style:normal'>YES</em>?",
+        join_sub: "Sign up to stay updated on our events, campaigns, and opportunities to make a difference.",
+        join_placeholder: "Your email address",
+        join_btn: "Sign Me Up 🌱",
+        footer_logo: "Follow Us",
+        footer_p: "© 2026 Youth Environment Society. Empowering youth for a sustainable future.",
+        logo_text: "Youth Environment Society"
+      },
+      az: {
+        nav_about: "Biz Kimik",
+        nav_pillars: "Bizim İşimiz",
+        nav_join: "Bəs Sən?",
+        hero_tag: "<span></span> Gənclər Tərəfindən İdarə Olunan · Planet Fokuslu",
+        hero_title: "Davamlı Gələcək Üçün Gəncləri <em>Gücləndiririk</em>.",
+        hero_sub: "Biz ətraf mühiti qorumaq və gələcək nəsil yaşıl liderləri ruhlandırmaq üçün birləşmiş gənc fəallar, düşünənlər və icraçılar icmasıyıq.",
+        btn_join: "🌱 Hərəkata Qoşulun",
+        btn_learn: "Daha Ətraflı",
+        stat_1_label: "İcma Üzvü",
+        stat_2_label: "Aktiv Məqsəd",
+        stat_3_label: "Ortaq Planet",
+        stat_4_label: "Dəyişiklik Potensialı",
+        card_1_title: "Əvvəlcə Planet",
+        card_1_desc: "Verdiyimiz hər qərarın mərkəzində planeti saxlayırıq.",
+        card_2_title: "Gənclərin Gücü",
+        card_2_desc: "Real dəyişiklik gələcək nəsildən — bizdən başlayır.",
+        card_3_title: "Fəaliyyətə Yönəlmiş",
+        card_3_desc: "Biz sadəcə danışmırıq - biz qururuq, təşkil edirik və hərəkət edirik.",
+        who_tag: "Biz Kimik",
+        who_title: "Gözləməkdən İmtina Edən Bir Nəsil",
+        who_p1: "YES gələcək nəsil ətraf mühit tərəfdarlarını gücləndirməyə həsr olunmuş, gənclər tərəfindən idarə olunan bir təşkilatdır. Biz inanırıq ki, hərəkət etmək vaxtı indi gəlib - sabah yox, məzuniyyətdən sonra yox.",
+        who_p2: "Təhsil, icma təşkili və birbaşa ekoloji fəaliyyət vasitəsilə biz icmalarımızda mənalı dəyişikliklər yaradırıq, eyni zamanda yaşıl gələcəyi formalaşdıracaq bacarıq və şəbəkələr qururuq.",
+        who_btn: "YES-ə Bu Gün Qoşulun",
+        pillars_title: "Dəyişikliyin Üç Sütunu",
+        pillar_1_title: "Ətraf Mühit",
+        pillar_1_desc: "İcmalarımızda ekosistemlərin qorunması, tullantıların azaldılması və təmiz hava, su və torpaq üçün mübarizə aparmaq.",
+        pillar_2_title: "Gənclik",
+        pillar_2_desc: "Gəncləri təhsil vermək, ruhlandırmaq və planetimiz üçün inamlı səslərə çevrilmək üçün hərəkətə keçirmək.",
+        pillar_3_title: "Fəaliyyət",
+        pillar_3_desc: "Ən çox ehtiyac duyulan yerlərdə maddi, ölçülə bilən təsir yaradan kampaniyalar, tədbirlər və təşəbbüslər həyata keçirmək.",
+        join_tag: "İştirak Et",
+        join_title: "YES Deməyə <em style='color:var(--green); font-style:normal'>Hazırsınız</em>?",
+        join_sub: "Tədbirlərimiz, kampaniyalarımız və dəyişiklik yaratmaq imkanlarımızdan xəbərdar olmaq üçün qeydiyyatdan keçin.",
+        join_placeholder: "Email ünvanınız",
+        join_btn: "Məni Qeydiyyata Al 🌱",
+        footer_logo: "Bizi İzləyin",
+        footer_p: "© 2026 Youth Environment Society. Davamlı gələcək üçün gənclərin gücləndirilməsi.",
+        logo_text: "Gənclərin Ekoloji Cəmiyyəti"
+      }
+    };
+
+    function setLang(lang) {
+      localStorage.setItem('yes_lang', lang);
+      applyLanguage(lang);
+    }
+
+    function applyLanguage(lang) {
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+          if (el.tagName === 'INPUT') {
+            el.placeholder = translations[lang][key];
+          } else {
+            el.innerHTML = translations[lang][key];
+          }
+        }
+      });
+
+      // Update active state in switcher
+      document.querySelectorAll('.lang-switch button').forEach(function(btn) {
+        btn.classList.remove('active');
+      });
+      document.getElementById('lang-' + lang).classList.add('active');
+      document.documentElement.lang = lang;
+    }
+
+    // Load saved language
+    var savedLang = localStorage.getItem('yes_lang') || 'en';
+    applyLanguage(savedLang);
 
   <style>
     /* Toast Popup Styling */
@@ -1055,7 +1208,7 @@
 
   <!-- FOOTER -->
   <footer>
-    <div class="footer-logo">Follow Us</div>
+    <div class="footer-logo" data-i18n="footer_logo">Follow Us</div>
     <ul class="social-links">
       <li>
         <a href="https://www.linkedin.com/company/youth-environment-society-yes/" target="_blank" aria-label="LinkedIn"
@@ -1085,7 +1238,7 @@
         </a>
       </li>
     </ul>
-    <p>© 2026 Youth Environment Society. Empowering youth for a sustainable future.</p>
+    <p data-i18n="footer_p">© 2026 Youth Environment Society. Empowering youth for a sustainable future.</p>
   </footer>
 
 </body>
