@@ -166,60 +166,71 @@ function buildResponse(data) {
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
   ui.createMenu('🚀 YES Community')
-    .addItem('Send Bulk Message', 'sendBulkEmail')
+    .addItem('Send Bulk Message (New)', 'showBulkEmailDialog')
     .addToUi();
 }
 
 /**
- * Sends a bulk email to everyone in the list.
+ * Shows the custom HTML dialog for bulk emails.
  */
-function sendBulkEmail() {
-  var ui = SpreadsheetApp.getUi();
+function showBulkEmailDialog() {
+  var html = HtmlService.createHtmlOutputFromFile('email-dialog')
+      .setWidth(600)
+      .setHeight(550)
+      .setTitle('🚀 Send Bulk Message — YES');
+  SpreadsheetApp.getUi().showModalDialog(html, '🚀 Send Bulk Message — YES');
+}
+
+/**
+ * Processes and sends the bulk email from the HTML dialog.
+ */
+function processBulkEmail(data) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var data = sheet.getDataRange().getValues();
+  var sheetData = sheet.getDataRange().getValues();
   
-  if (data.length <= 1) {
-    ui.alert('Error', 'No email addresses found in the sheet!', ui.ButtonSet.OK);
-    return;
-  }
+  if (sheetData.length <= 1) throw new Error('No email addresses found!');
 
-  // 1. Ask for Subject
-  var subjectResponse = ui.prompt('Send Email', 'Enter the email subject:', ui.ButtonSet.OK_CANCEL);
-  if (subjectResponse.getSelectedButton() !== ui.Button.OK) return;
-  var subject = subjectResponse.getResponseText();
+  var subject = data.subject;
+  var message = data.message;
+  var imagePacks = data.images || []; // Array of { name: str, data: base64 }
 
-  // 2. Ask for Message
-  var messageResponse = ui.prompt('Send Email', 'Enter your message:', ui.ButtonSet.OK_CANCEL);
-  if (messageResponse.getSelectedButton() !== ui.Button.OK) return;
-  var message = messageResponse.getResponseText();
+  var inlineImages = {};
+  var imageHtml = "";
 
-  // 3. Confirm
-  var confirm = ui.alert('Confirm', 'Email will be sent to ' + (data.length - 1) + ' people. Ready?', ui.ButtonSet.YES_NO);
-  if (confirm !== ui.Button.YES) return;
+  // Process images
+  imagePacks.forEach(function(img, index) {
+    var cid = "img_" + index;
+    var base64Data = img.data.split(',')[1];
+    var blob = Utilities.newBlob(Utilities.base64Decode(base64Data), img.type, img.name);
+    inlineImages[cid] = blob;
+    imageHtml += '<br><img src="cid:' + cid + '" style="max-width:100%; border-radius:12px; margin-top:1rem;"><br>';
+  });
 
   var sentCount = 0;
   var errorCount = 0;
 
-  for (var i = 1; i < data.length; i++) {
-    var email = data[i][1];
+  for (var i = 1; i < sheetData.length; i++) {
+    var email = sheetData[i][1];
     if (email && email.indexOf('@') > -1) {
       try {
         var unsubscribeLink = WEB_APP_URL + "?action=unsubscribe&email=" + encodeURIComponent(email);
-        var htmlBody = message.replace(/\n/g, '<br>') + "<br><br><hr><br><small style='color: #666;'>To stop receiving these, <a href='" + unsubscribeLink + "'>unsubscribe</a>.</small>";
+        var finalHtml = message.replace(/\n/g, '<br>') + 
+                        imageHtml + 
+                        "<br><br><hr><br><small style='color: #666;'>To stop receiving these, <a href='" + unsubscribeLink + "'>unsubscribe</a>.</small>";
 
         MailApp.sendEmail({
           to: email,
           subject: subject,
-          htmlBody: htmlBody
+          htmlBody: finalHtml,
+          inlineImages: inlineImages
         });
         sentCount++;
       } catch (e) {
         errorCount++;
-        Logger.log('Error sending to: ' + email + ' - ' + e.message);
       }
     }
   }
 
-  ui.alert('Completed', sentCount + ' sent. ' + (errorCount > 0 ? errorCount + ' errors.' : ''), ui.ButtonSet.OK);
+  return { sent: sentCount, errors: errorCount };
 }
 

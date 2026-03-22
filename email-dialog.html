@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #2d6a4f;
+      --bg: #f8faf8;
+      --dark: #1a2e1a;
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 100%;
+    }
+    .field {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 12px;
+      font-family: inherit;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--green);
+    }
+    textarea {
+      height: 120px;
+      resize: vertical;
+    }
+    
+    /* Drop Zone */
+    #drop-zone {
+      border: 2px dashed rgba(45, 106, 79, 0.3);
+      padding: 30px;
+      text-align: center;
+      border-radius: 16px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    #drop-zone.dragover {
+      background: rgba(45, 106, 79, 0.05);
+      border-color: var(--green);
+    }
+    .preview-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .preview-item {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #eee;
+    }
+    .preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .footer {
+      margin-top: 30px;
+      text-align: right;
+    }
+    .btn {
+      background: var(--green);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #status {
+      margin-top: 15px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .success { color: var(--green); }
+    .error { color: #e07a5f; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="field">
+      <label for="subject">Subject</label>
+      <input type="text" id="subject" placeholder="Enter email subject...">
+    </div>
+    
+    <div class="field">
+      <label for="message">Message (HTML allowed)</label>
+      <textarea id="message" placeholder="Type your message here..."></textarea>
+    </div>
+    
+    <div class="field">
+      <label>Images (Drag & Drop or Click)</label>
+      <div id="drop-zone" onclick="document.getElementById('file-input').click()">
+        <span style="opacity:0.6">📸 Drop images here or click to select</span>
+        <input type="file" id="file-input" multiple accept="image/*" style="display:none">
+        <div id="preview" class="preview-container"></div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <div id="status"></div>
+      <button class="btn" id="send-btn" onclick="sendEmail()">🚀 Send to All</button>
+    </div>
+  </div>
+
+  <script>
+    let images = [];
+
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const preview = document.getElementById('preview');
+
+    // Drag & Drop Handlers
+    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('dragover'); };
+    dropZone.ondragleave = () => { dropZone.classList.remove('dragover'); };
+    dropZone.ondrop = (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      handleFiles(e.dataTransfer.files);
+    };
+
+    fileInput.onchange = (e) => handleFiles(e.target.files);
+
+    function handleFiles(files) {
+      Array.from(files).forEach(file => {
+        if (!file.type.startsWith('image/')) return;
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          images.push({
+            name: file.name,
+            type: file.type,
+            data: e.target.result
+          });
+          
+          const div = document.createElement('div');
+          div.className = 'preview-item';
+          div.innerHTML = `<img src="${e.target.result}">`;
+          preview.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function sendEmail() {
+      const subject = document.getElementById('subject').value;
+      const message = document.getElementById('message').value;
+      const status = document.getElementById('status');
+      const btn = document.getElementById('send-btn');
+
+      if (!subject || !message) {
+        status.innerHTML = '<span class="error">⚠️ Subject and Message are required.</span>';
+        return;
+      }
+
+      btn.disabled = true;
+      status.innerHTML = '⌛ Preparing and sending...';
+
+      google.script.run
+        .withSuccessHandler((res) => {
+          status.innerHTML = `<span class="success">✅ ${res.sent} sent successfully!</span>`;
+          btn.disabled = false;
+        })
+        .withFailureHandler((err) => {
+          status.innerHTML = `<span class="error">❌ Error: ${err.message}</span>`;
+          btn.disabled = false;
+        })
+        .processBulkEmail({
+          subject: subject,
+          message: message,
+          images: images
+        });
+    }
+  </script>
+</body>
+</html>
