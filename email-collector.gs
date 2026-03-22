@@ -6,7 +6,7 @@
 // ──────────────────────────────────────────────────
 //  1) UPDATE THIS URL after your first deployment!
 // ──────────────────────────────────────────────────
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxy2Uv6wXORBVD-HVjqqFes5b73J5g3zw_Q9oxhHAK3SPe3yBiRCs2L1k4Meci6SHTf/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzwhCtFc3mXKNeuzS80XtbjBPQ4t0-CjuV1g6Q2v3M96cTNJednBJ8sXedvooSD8wjhbg/exec';
 
 function doPost(e) {
   try {
