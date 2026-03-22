@@ -8,6 +8,12 @@
 // ──────────────────────────────────────────────────
 var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzwhCtFc3mXKNeuzS80XtbjBPQ4t0-CjuV1g6Q2v3M96cTNJednBJ8sXedvooSD8wjhbg/exec';
 
+// ──────────────────────────────────────────────────
+//  2) WELCOME EMAIL IMAGE (Base64)
+//  Paste your image's Base64 string below between the quotes.
+// ──────────────────────────────────────────────────
+var WELCOME_IMAGE_DATA = ''; // Example: 'data:image/png;base64,iVBORw...'
+
 function doPost(e) {
   try {
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
@@ -71,19 +77,36 @@ function sendWelcomeEmail(toEmail) {
   var unsubscribeLink = WEB_APP_URL + "?action=unsubscribe&email=" + encodeURIComponent(toEmail);
 
   var subject = "🌱 Welcome to the YES Community!";
-  var htmlBody = "Hi there,<br><br>" +
-                 "We're thrilled to have you join the Youth Environment Society (YES) community! 🌱<br><br>" +
-                 "You're now on the list to be the first to hear about our environmental projects, upcoming events, and the steps we're taking toward a greener future.<br><br>" +
-                 "There's so much we can achieve together for a more sustainable world. You can always reach out to us by replying to this email or visiting our Instagram.<br><br>" +
-                 "Stay green,<br>" +
-                 "The YES Community Team<br><br>" +
-                 "<hr><br>" +
-                 "<small style='color: #666;'>If you wish to stop receiving these emails, you can <a href='" + unsubscribeLink + "'>unsubscribe here</a>.</small>";
+  
+  // Use image if data is provided, otherwise fallback to text
+  var bodyContent = "";
+  var inlineImages = {};
+  
+  if (WELCOME_IMAGE_DATA && WELCOME_IMAGE_DATA.indexOf('base64,') > -1) {
+    var cid = "welcome_poster";
+    var base64Data = WELCOME_IMAGE_DATA.split(',')[1];
+    var mimeType = WELCOME_IMAGE_DATA.split(',')[0].split(':')[1].split(';')[0];
+    var blob = Utilities.newBlob(Utilities.base64Decode(base64Data), mimeType, "welcome-poster");
+    
+    inlineImages[cid] = blob;
+    bodyContent = '<div style="text-align:center;"><img src="cid:' + cid + '" style="width:100%; max-width:600px; border-radius:12px;"></div>';
+  } else {
+    bodyContent = "Hi there,<br><br>" +
+                  "We're thrilled to have you join the Youth Environment Society (YES) community! 🌱<br><br>" +
+                  "You're now on the list to be the first to hear about our environmental projects, upcoming events, and the steps we're taking toward a greener future.<br><br>" +
+                  "Stay green,<br>" +
+                  "The YES Community Team";
+  }
+
+  var htmlBody = bodyContent + 
+                 "<br><br><hr><br>" +
+                 "<div style='text-align:center;'><small style='color: #666;'>If you wish to stop receiving these emails, you can <a href='" + unsubscribeLink + "'>unsubscribe here</a>.</small></div>";
              
   MailApp.sendEmail({
     to: toEmail,
     subject: subject,
-    htmlBody: htmlBody
+    htmlBody: htmlBody,
+    inlineImages: inlineImages
   });
 }
 
