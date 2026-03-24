@@ -1080,12 +1080,14 @@
       btn.textContent = 'Joining...';
       showMsg(msgEl, '', '');
 
+      var lang = localStorage.getItem('yes_lang') || 'en';
+
       fetch(SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
         cache: 'no-cache',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email })
+        body: JSON.stringify({ email: email, lang: lang })
       })
         .then(function () {
           // Since it's no-cors, we assume success if it doesn't catch.

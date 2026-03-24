@@ -12,7 +12,8 @@ var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwbZvp3GmU1uOiqsLPFBj
 //  2) WELCOME EMAIL IMAGE (Base64)
 //  Paste your image's Base64 string below between the quotes.
 // ──────────────────────────────────────────────────
-var WELCOME_IMAGE_DATA = ''; // Example: 'data:image/png;base64,iVBORw...'
+var WELCOME_IMAGE_DATA_EN = ''; // Current English Poster
+var WELCOME_IMAGE_DATA_AZ = ''; // New Azerbaijani Poster
 
 function doPost(e) {
   try {
@@ -20,16 +21,20 @@ function doPost(e) {
 
     // Add header if empty
     if (sheet.getLastRow() === 0) {
-      sheet.appendRow(["Timestamp", "Email"]);
-      sheet.getRange(1, 1, 1, 2).setFontWeight("bold");
+      sheet.appendRow(["Timestamp", "Email", "Language preference"]);
+      sheet.getRange(1, 1, 1, 3).setFontWeight("bold");
     }
 
     var email = "";
+    var lang = "en"; // default
+
     if (e.parameter && e.parameter.email) {
       email = e.parameter.email.trim();
+      lang = e.parameter.lang ? e.parameter.lang.trim().toLowerCase() : "en";
     } else if (e.postData && e.postData.contents) {
       var body = JSON.parse(e.postData.contents);
       email = body.email ? body.email.trim() : "";
+      lang = body.lang ? body.lang.trim().toLowerCase() : "en";
     }
 
     // Basic email validation
@@ -45,13 +50,13 @@ function doPost(e) {
       }
     }
 
-    // Add new row
-    sheet.appendRow([new Date(), email]);
+    // Add new row: [Timestamp, Email, Lang]
+    sheet.appendRow([new Date(), email, lang.toUpperCase()]);
 
     // NEW: Send Automatic Welcome Email
     if (email) {
       try {
-        sendWelcomeEmail(email);
+        sendWelcomeEmail(email, lang);
       } catch (e) {
         Logger.log('Welcome email error: ' + e.message);
       }
@@ -68,39 +73,58 @@ function doPost(e) {
 /**
  * Sends a welcome email to a new subscriber.
  */
-function sendWelcomeEmail(toEmail) {
+function sendWelcomeEmail(toEmail, lang) {
   if (!toEmail || toEmail.indexOf('@') === -1) {
     Logger.log('Skipping email: Invalid recipient.');
     return;
   }
 
+  lang = (lang || "en").toLowerCase();
   var unsubscribeLink = WEB_APP_URL + "?action=unsubscribe&email=" + encodeURIComponent(toEmail);
 
-  var subject = "🌱 Welcome to the YES Community!";
+  var subjects = {
+    en: "🌱 Welcome to the YES Community!",
+    az: "🌱 YES İcmasına Xoş Gəlmisiniz!"
+  };
+  var subject = subjects[lang] || subjects.en;
   
-  // Use image if data is provided, otherwise fallback to text
+  // Use image matching the language if data is provided, otherwise fallback to text
   var bodyContent = "";
   var inlineImages = {};
   
-  if (WELCOME_IMAGE_DATA && WELCOME_IMAGE_DATA.indexOf('base64,') > -1) {
+  var activeImageData = (lang === 'az') ? WELCOME_IMAGE_DATA_AZ : WELCOME_IMAGE_DATA_EN;
+  
+  if (activeImageData && activeImageData.indexOf('base64,') > -1) {
     var cid = "welcome_poster";
-    var base64Data = WELCOME_IMAGE_DATA.split(',')[1];
-    var mimeType = WELCOME_IMAGE_DATA.split(',')[0].split(':')[1].split(';')[0];
+    var base64Data = activeImageData.split(',')[1];
+    var mimeType = activeImageData.split(',')[0].split(':')[1].split(';')[0];
     var blob = Utilities.newBlob(Utilities.base64Decode(base64Data), mimeType, "welcome-poster");
     
     inlineImages[cid] = blob;
     bodyContent = '<div style="text-align:center;"><img src="cid:' + cid + '" style="width:100%; max-width:600px; border-radius:12px;"></div>';
   } else {
-    bodyContent = "Hi there,<br><br>" +
-                  "We're thrilled to have you join the Youth Environment Society (YES) community! 🌱<br><br>" +
-                  "You're now on the list to be the first to hear about our environmental projects, upcoming events, and the steps we're taking toward a greener future.<br><br>" +
-                  "Stay green,<br>" +
-                  "The YES Community Team";
+    if (lang === 'az') {
+      bodyContent = "Salam,<br><br>" +
+                    "YES (Gənclərin Ekoloji Cəmiyyəti) icmasına qoşulduğunuz üçün şadıq! 🌱<br><br>" +
+                    "Siz artıq ekoloji layihələrimiz, qarşıdan gələn tədbirlər və daha yaşıl gələcək üçün atdığımız addımlar barədə ilk məlumat alanlar siyahısındasınız.<br><br>" +
+                    "Yaşıl qalın,<br>" +
+                    "YES İcması Komandası";
+    } else {
+      bodyContent = "Hi there,<br><br>" +
+                    "We're thrilled to have you join the Youth Environment Society (YES) community! 🌱<br><br>" +
+                    "You're now on the list to be the first to hear about our environmental projects, upcoming events, and the steps we're taking toward a greener future.<br><br>" +
+                    "Stay green,<br>" +
+                    "The YES Community Team";
+    }
   }
+
+  var azUnsubscribe = "Abunəlikdən çıxmaq istəyirsinizsə, <a href='" + unsubscribeLink + "'>buradan</a> çıxa bilərsiniz.";
+  var enUnsubscribe = "If you wish to stop receiving these emails, you can <a href='" + unsubscribeLink + "'>unsubscribe here</a>.";
+  var activeUnsubscribe = (lang === 'az') ? azUnsubscribe : enUnsubscribe;
 
   var htmlBody = bodyContent + 
                  "<br><br><hr><br>" +
-                 "<div style='text-align:center;'><small style='color: #666;'>If you wish to stop receiving these emails, you can <a href='" + unsubscribeLink + "'>unsubscribe here</a>.</small></div>";
+                 "<div style='text-align:center;'><small style='color: #666;'>" + activeUnsubscribe + "</small></div>";
              
   MailApp.sendEmail({
     to: toEmail,
