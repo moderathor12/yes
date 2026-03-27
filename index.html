@@ -8,6 +8,11 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap"
     rel="stylesheet">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+  <link rel="manifest" href="favicon/site.webmanifest">
+  <link rel="shortcut icon" href="favicon/favicon.ico">
   <style>
     :root {
       --green: #2d6a4f;
@@ -55,12 +60,19 @@
     .logo {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.8rem;
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 800;
       font-size: 1.4rem;
       color: var(--green);
       text-decoration: none;
+    }
+
+    .logo img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      border-radius: 8px;
     }
 
     .logo-badge {
@@ -916,7 +928,7 @@
   <!-- NAV -->
   <nav>
     <a class="logo" href="#">
-      <span class="logo-badge">YES</span>
+      <img src="favicon/apple-touch-icon.png" alt="YES Logo">
       <span data-i18n="logo_text">Youth Environment Society</span>
     </a>
     <div class="nav-right">
