@@ -15,6 +15,11 @@ var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw3ZZ1e51wS_832v9mZxy
 var WELCOME_IMAGE_DATA_EN = ''; // Current English Poster
 var WELCOME_IMAGE_DATA_AZ = ''; // New Azerbaijani Poster
 
+// ──────────────────────────────────────────────────
+//  3) ADMIN SETTINGS
+// ──────────────────────────────────────────────────
+var ADMIN_PASSWORD = 'YES_ADMIN_2026'; // Change this to your desired password
+
 function doPost(e) {
   try {
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
@@ -27,19 +32,42 @@ function doPost(e) {
 
     var email = "";
     var lang = "en"; // default
+    var action = "";
+    var body = {};
 
     if (e.parameter && e.parameter.email) {
       email = e.parameter.email.trim();
       lang = e.parameter.lang ? e.parameter.lang.trim().toLowerCase() : "en";
+      action = e.parameter.action ? e.parameter.action.trim() : "";
     } else if (e.postData && e.postData.contents) {
-      var body = JSON.parse(e.postData.contents);
+      body = JSON.parse(e.postData.contents);
       email = body.email ? body.email.trim() : "";
       lang = body.lang ? body.lang.trim().toLowerCase() : "en";
+      action = body.action ? body.action.trim() : "";
     }
 
-    // Basic email validation
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return buildResponse({ result: "error", message: "Invalid email address." });
+    // ──────────────────────────────────────────────────
+    //  Action Handling (Gallery & Admin)
+    // ──────────────────────────────────────────────────
+    if (action === "getEvents") {
+      return buildResponse({ result: "success", data: getEvents() });
+    }
+
+    if (action === "addEvent") {
+      if (body.password !== ADMIN_PASSWORD) return buildResponse({ result: "error", message: "Invalid password" });
+      addEvent(body.event);
+      return buildResponse({ result: "success", message: "Event added!" });
+    }
+
+    if (action === "deleteEvent") {
+      if (body.password !== ADMIN_PASSWORD) return buildResponse({ result: "error", message: "Invalid password" });
+      deleteEvent(body.id);
+      return buildResponse({ result: "success", message: "Event deleted!" });
+    }
+
+    // Default Email Collection Logic
+    if (!email) {
+      return buildResponse({ result: "error", message: "Email is required." });
     }
 
     // Check for duplicates
@@ -132,6 +160,64 @@ function sendWelcomeEmail(toEmail, lang) {
     htmlBody: htmlBody,
     inlineImages: inlineImages
   });
+}
+
+// ──────────────────────────────────────────────────
+//  EVENT MANAGEMENT FUNCTIONS
+// ──────────────────────────────────────────────────
+
+function getEventsSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName("Events");
+  if (!sheet) {
+    sheet = ss.insertSheet("Events");
+    sheet.appendRow(["ID", "Title EN", "Title AZ", "Desc EN", "Desc AZ", "ImageBase64", "Timestamp"]);
+    sheet.getRange(1, 1, 1, 7).setFontWeight("bold");
+  }
+  return sheet;
+}
+
+function getEvents() {
+  var sheet = getEventsSheet();
+  var data = sheet.getDataRange().getValues();
+  var events = [];
+  for (var i = 1; i < data.length; i++) {
+    events.push({
+      id: data[i][0],
+      title_en: data[i][1],
+      title_az: data[i][2],
+      desc_en: data[i][3],
+      desc_az: data[i][4],
+      image: data[i][5],
+      timestamp: data[i][6]
+    });
+  }
+  return events.reverse(); // Newest first
+}
+
+function addEvent(event) {
+  var sheet = getEventsSheet();
+  var id = "ev_" + new Date().getTime();
+  sheet.appendRow([
+    id,
+    event.title_en,
+    event.title_az,
+    event.desc_en,
+    event.desc_az,
+    event.image,
+    new Date()
+  ]);
+}
+
+function deleteEvent(id) {
+  var sheet = getEventsSheet();
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0] === id) {
+      sheet.deleteRow(i + 1);
+      break;
+    }
+  }
 }
 
 /**
