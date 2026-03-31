@@ -6,7 +6,7 @@
 // ──────────────────────────────────────────────────
 //  1) UPDATE THIS URL after your first deployment!
 // ──────────────────────────────────────────────────
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw3ZZ1e51wS_832v9mZxy4E54E3j3vt6Bxzs5aVn6h7U_tTuooIOCsTAGraZ-PsLxEDcg/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxNkJaQ5qM1SisbQiQi1bFzknqYYk5h194lYd9assnFVkp8EJ-knMxhdjpJaqF3l-uNSQ/exec';
 
 // ──────────────────────────────────────────────────
 //  2) WELCOME EMAIL IMAGE (Base64)
