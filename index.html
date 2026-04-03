@@ -13,6 +13,21 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
   <link rel="manifest" href="favicon/site.webmanifest">
   <link rel="shortcut icon" href="favicon/favicon.ico">
+  
+  <!-- Open Graph / Social Media Previews (Base Tags) -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://youthensoc.org/">
+  <meta property="og:title" content="Youth Environment Society — YES">
+  <meta property="og:description" content="Empowering the next generation of environmental advocates for a sustainable future.">
+  <meta property="og:image" content="https://youthensoc.org/plant%20image.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://youthensoc.org/">
+  <meta property="twitter:title" content="Youth Environment Society — YES">
+  <meta property="twitter:description" content="Empowering the next generation of environmental advocates.">
+  <meta property="twitter:image" content="https://youthensoc.org/plant%20image.png">
+
   <style>
     :root {
       --green: #2d6a4f;
@@ -1105,7 +1120,7 @@
     //  1) Google Apps Script'i deploy ettikten sonra
     //     aşağıdaki URL'i kendi Web App URL'inle değiştir.
     // ──────────────────────────────────────────────────
-    var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNkJaQ5qM1SisbQiQi1bFzknqYYk5h194lYd9assnFVkp8EJ-knMxhdjpJaqF3l-uNSQ/exec';
+    var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxDr2GgqNJEoT1AolkeACeO0lic7uWjDbLFeDuzThvzQ7EaQkQCHi4uWfBny4_IA0x02g/exec';
 
     function submitEmail(e) {
       e.preventDefault();
@@ -1218,7 +1233,9 @@
         gallery_title: "YES",
         footer_logo: "Follow Us",
         footer_p: "© 2026 Youth Environment Society. Empowering youth for a sustainable future.",
-        logo_text: "Youth Environment Society"
+        logo_text: "Youth Environment Society",
+        btn_share_link: "Share Link",
+        link_copied: "Link copied to clipboard! 🌱"
       },
       az: {
         nav_about: "Biz Kimik",
@@ -1260,7 +1277,9 @@
         gallery_title: "YES",
         footer_logo: "Sosial şəbəkələrimiz",
         footer_p: "© 2026 Youth Environment Society. Davamlı gələcək üçün gənclərin gücləndirilməsi.",
-        logo_text: "Gənclərin Ekoloji Cəmiyyəti"
+        logo_text: "Gənclərin Ekoloji Cəmiyyəti",
+        btn_share_link: "Linki Paylaş",
+        link_copied: "Link kopyalandı! 🌱"
       }
     };
 
@@ -1451,6 +1470,11 @@
         <div class="modal-details">
           <h2 id="modal-title">Event Title</h2>
           <p id="modal-desc">Event Description goes here.</p>
+          <div style="margin-top: 2rem;">
+            <button id="modal-share-btn" class="btn-primary" style="font-size: 0.85rem; padding: 0.6rem 1.2rem;" onclick="copyShareLink()">
+              🔗 <span data-i18n="btn_share_link">Share Article</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1486,6 +1510,9 @@
       document.getElementById('modal-title').innerText = lang === 'az' ? ev.title_az : ev.title_en;
       document.getElementById('modal-desc').innerText = lang === 'az' ? ev.desc_az : ev.desc_en;
 
+      // Update URL hash
+      window.location.hash = 'article-' + ev.id;
+
       var modal = document.getElementById('event-modal');
       modal.style.display = 'flex';
       setTimeout(() => modal.classList.add('show'), 10);
@@ -1499,6 +1526,11 @@
         modal.style.display = 'none';
         document.body.style.overflow = ''; // Unlock scroll
       }, 300);
+
+      // Clear Hash
+      if (window.location.hash.indexOf('article-') > -1) {
+        history.replaceState('', document.title, window.location.pathname + window.location.search);
+      }
     }
 
     // Close on click outside
@@ -1535,8 +1567,52 @@
       });
     }
 
+    function handleHash() {
+      const hash = window.location.hash;
+      if (hash && hash.startsWith('#article-')) {
+        const id = hash.replace('#article-', '');
+        const index = allEvents.findIndex(ev => ev.id === id);
+        if (index > -1) {
+          openModal(index);
+        }
+      }
+    }
+
+    function copyShareLink() {
+      const hash = window.location.hash;
+      if (!hash) return;
+      const articleId = hash.replace('#article-', '');
+      
+      // Use the GAS URL for "Perfect Previews" if available, else use current site URL
+      // We will propose sharing the GAS URL which will then redirect here.
+      const shareUrl = SCRIPT_URL + '?id=' + encodeURIComponent(articleId);
+      
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        const btn = document.getElementById('modal-share-btn');
+        const lang = localStorage.getItem('yes_lang') || 'en';
+        const originalText = btn.innerHTML;
+        btn.innerText = translations[lang].link_copied || 'Copied!';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+        }, 2000);
+      });
+    }
+
     // Initialize
-    window.addEventListener('load', fetchEvents);
+    window.addEventListener('load', async () => {
+      await fetchEvents();
+      handleHash();
+    });
+    
+    // Listen for hash changes (e.g. back button)
+    window.addEventListener('hashchange', () => {
+      if (!window.location.hash) {
+        closeModal();
+      } else {
+        handleHash();
+      }
+    });
+
     // Also re-render gallery when language changes
     var originalApplyLanguage = applyLanguage;
     applyLanguage = function(lang) {

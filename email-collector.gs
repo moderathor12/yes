@@ -6,7 +6,7 @@
 // ──────────────────────────────────────────────────
 //  1) UPDATE THIS URL after your first deployment!
 // ──────────────────────────────────────────────────
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxNkJaQ5qM1SisbQiQi1bFzknqYYk5h194lYd9assnFVkp8EJ-knMxhdjpJaqF3l-uNSQ/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxDr2GgqNJEoT1AolkeACeO0lic7uWjDbLFeDuzThvzQ7EaQkQCHi4uWfBny4_IA0x02g/exec';
 
 // ──────────────────────────────────────────────────
 //  2) WELCOME EMAIL IMAGE (Base64)
@@ -226,9 +226,16 @@ function deleteEvent(id) {
 function doGet(e) {
   var action = e.parameter.action;
   var email = e.parameter.email;
+  var articleId = e.parameter.id;
 
-  Logger.log('GET request received. Action: ' + action + ', Email: ' + email);
+  Logger.log('GET request received. Action: ' + action + ', Email: ' + email + ', ID: ' + articleId);
 
+  // 1) Handle Article Sharing Previews
+  if (articleId) {
+    return serveArticlePreview(articleId);
+  }
+
+  // 2) Handle Unsubscribe
   if (action === 'unsubscribe' && email) {
     var result = unsubscribeUser(email);
     var title = result ? "Unsubscribed Successfully" : "Unsubscribe Error";
@@ -256,7 +263,7 @@ function doGet(e) {
       "<div class='icon'>" + icon + "</div>" +
       "<h1>" + heading + "</h1>" +
       "<p>" + subtext + "</p>" +
-      "<a href='https://moderathor12.github.io/yes/' class='btn'>Return to Website</a>" +
+      "<a href='https://youthensoc.org/' class='btn'>Return to Website</a>" +
       "</div></body></html>";
     
     return HtmlService.createHtmlOutput(htmlContent)
@@ -265,6 +272,64 @@ function doGet(e) {
   }
 
   return buildResponse({ result: "ok", message: "YES Email Collector is running." });
+}
+
+/**
+ * Serves an HTML page with Open Graph tags for social media previews.
+ * Then redirects the user to the main website with the article open.
+ */
+function serveArticlePreview(id) {
+  var events = getEvents();
+  var ev = null;
+  for (var i = 0; i < events.length; i++) {
+    if (events[i].id === id) {
+      ev = events[i];
+      break;
+    }
+  }
+  
+  var siteUrl = "https://youthensoc.org/";
+  var title = "Youth Environment Society — YES";
+  var desc = "Empowering the next generation of environmental advocates for a sustainable future.";
+  var image = siteUrl + "plant%20image.png";
+  var redirectUrl = siteUrl + "#article-" + id;
+
+  if (ev) {
+    title = ev.title_en + " — YES";
+    desc = ev.desc_en;
+    if (desc.length > 200) desc = desc.substring(0, 197) + "...";
+    
+    // Use event image if it starts with http (hosted), otherwise fallback to site logo
+    if (ev.image && ev.image.indexOf('http') === 0) {
+      image = ev.image;
+    }
+  }
+
+  // Escape single quotes for HTML attribute and JS string
+  title = title.replace(/'/g, "&#39;");
+  desc = desc.replace(/'/g, "&#39;");
+
+  var html = "<!DOCTYPE html><html><head>" +
+    "<meta charset='UTF-8'>" +
+    "<title>" + title + "</title>" +
+    "<meta property='og:title' content='" + title + "'>" +
+    "<meta property='og:description' content='" + desc + "'>" +
+    "<meta property='og:image' content='" + image + "'>" +
+    "<meta property='og:url' content='" + redirectUrl + "'>" +
+    "<meta property='og:type' content='article'>" +
+    "<meta name='twitter:card' content='summary_large_image'>" +
+    "<meta http-equiv='refresh' content='1; url=" + redirectUrl + "'>" +
+    "<style>body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f0f4f0; color: #1a2e1a; text-align: center; } .loader { border: 4px solid #f3f3f3; border-top: 4px solid #2d6a4f; border-radius: 50%; width: 30px; height: 30px; animation: spin 2s linear infinite; margin: 0 auto 20px; } @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>" +
+    "</head><body>" +
+    "<div><div class='loader'></div>" +
+    "<h3>" + title + "</h3>" +
+    "<p>Redirecting to Youth Environment Society...<br><br><a href='" + redirectUrl + "'>Click here if you are not redirected</a></p></div>" +
+    "<script>setTimeout(function(){ window.location.href='" + redirectUrl + "'; }, 500);</script>" +
+    "</body></html>";
+
+  return HtmlService.createHtmlOutput(html)
+    .setTitle(title)
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 /**
