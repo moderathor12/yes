@@ -1613,7 +1613,7 @@
         event.stopPropagation();
         event.preventDefault();
       }
-      const shareUrl = SCRIPT_URL + '?id=' + encodeURIComponent(id);
+      const shareUrl = window.location.origin + window.location.pathname + '#article-' + id;
       navigator.clipboard.writeText(shareUrl).then(() => {
         showPopup(translations[localStorage.getItem('yes_lang') || 'en'].link_copied || 'Link copied!');
       });
@@ -1623,7 +1623,8 @@
       const hash = window.location.hash;
       if (hash && hash.startsWith('#article-')) {
         const id = hash.replace('#article-', '');
-        const index = allEvents.findIndex(ev => ev.id === id);
+        // Use loose equality or String comparison to match numbers/strings
+        const index = allEvents.findIndex(ev => String(ev.id) === id);
         if (index > -1) {
           openModal(index);
         }
@@ -1633,11 +1634,9 @@
     function copyShareLink() {
       const hash = window.location.hash;
       if (!hash) return;
-      const articleId = hash.replace('#article-', '');
       
-      // Use the GAS URL for "Perfect Previews" if available, else use current site URL
-      // We will propose sharing the GAS URL which will then redirect here.
-      const shareUrl = SCRIPT_URL + '?id=' + encodeURIComponent(articleId);
+      // Default to the clean site URL (No article-specific preview)
+      const shareUrl = window.location.origin + window.location.pathname + hash;
       
       navigator.clipboard.writeText(shareUrl).then(() => {
         const btn = document.getElementById('modal-share-btn');
