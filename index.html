@@ -1154,7 +1154,7 @@
     //  1) Google Apps Script'i deploy ettikten sonra
     //     aşağıdaki URL'i kendi Web App URL'inle değiştir.
     // ──────────────────────────────────────────────────
-    var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxDr2GgqNJEoT1AolkeACeO0lic7uWjDbLFeDuzThvzQ7EaQkQCHi4uWfBny4_IA0x02g/exec';
+    var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBsjdx0bgUKSiF6Qk_KSc7vRihrib7ENGnDh5xxurPKGzJJ9mUoaVa7L9V3K1cSLNfEQ/exec';
 
     function submitEmail(e) {
       e.preventDefault();
@@ -1162,40 +1162,15 @@
       var input = document.getElementById('email-input');
       var email = input.value.trim();
       var msgEl = document.getElementById('form-msg');
-      var btn = document.getElementById('signup-btn');
 
-      // 1) Enforce @gmail.com only
       if (!email.toLowerCase().endsWith('@gmail.com')) {
         showMsg(msgEl, '⚠️ Only @gmail.com addresses are accepted.', 'error');
         return;
       }
 
-      btn.disabled = true;
-      btn.textContent = 'Joining...';
       showMsg(msgEl, '', '');
-
-      var lang = localStorage.getItem('yes_lang') || 'en';
-
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        cache: 'no-cache',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, lang: lang })
-      })
-        .then(function () {
-          // Since it's no-cors, we assume success if it doesn't catch.
-          showPopup('🌱 Successfully added to our community!');
-          input.value = '';
-          showMsg(msgEl, '', '');
-        })
-        .catch(function () {
-          showMsg(msgEl, '⚠️ Connection issue. But we might have received it!', 'error');
-        })
-        .finally(function () {
-          btn.disabled = false;
-          btn.textContent = 'Sign Me Up 🌱';
-        });
+      window.pendingJoinEmail = email;
+      openSurvey();
     }
 
     function showMsg(el, text, type) {
@@ -1349,6 +1324,75 @@
   </script>
 
   <style>
+    /* Survey Modal Styling */
+    .survey-modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);
+      z-index: 10000; display: none; align-items: center; justify-content: center;
+      padding: 20px; opacity: 0; transition: opacity 0.3s ease;
+      overflow-y: auto;
+    }
+    .survey-modal.show { display: flex; opacity: 1; }
+    .survey-card {
+      background: white; width: 100%; max-width: 560px;
+      border-radius: 20px; padding: 32px 28px; position: relative;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2); margin: auto;
+      transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .survey-modal.show .survey-card { transform: scale(1); }
+    .survey-close {
+      position: absolute; top: 16px; right: 16px; width: 36px; height: 36px;
+      background: rgba(0,0,0,0.05); color: var(--dark); border: none; border-radius: 50%;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    }
+    .survey-close:hover { background: rgba(0,0,0,0.1); transform: rotate(90deg); }
+    .survey-header { text-align: center; margin-bottom: 24px; }
+    .survey-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; color: var(--dark); margin-bottom: 8px; }
+    .survey-header h2 em { color: var(--green); font-style: normal; }
+    .survey-header p { font-size: 0.9rem; opacity: 0.7; }
+    .survey-prog { display: flex; gap: 6px; margin-bottom: 20px; justify-content: center; }
+    .survey-step-dot { height: 4px; flex: 1; max-width: 60px; background: rgba(0,0,0,0.1); border-radius: 4px; transition: 0.4s; }
+    .survey-step-dot.active { background: var(--green); }
+    .survey-step-dot.done { background: var(--lime); }
+    .surv-step { display: none; animation: stepIn 0.3s ease both; text-align: left;}
+    .surv-step.active { display: block; }
+    @keyframes stepIn { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: translateX(0); } }
+    .surv-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; margin-bottom: 16px; color: var(--dark); font-weight:700;}
+    .surv-field { margin-bottom: 16px; }
+    .surv-field label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
+    .surv-field label .req { color: var(--green); }
+    .surv-field input[type="text"], .surv-field select {
+      width: 100%; padding: 10px 14px; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 10px;
+      font-family: inherit; font-size: 0.9rem; background: var(--bg); outline: none; transition: 0.2s;
+    }
+    .surv-field input[type="text"]:focus, .surv-field select:focus { border-color: var(--green); background: white; box-shadow: 0 0 0 3px rgba(45,106,79,0.1); }
+    .surv-field.has-error input[type="text"], .surv-field.has-error select { border-color: #e07a5f; }
+    .surv-err { font-size: 0.75rem; color: #e07a5f; margin-top: 4px; display: none; }
+    .surv-field.has-error .surv-err { display: block; }
+    .surv-hint { font-size: 0.75rem; color: rgba(0,0,0,0.5); margin-top: 4px; }
+    .surv-radio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .surv-radio-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+    @media (max-width: 480px) { .surv-radio-grid.three { grid-template-columns: 1fr 1fr; } }
+    .surv-radio { position: relative; cursor: pointer; }
+    .surv-radio input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .surv-radio .lbl { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 6px; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 12px; font-size: 0.8rem; font-weight: 500; background: var(--bg); transition: 0.2s; text-align: center; }
+    .surv-radio .icon { font-size: 1.4rem; }
+    .surv-radio input:checked + .lbl { border-color: var(--green); background: rgba(45,106,79,0.1); color: var(--green); box-shadow: 0 0 0 3px rgba(45,106,79,0.1); }
+    .surv-radio:hover .lbl { border-color: var(--lime); background: white; }
+    .surv-cond { display: none; margin-top: 16px; }
+    .surv-cond.show { display: block; animation: stepIn 0.3s ease both; }
+    .surv-actions { display: flex; gap: 10px; margin-top: 24px; }
+    .surv-btn-back { background: none; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 10px; padding: 10px 16px; font-size: 0.85rem; color: var(--dark); cursor: pointer; display: none; font-weight:600; font-family:inherit;}
+    .surv-btn-back:hover { border-color: var(--dark); }
+    .surv-btn-next { flex: 1; background: var(--green); color: white; border: none; border-radius: 10px; padding: 12px 20px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family:inherit; display: flex; align-items: center; justify-content: center; gap:8px;}
+    .surv-btn-next:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(45,106,79,0.3); }
+    .surv-btn-next:disabled { opacity: 0.7; cursor: not-allowed; }
+    .surv-success { display: none; text-align: center; padding: 16px 0; }
+    .surv-success.show { display: block; animation: stepIn 0.3s ease; }
+    .surv-success-icon { font-size: 3rem; margin-bottom: 10px; }
+    .surv-success h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; color: var(--green); margin-bottom: 10px; }
+    .surv-divider { height: 1px; background: rgba(0,0,0,0.1); margin: 20px 0; }
+
     /* Toast Popup Styling */
     .toast-popup {
       position: fixed;
@@ -1674,7 +1718,369 @@
       renderGallery();
     };
   </script>
+  <!-- SURVEY MODAL -->
+  <div id="survey-modal" class="survey-modal">
+    <div class="survey-card">
+      <button class="survey-close" onclick="closeSurvey()">✕</button>
+      
+      <div class="survey-header">
+        <h2>İcmamıza <em>qoşul</em></h2>
+        <p>Gənc ekoloji lider kimi bizimlə addımla.<br>Sadəcə bir neçə sual — 1 dəqiqə çəkir.</p>
+      </div>
 
+      <div class="survey-prog">
+        <div class="survey-step-dot active" id="sp-1"></div>
+        <div class="survey-step-dot" id="sp-2"></div>
+        <div class="survey-step-dot" id="sp-3"></div>
+      </div>
+
+      <!-- Step 1: Contact & Location -->
+      <div class="surv-step active" id="sstep-1">
+        <div class="surv-title">Sizi yaxından tanıyaq</div>
+        <div class="surv-field" id="f-sname">
+          <label>Ad Soyad <span class="req">*</span></label>
+          <input type="text" id="s-name" placeholder="Əli Hüseynov">
+          <div class="surv-err">Bu sahəni doldurun</div>
+        </div>
+        
+        <div class="surv-field" id="f-scity">
+          <label>Şəhər / Rayon <span class="req">*</span></label>
+          <select id="s-city" onchange="sOnCity()">
+            <option value="">— Seçin —</option>
+            <optgroup label="Böyük şəhərlər">
+              <option>Bakı</option><option>Gəncə</option><option>Sumqayıt</option>
+              <option>Mingəçevir</option><option>Lənkəran</option><option>Naxçıvan</option>
+            </optgroup>
+            <option value="diger">Digər rayon və ya kənd</option>
+          </select>
+          <div class="surv-err">Şəhər/rayon seçin</div>
+        </div>
+
+        <div class="surv-cond" id="s-city-other-block">
+          <div class="surv-field" id="f-scity-other">
+            <label>Şəhər/Rayon adını yazın <span class="req">*</span></label>
+            <input type="text" id="s-city-other" placeholder="Məsələn: Xankəndi">
+            <div class="surv-err">Bu sahəni doldurun</div>
+          </div>
+        </div>
+
+        <div class="surv-cond" id="s-district-block" style="display:none; margin-top:0;">
+          <div class="surv-field" id="f-sdistrict">
+            <label>Bakı daxilindəki rayon</label>
+            <select id="s-district">
+              <option value="">— Seçin (ixtiyari) —</option>
+              <option>Binəqədi</option><option>Xətai</option><option>Xəzər</option>
+              <option>Nərimanov</option><option>Nəsimi</option><option>Nizami</option>
+              <option>Pirallahı</option><option>Qaradağ</option><option>Sabunçu</option>
+              <option>Səbail</option><option>Suraxanı</option><option>Abşeron</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="surv-actions">
+          <button class="surv-btn-next" onclick="sNext(1)">Davam et ➔</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Education -->
+      <div class="surv-step" id="sstep-2">
+        <div class="surv-title">Təhsil məlumatları</div>
+        <div class="surv-field" id="f-sedu-type">
+          <label>Siz kimsiniz? <span class="req">*</span></label>
+          <div class="surv-radio-grid three">
+            <label class="surv-radio">
+              <input type="radio" name="s_edu_type" value="school" onchange="sOnEduType()">
+              <div class="lbl"><span class="icon">🏫</span>Məktəb</div>
+            </label>
+            <label class="surv-radio">
+              <input type="radio" name="s_edu_type" value="university" onchange="sOnEduType()">
+              <div class="lbl"><span class="icon">🎓</span>Tələbə</div>
+            </label>
+            <label class="surv-radio">
+              <input type="radio" name="s_edu_type" value="other" onchange="sOnEduType()">
+              <div class="lbl"><span class="icon">💼</span>Digər</div>
+            </label>
+          </div>
+          <div class="surv-err" id="s-edu-type-err" style="margin-top:8px;">Bir seçim edin</div>
+        </div>
+
+        <div class="surv-cond" id="s-school-block">
+          <div class="surv-divider"></div>
+          <div class="surv-field" id="f-sschool-name">
+            <label>Məktəbin adı / nömrəsi <span class="req">*</span></label>
+            <input type="text" id="s-school-name" placeholder="Məs: 18 nömrəli tam orta məktəb">
+            <div class="surv-err">Məktəb adını daxil edin</div>
+          </div>
+          <div class="surv-field">
+            <label>Sinif</label>
+            <select id="s-school-grade">
+              <option value="">— Seçin —</option>
+              <option>5-ci sinif</option><option>6-cı sinif</option><option>7-ci sinif</option>
+              <option>8-ci sinif</option><option>9-cu sinif</option><option>10-cu sinif</option><option>11-ci sinif</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="surv-cond" id="s-uni-block">
+          <div class="surv-divider"></div>
+          <div class="surv-field" id="f-suni-name">
+            <label>Universitetinizin adı <span class="req">*</span></label>
+            <select id="s-uni-name" onchange="sOnUniChange()">
+              <option value="">— Seçin —</option>
+              <option>BDU</option><option>ADU</option><option>ADPU</option><option>ATU</option>
+              <option>AzTU</option><option>BHOS</option><option>ADA University</option>
+              <option>Xəzər Universiteti</option><option>UNEC</option><option>Tibb Universiteti</option>
+              <option>Naxçıvan Dövlət Universiteti</option><option>Gəncə Dövlət Universiteti</option><option>Sumqayıt Dövlət Universiteti</option>
+              <option value="other">Digər</option>
+            </select>
+            <div class="surv-err">Universitet seçin</div>
+          </div>
+          <div class="surv-field" id="f-suni-other-wrap" style="display:none;">
+            <label>Universitetin adı</label>
+            <input type="text" id="s-uni-other" placeholder="Universitetin adını yazın">
+          </div>
+          <div class="surv-field">
+            <label>İxtisas / Fakültə</label>
+            <input type="text" id="s-uni-major" placeholder="Məs: Ekoloji mühəndislik">
+          </div>
+          <div class="surv-field">
+            <label>Kurs</label>
+            <select id="s-uni-year">
+              <option value="">— Seçin —</option>
+              <option>1-ci kurs</option><option>2-ci kurs</option><option>3-cü kurs</option><option>4-cü kurs</option><option>Magistr</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="surv-cond" id="s-other-edu-block">
+          <div class="surv-divider"></div>
+          <div class="surv-field">
+            <label>Fəaliyyət sahəniz</label>
+            <input type="text" id="s-other-activity" placeholder="Məs: İşləyirəm, məzunam...">
+          </div>
+        </div>
+
+        <div class="surv-actions">
+          <button class="surv-btn-back" style="display:block" onclick="sBack(2)">← Geri</button>
+          <button class="surv-btn-next" onclick="sNext(2)">Davam et ➔</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Interest -->
+      <div class="surv-step" id="sstep-3">
+        <div class="surv-title">Maraqlarınız</div>
+
+        <div class="surv-field">
+          <label>YES-də hansı sahələr sizi maraqlandırır?</label>
+          <div class="surv-radio-grid">
+            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Ecology"><div class="lbl"><span class="icon">🌿</span>Ekologiya</div></label>
+            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Climate"><div class="lbl"><span class="icon">🌡️</span>İqlim dəyişikliyi</div></label>
+            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Volunteer"><div class="lbl"><span class="icon">🤝</span>Könüllülük</div></label>
+            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Events"><div class="lbl"><span class="icon">📅</span>Tədbirlər</div></label>
+            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Education"><div class="lbl"><span class="icon">📚</span>Ekoloji təhsil</div></label>
+            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Media"><div class="lbl"><span class="icon">📸</span>Media / SMM</div></label>
+          </div>
+        </div>
+
+        <div class="surv-field">
+          <label>Bizimlə necə tanış oldunuz?</label>
+          <select id="s-source">
+            <option value="">— Seçin —</option>
+            <option>Instagram</option><option>Dostumun tövsiyəsi</option><option>Məktəb/Universitet</option><option>Tədbirdə</option><option>Digər</option>
+          </select>
+        </div>
+
+        <div class="surv-field">
+          <label>Qeyd / İstək (ixtiyari)</label>
+          <input type="text" id="s-note" placeholder="Sizi maraqlandıran nəsə varsa...">
+        </div>
+
+        <div class="surv-actions">
+          <button class="surv-btn-back" style="display:block" onclick="sBack(3)">← Geri</button>
+          <button class="surv-btn-next" id="s-submit-btn" onclick="submitSurvey()">Qoşul! 🌱</button>
+        </div>
+      </div>
+
+      <!-- Success -->
+      <div class="surv-success" id="s-success">
+        <div class="surv-success-icon">🌿</div>
+        <h2>Xoş gəldiniz!</h2>
+        <p style="opacity:0.8; font-size:0.95rem;">Müraciətiniz alındı. Tezliklə YES komandası ilə əlaqə saxlayacağıq!</p>
+        <button class="surv-btn-next" style="margin-top:20px; width:100%" onclick="closeSurvey()">Bağla</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let sStep = 1;
+    const sTotal = 3;
+
+    function openSurvey() {
+      const mod = document.getElementById('survey-modal');
+      mod.style.display = 'flex';
+      setTimeout(() => mod.classList.add('show'), 10);
+      document.body.style.overflow = 'hidden';
+      document.getElementById('s-success').classList.remove('show');
+      document.getElementById('sstep-1').classList.add('active');
+      document.getElementById('sstep-2').classList.remove('active');
+      document.getElementById('sstep-3').classList.remove('active');
+      document.querySelector('.survey-prog').style.display = 'flex';
+      document.querySelector('.survey-header').style.display = 'block';
+      sStep = 1;
+      updateSProg(1);
+      document.querySelectorAll('.surv-field').forEach(f => f.classList.remove('has-error'));
+    }
+
+    function closeSurvey() {
+      const mod = document.getElementById('survey-modal');
+      mod.classList.remove('show');
+      setTimeout(() => { mod.style.display = 'none'; document.body.style.overflow = ''; }, 300);
+      document.getElementById('email-input').value = '';
+    }
+
+    function updateSProg(step) {
+      for (let i = 1; i <= sTotal; i++) {
+        const el = document.getElementById('sp-' + i);
+        if(!el) continue;
+        if (i < step) { el.className = 'survey-step-dot done'; }
+        else if (i === step) { el.className = 'survey-step-dot active'; }
+        else { el.className = 'survey-step-dot'; }
+      }
+    }
+
+    function sSetErr(id) {
+      const el = document.getElementById('f-' + id);
+      if(el) el.classList.add('has-error');
+    }
+    function sClrErr(id) {
+      const el = document.getElementById('f-' + id);
+      if(el) el.classList.remove('has-error');
+    }
+
+    function sNext(step) {
+      let ok = true;
+      if (step === 1) {
+        sClrErr('sname'); sClrErr('scity'); sClrErr('scity-other');
+        const vName = document.getElementById('s-name').value.trim();
+        const vCity = document.getElementById('s-city').value;
+        if (!vName) { sSetErr('sname'); ok = false; }
+        if (!vCity) { sSetErr('scity'); ok = false; }
+        else if (vCity === 'diger') {
+          if (!document.getElementById('s-city-other').value.trim()) { sSetErr('scity-other'); ok = false; }
+        }
+      }
+      if (step === 2) {
+        const edu = document.querySelector('input[name="s_edu_type"]:checked');
+        const errEl = document.getElementById('s-edu-type-err');
+        if(errEl) errEl.style.display = 'none';
+        if (!edu) { if(errEl) errEl.style.display = 'block'; ok = false; }
+        else {
+          if (edu.value === 'school') {
+            sClrErr('sschool-name');
+            if (!document.getElementById('s-school-name').value.trim()) { sSetErr('sschool-name'); ok = false; }
+          }
+          if (edu.value === 'university') {
+            sClrErr('suni-name');
+            if (!document.getElementById('s-uni-name').value) { sSetErr('suni-name'); ok = false; }
+          }
+        }
+      }
+      if (!ok) return;
+      document.getElementById('sstep-' + step).classList.remove('active');
+      document.getElementById('sstep-' + (step + 1)).classList.add('active');
+      sStep = step + 1;
+      updateSProg(sStep);
+    }
+
+    function sBack(step) {
+      document.getElementById('sstep-' + step).classList.remove('active');
+      document.getElementById('sstep-' + (step - 1)).classList.add('active');
+      sStep = step - 1;
+      updateSProg(sStep);
+    }
+
+    function sOnCity() {
+      const city = document.getElementById('s-city').value;
+      if (city === 'diger') {
+        document.getElementById('s-city-other-block').classList.add('show');
+      } else {
+        document.getElementById('s-city-other-block').classList.remove('show');
+      }
+      if (city === 'Bakı') {
+        document.getElementById('s-district-block').style.display = 'block';
+      } else {
+        document.getElementById('s-district-block').style.display = 'none';
+      }
+    }
+
+    function sOnEduType() {
+      const val = document.querySelector('input[name="s_edu_type"]:checked')?.value;
+      document.getElementById('s-school-block').classList.toggle('show', val === 'school');
+      document.getElementById('s-uni-block').classList.toggle('show', val === 'university');
+      document.getElementById('s-other-edu-block').classList.toggle('show', val === 'other');
+      const errEl = document.getElementById('s-edu-type-err');
+      if(errEl) errEl.style.display = 'none';
+    }
+
+    function sOnUniChange() {
+      const val = document.getElementById('s-uni-name').value;
+      document.getElementById('f-suni-other-wrap').style.display = val === 'other' ? 'block' : 'none';
+    }
+
+    function submitSurvey() {
+      const btn = document.getElementById('s-submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Göndərilir...';
+
+      let cityVal = document.getElementById('s-city').value;
+      if(cityVal === 'diger') cityVal = document.getElementById('s-city-other').value.trim();
+      let uniVal = document.getElementById('s-uni-name').value;
+      if(uniVal === 'other') uniVal = document.getElementById('s-uni-other').value.trim();
+
+      const interests = [...document.querySelectorAll('input[name="s_interest"]:checked')].map(c=>c.value).join(', ');
+
+      const data = {
+        action: 'join',
+        email: window.pendingJoinEmail || '',
+        lang: localStorage.getItem('yes_lang') || 'en',
+        name: document.getElementById('s-name').value.trim(),
+        city: cityVal,
+        district: document.getElementById('s-district').value,
+        edu_type: document.querySelector('input[name="s_edu_type"]:checked')?.value || '',
+        school_name: document.getElementById('s-school-name').value.trim(),
+        school_grade: document.getElementById('s-school-grade').value,
+        uni_name: uniVal,
+        uni_major: document.getElementById('s-uni-major').value.trim(),
+        uni_year: document.getElementById('s-uni-year').value,
+        other_activity: document.getElementById('s-other-activity').value.trim(),
+        interests: interests,
+        source: document.getElementById('s-source').value,
+        note: document.getElementById('s-note').value.trim()
+      };
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        cache: 'no-cache',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(() => {
+        document.querySelectorAll('.surv-step').forEach(s => s.classList.remove('active'));
+        document.querySelector('.survey-prog').style.display = 'none';
+        document.querySelector('.survey-header').style.display = 'none';
+        document.getElementById('s-success').classList.add('show');
+      })
+      .catch((err) => {
+        alert('Təəssüf ki, qeydiyyat zamanı xəta baş verdi. Xahiş edirik yenidən cəhd edin.');
+      })
+      .finally(() => {
+        btn.disabled = false;
+        btn.textContent = 'Qoşul! 🌱';
+      });
+    }
+  </script>
 </body>
 
 </html>

@@ -6,7 +6,7 @@
 // ──────────────────────────────────────────────────
 //  1) UPDATE THIS URL after your first deployment!
 // ──────────────────────────────────────────────────
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxDr2GgqNJEoT1AolkeACeO0lic7uWjDbLFeDuzThvzQ7EaQkQCHi4uWfBny4_IA0x02g/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyBsjdx0bgUKSiF6Qk_KSc7vRihrib7ENGnDh5xxurPKGzJJ9mUoaVa7L9V3K1cSLNfEQ/exec';
 
 // ──────────────────────────────────────────────────
 //  2) WELCOME EMAIL IMAGE (Base64)
@@ -26,8 +26,13 @@ function doPost(e) {
 
     // Add header if empty
     if (sheet.getLastRow() === 0) {
-      sheet.appendRow(["Timestamp", "Email", "Language preference"]);
-      sheet.getRange(1, 1, 1, 3).setFontWeight("bold");
+      sheet.appendRow([
+        "Timestamp", "Email", "Language preference",
+        "Name", "City", "District", "Edu Type", "School Name", "School Grade",
+        "Uni Name", "Uni Major", "Uni Year", "Other Activity",
+        "Interests", "Source", "Note"
+      ]);
+      sheet.getRange(1, 1, 1, 16).setFontWeight("bold");
     }
 
     var email = "";
@@ -78,8 +83,25 @@ function doPost(e) {
       }
     }
 
-    // Add new row: [Timestamp, Email, Lang]
-    sheet.appendRow([new Date(), email, lang.toUpperCase()]);
+    // Add new row with all survey fields
+    sheet.appendRow([
+      new Date(),
+      email,
+      lang.toUpperCase(),
+      body.name || "",
+      body.city || "",
+      body.district || "",
+      body.edu_type || "",
+      body.school_name || "",
+      body.school_grade || "",
+      body.uni_name || "",
+      body.uni_major || "",
+      body.uni_year || "",
+      body.other_activity || "",
+      body.interests || "",
+      body.source || "",
+      body.note || ""
+    ]);
 
     // NEW: Send Automatic Welcome Email
     if (email) {
