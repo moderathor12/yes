@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Articles — Youth Environment Society</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+  <link rel="manifest" href="favicon/site.webmanifest">
+  <link rel="shortcut icon" href="favicon/favicon.ico">
+  
+  <style>
+    :root {
+      --green: #2d6a4f;
+      --lime: #74c69d;
+      --bright: #b7e4c7;
+      --yellow: #f4d35e;
+      --pink: #e07a5f;
+      --purple: #9b72cf;
+      --bg: #f0f4f0;
+      --dark: #1a2e1a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--dark); overflow-x: hidden; }
+
+    /* NAV (Copied from index.html) */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 5%; background: rgba(240, 244, 240, 0.85);
+      backdrop-filter: blur(12px); border-bottom: 1px solid rgba(45, 106, 79, 0.15);
+    }
+    .logo { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 1.4rem; color: var(--green); text-decoration: none; }
+    .logo-badge { background: var(--green); color: white; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 1.1rem; letter-spacing: 1px; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.95rem; color: var(--dark); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--green); }
+    .nav-right { display: flex; align-items: center; gap: 2rem; }
+    .menu-btn { display: none; background: none; border: none; color: var(--dark); cursor: pointer; z-index: 1001; padding: 0.5rem; }
+
+    /* Lang dropdown logic */
+    .lang-dropdown { position: relative; display: inline-block; z-index: 1000; }
+    .lang-current { background: #f0f0f0; color: var(--dark); border: 1px solid rgba(0,0,0,0.05); padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; font-family: 'Space Grotesk', sans-serif; transition: background 0.2s; }
+    .lang-current:hover { background: #e8e8e8; }
+    .lang-current svg { width: 16px; height: 16px; fill: currentColor; transition: transform 0.2s; }
+    .lang-dropdown:hover .lang-current svg { transform: rotate(180deg); }
+    .lang-options { position: absolute; top: 100%; right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 0.5rem; min-width: 80px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1); margin-top: 0.5rem; }
+    .lang-dropdown:hover .lang-options { opacity: 1; visibility: visible; transform: translateY(0); }
+    .lang-options button { display: block; width: 100%; padding: 0.5rem 1rem; border: none; background: none; color: var(--dark); text-align: left; font-size: 0.85rem; font-weight: 600; cursor: pointer; border-radius: 8px; font-family: 'DM Sans', sans-serif; }
+    .lang-options button:hover { background: var(--bg); color: var(--green); }
+    .lang-options button.active { background: rgba(45, 106, 79, 0.1); color: var(--green); }
+
+    /* GALLERY SECTION STYLES (Copied from index.html) */
+    .section { padding: 6rem 5%; }
+    .section-tag { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase; color: var(--green); margin-bottom: 1rem; }
+    .section-title { font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.1; color: var(--dark); margin-bottom: 1.5rem; }
+    .pillars { background: var(--dark); }
+    .pillars .section-title { color: white; }
+    .pillars .section-tag { color: var(--lime); }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+    .event-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; overflow: hidden; transition: transform 0.3s ease, background 0.3s; }
+    .event-card:hover { transform: translateY(-6px); background: rgba(116, 198, 157, 0.12); }
+    .event-img { width: 100%; height: 220px; object-fit: cover; opacity: 0.9; }
+    .event-info { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; position: relative; }
+    .event-info h3 { color: white; margin-bottom: 0.2rem; font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; }
+    .event-info p { font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 3rem; }
+    .card-share-btn { position: absolute; bottom: 1.2rem; right: 1.2rem; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; font-size: 1rem; }
+    .card-share-btn:hover { background: var(--green); border-color: var(--green); transform: scale(1.1); }
+
+    /* MODAL STYLES (Copied from index.html) */
+    .event-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
+    .event-modal.show { display: flex; opacity: 1; }
+    .modal-content { background: var(--dark); width: 100%; max-width: 900px; border-radius: 24px; position: relative; display: flex; flex-direction: column; overflow: hidden; max-height: 90vh; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .event-modal.show .modal-content { transform: scale(1); }
+    .modal-close { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); color: white; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; transition: all 0.2s ease; }
+    .modal-close:hover { background: var(--green); transform: rotate(90deg); }
+    .modal-body { display: grid; grid-template-columns: 1fr 1fr; overflow-y: auto; flex: 1; }
+    .modal-img { width: 100%; height: 500px; object-fit: cover; position: sticky; top: 0; align-self: start; }
+    .modal-details { padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+    .modal-details h2 { font-size: 2rem; margin-bottom: 20px; color: var(--green); }
+    .modal-details p { font-size: 1.1rem; line-height: 1.6; color: rgba(255, 255, 255, 0.8); }
+
+    /* FOOTER (Copied from index.html) */
+    footer { background: var(--dark); color: white; padding: 3rem 5%; text-align: center; }
+    .footer-logo { font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 2rem; color: var(--lime); margin-bottom: 1rem; }
+    footer p { opacity: 0.5; font-size: 0.9rem; }
+    .social-links { display: flex; justify-content: center; gap: 1.2rem; margin: 1.5rem 0; list-style: none; }
+    .social-links a { width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: background 0.2s, border-color 0.2s, transform 0.2s; }
+    .social-links a:hover { background: rgba(225, 48, 108, 0.25); border-color: #e1306c; transform: scale(1.12); }
+    .social-links a.linkedin:hover { background: rgba(0, 119, 181, 0.25); border-color: #0077b5; }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 4%; gap: 0.5rem; }
+      .nav-right { gap: 0.8rem; }
+      .nav-links { display: flex; flex-direction: column; position: fixed; top: 0; right: -100%; width: 250px; height: 100vh; background: var(--bg); box-shadow: -5px 0 15px rgba(0,0,0,0.1); padding: 6rem 2rem 2rem; transition: right 0.3s ease; z-index: 999; }
+      .nav-links.active { right: 0; }
+      .nav-links li { width: 100%; }
+      .nav-links a { display: block; padding: 1rem 0; font-size: 1.1rem; border-bottom: 1px solid rgba(0,0,0,0.05); }
+      .menu-btn { display: flex; align-items: center; justify-content: center; }
+      .modal-body { grid-template-columns: 1fr; }
+      .modal-img { height: 250px; }
+      .modal-details { padding: 25px; }
+      .modal-details h2 { font-size: 1.4rem; }
+      .modal-content { width: 95%; max-height: 95vh; }
+    }
+
+    /* Toast */
+    .toast-popup { position: fixed; bottom: 30px; right: 30px; background: #ffffff; color: #1a2e1a; padding: 1rem 1.5rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); border-left: 5px solid #2d6a4f; z-index: 9999; transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); font-family: 'DM Sans', sans-serif; }
+    .toast-popup.show { transform: translateX(0); }
+    .toast-content { display: flex; align-items: center; gap: 12px; }
+    .toast-icon { font-size: 1.2rem; }
+    .toast-text { font-weight: 500; font-size: 0.95rem; }
+
+    .articles-hero {
+      padding: 10rem 5% 4rem;
+      background: radial-gradient(ellipse at 70% 40%, #d8f3dc 0%, transparent 60%),
+                  radial-gradient(ellipse at 20% 80%, #b7e4c7 0%, transparent 50%);
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="logo" href="index.html">
+      <span class="logo-badge">YES</span>
+      <span data-i18n="logo_text">Youth Environment Society</span>
+    </a>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="index.html#about" data-i18n="nav_about">Who We Are</a></li>
+        <li><a href="index.html#pillars" data-i18n="nav_pillars">Our Work</a></li>
+        <li><a href="articles.html" data-i18n="nav_articles">Articles</a></li>
+        <li><a href="index.html#join" data-i18n="nav_join">Join Us</a></li>
+      </ul>
+      <div class="lang-dropdown">
+        <button class="lang-current">
+          <span id="active-lang">EN</span>
+          <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+        </button>
+        <div class="lang-options">
+          <button onclick="setLang('en')" id="opt-en">EN</button>
+          <button onclick="setLang('az')" id="opt-az">AZ</button>
+        </div>
+      </div>
+      <button class="menu-btn" onclick="toggleMenu()" aria-label="Toggle Menu">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <header class="articles-hero">
+    <div class="section-tag" data-i18n="gallery_tag">Articles</div>
+    <h1 class="section-title" data-i18n="gallery_title">YES in Action</h1>
+  </header>
+
+  <!-- GALLERY -->
+  <section id="gallery" class="section pillars">
+    <div id="events-loader" style="text-align:center; padding: 2rem; color: rgba(255,255,255,0.4)">Loading articles...</div>
+    <div id="gallery-grid" class="gallery-grid"></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo" data-i18n="footer_logo">Follow Us</div>
+    <ul class="social-links">
+      <li>
+        <a href="https://www.linkedin.com/company/youth-environment-society-yes/" target="_blank" aria-label="LinkedIn" class="linkedin">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.instagram.com/youthensoc" target="_blank" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="6" ry="6" fill="#e1306c" /><circle cx="12" cy="12" r="4.5" stroke="white" stroke-width="1.6" fill="none" /><circle cx="17.5" cy="6.5" r="1.1" fill="white" /></svg>
+        </a>
+      </li>
+    </ul>
+    <p data-i18n="footer_p">© 2026 Youth Environment Society. Empowering youth for a sustainable future.</p>
+  </footer>
+
+  <!-- EVENT MODAL -->
+  <div id="event-modal" class="event-modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-body">
+        <img id="modal-img" class="modal-img" src="" alt="Event Detail">
+        <div class="modal-details">
+          <h2 id="modal-title">Event Title</h2>
+          <p id="modal-desc">Event Description goes here.</p>
+          <div style="margin-top: 2rem;">
+            <button id="modal-share-btn" class="btn-primary" style="font-size: 0.85rem; padding: 0.6rem 1.2rem; cursor:pointer;" onclick="copyShareLink()">
+              🔗 <span data-i18n="btn_share_link">Share Article</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBsjdx0bgUKSiF6Qk_KSc7vRihrib7ENGnDh5xxurPKGzJJ9mUoaVa7L9V3K1cSLNfEQ/exec';
+    var allEvents = [];
+    var translations = {
+      en: {
+        nav_about: "Who We Are",
+        nav_pillars: "Our Work",
+        nav_articles: "Articles",
+        nav_join: "Join Us",
+        gallery_tag: "Articles",
+        gallery_title: "<em style='color:var(--green); font-style:normal'>YES</em> in Action",
+        logo_text: "Youth Environment Society",
+        footer_logo: "Follow Us",
+        footer_p: "© 2026 Youth Environment Society. Empowering youth for a sustainable future.",
+        btn_share_link: "Share Article",
+        link_copied: "Link copied to clipboard! 🌱"
+      },
+      az: {
+        nav_about: "Biz Kimik",
+        nav_pillars: "Fəaliyyətimiz",
+        nav_articles: "Məqalələr",
+        nav_join: "Bizə Qoşulun",
+        gallery_tag: "Məqalələr",
+        gallery_title: "Fəaliyyətdə <em style='color:var(--green); font-style:normal'>YES</em>",
+        logo_text: "Gənclərin Ekoloji Cəmiyyəti",
+        footer_logo: "Sosial şəbəkələrimiz",
+        footer_p: "© 2026 Youth Environment Society. Davamlı gələcək üçün gənclərin gücləndirilməsi.",
+        btn_share_link: "Məqaləni Paylaş",
+        link_copied: "Link kopyalandı! 🌱"
+      }
+    };
+
+    function toggleMenu() { document.querySelector('.nav-links').classList.toggle('active'); }
+    function setLang(lang) { localStorage.setItem('yes_lang', lang); applyLanguage(lang); }
+    function applyLanguage(lang) {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        var key = el.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) el.innerHTML = translations[lang][key];
+      });
+      document.getElementById('active-lang').innerText = lang.toUpperCase();
+      document.querySelectorAll('.lang-options button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('opt-' + lang).classList.add('active');
+      document.documentElement.lang = lang;
+      renderGallery();
+    }
+
+    async function fetchEvents() {
+      try {
+        const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'getEvents' }) });
+        const result = await response.json();
+        if (result.result === 'success') {
+          allEvents = result.data;
+          renderGallery();
+          handleHash();
+        }
+      } catch (err) { console.error(err); }
+      document.getElementById('events-loader').style.display = 'none';
+    }
+
+    function renderGallery() {
+      var lang = localStorage.getItem('yes_lang') || 'en';
+      var container = document.getElementById('gallery-grid');
+      container.innerHTML = '';
+      allEvents.forEach((ev, index) => {
+        var card = document.createElement('div');
+        card.className = 'event-card';
+        card.style.cursor = 'pointer';
+        card.onclick = (e) => { if (!e.target.closest('.card-share-btn')) openModal(index); };
+        card.innerHTML = `
+          <img class="event-img" src="${ev.image || ''}" alt="Event">
+          <div class="event-info">
+            <h3>${lang === 'az' ? ev.title_az : ev.title_en}</h3>
+            <p>${lang === 'az' ? ev.desc_az : ev.desc_en}</p>
+            <button class="card-share-btn" onclick="copyShareLinkById('${ev.id}', event)">🔗</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openModal(index) {
+      var lang = localStorage.getItem('yes_lang') || 'en';
+      var ev = allEvents[index];
+      if (!ev) return;
+      document.getElementById('modal-img').src = ev.image || '';
+      document.getElementById('modal-title').innerText = lang === 'az' ? ev.title_az : ev.title_en;
+      document.getElementById('modal-desc').innerText = lang === 'az' ? ev.desc_az : ev.desc_en;
+      window.location.hash = 'article-' + ev.id;
+      var modal = document.getElementById('event-modal');
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('show'), 10);
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      var modal = document.getElementById('event-modal');
+      modal.classList.remove('show');
+      setTimeout(() => { modal.style.display = 'none'; document.body.style.overflow = ''; }, 300);
+      if (window.location.hash.indexOf('article-') > -1) history.replaceState('', document.title, window.location.pathname);
+    }
+
+    function handleHash() {
+      const hash = window.location.hash;
+      if (hash && hash.startsWith('#article-')) {
+        const id = hash.replace('#article-', '');
+        const index = allEvents.findIndex(ev => String(ev.id) === id);
+        if (index > -1) openModal(index);
+      }
+    }
+
+    function copyShareLink() {
+      const shareUrl = window.location.origin + window.location.pathname + window.location.hash;
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        const btn = document.getElementById('modal-share-btn');
+        const lang = localStorage.getItem('yes_lang') || 'en';
+        const originalText = btn.innerHTML;
+        btn.innerText = translations[lang].link_copied || 'Copied!';
+        setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+      });
+    }
+
+    function copyShareLinkById(id, event) {
+      event.stopPropagation();
+      const shareUrl = window.location.origin + window.location.pathname + '#article-' + id;
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        showPopup(translations[localStorage.getItem('yes_lang') || 'en'].link_copied || 'Link copied!');
+      });
+    }
+
+    function showPopup(message) {
+      var popup = document.createElement('div');
+      popup.className = 'toast-popup';
+      popup.innerHTML = `<div class="toast-content"><span class="toast-icon">✅</span><span class="toast-text">${message}</span></div>`;
+      document.body.appendChild(popup);
+      setTimeout(() => popup.classList.add('show'), 100);
+      setTimeout(() => { popup.classList.remove('show'); setTimeout(() => popup.remove(), 400); }, 4000);
+    }
+
+    window.onclick = function(e) { if (e.target.id == 'event-modal') closeModal(); };
+    window.addEventListener('load', () => {
+      applyLanguage(localStorage.getItem('yes_lang') || 'en');
+      fetchEvents();
+    });
+    window.addEventListener('hashchange', () => { if (!window.location.hash) closeModal(); else handleHash(); });
+  </script>
+</body>
+</html>

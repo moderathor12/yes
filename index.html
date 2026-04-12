@@ -1054,7 +1054,7 @@
       <ul class="nav-links">
         <li><a href="#about" data-i18n="nav_about">Who We Are</a></li>
         <li><a href="#pillars" data-i18n="nav_pillars">Our Work</a></li>
-        <li><a href="#gallery" data-i18n="nav_articles">Articles</a></li>
+        <li><a href="articles.html" data-i18n="nav_articles">Articles</a></li>
         <li><a href="#join" data-i18n="nav_join">Join Us</a></li>
       </ul>
       <div class="lang-dropdown">
@@ -1706,7 +1706,7 @@
         card.onclick = (e) => {
           // If the click is on the share button, don't open modal
           if (e.target.closest('.card-share-btn')) return;
-          openModal(index);
+          window.location.href = 'articles.html#article-' + ev.id;
         };
         card.innerHTML = `
           <img class="event-img" src="${ev.image || 'https://via.placeholder.com/400x300?text=YES+Event'}" alt="Event">
@@ -1725,7 +1725,7 @@
         event.stopPropagation();
         event.preventDefault();
       }
-      const shareUrl = window.location.origin + window.location.pathname + '#article-' + id;
+      const shareUrl = window.location.origin + window.location.pathname.replace('index.html', '') + 'articles.html#article-' + id;
       navigator.clipboard.writeText(shareUrl).then(() => {
         showPopup(translations[localStorage.getItem('yes_lang') || 'en'].link_copied || 'Link copied!');
       });
