@@ -30,7 +30,7 @@
     html { scroll-behavior: smooth; }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--dark); overflow-x: hidden; }
 
-    /* NAV (Copied from index.html) */
+    /* NAV */
     nav {
       position: fixed; top: 0; width: 100%; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
@@ -57,7 +57,7 @@
     .lang-options button:hover { background: var(--bg); color: var(--green); }
     .lang-options button.active { background: rgba(45, 106, 79, 0.1); color: var(--green); }
 
-    /* GALLERY SECTION STYLES (Copied from index.html) */
+    /* GALLERY SECTION STYLES */
     .section { padding: 6rem 5%; }
     .section-tag { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase; color: var(--green); margin-bottom: 1rem; }
     .section-title { font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.1; color: var(--dark); margin-bottom: 1.5rem; }
@@ -74,7 +74,7 @@
     .card-share-btn { position: absolute; bottom: 1.2rem; right: 1.2rem; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; font-size: 1rem; }
     .card-share-btn:hover { background: var(--green); border-color: var(--green); transform: scale(1.1); }
 
-    /* MODAL STYLES (Copied from index.html) */
+    /* MODAL STYLES */
     .event-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
     .event-modal.show { display: flex; opacity: 1; }
     .modal-content { background: var(--dark); width: 100%; max-width: 900px; border-radius: 24px; position: relative; display: flex; flex-direction: column; overflow: hidden; max-height: 90vh; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -87,7 +87,7 @@
     .modal-details h2 { font-size: 2rem; margin-bottom: 20px; color: var(--green); }
     .modal-details p { font-size: 1.1rem; line-height: 1.6; color: rgba(255, 255, 255, 0.8); }
 
-    /* FOOTER (Copied from index.html) */
+    /* FOOTER */
     footer { background: var(--dark); color: white; padding: 3rem 5%; text-align: center; }
     .footer-logo { font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 2rem; color: var(--lime); margin-bottom: 1rem; }
     footer p { opacity: 0.5; font-size: 0.9rem; }
@@ -160,7 +160,7 @@
   </nav>
 
   <header class="articles-hero">
-    <div class="section-tag" data-i18n="gallery_tag">Articles</div>
+    <div class="section-tag" data-i18n="gallery_tag">All Articles</div>
     <h1 class="section-title" data-i18n="gallery_title">YES in Action</h1>
   </header>
 
@@ -208,15 +208,24 @@
   </div>
 
   <script>
-    var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBsjdx0bgUKSiF6Qk_KSc7vRihrib7ENGnDh5xxurPKGzJJ9mUoaVa7L9V3K1cSLNfEQ/exec';
-    var allEvents = [];
+    var allEvents = [
+      {
+        "id": "1",
+        "title_en": "🌍 Global Warming and Climate Change",
+        "title_az": "🌍 Qlobal İstiləşmə və İqlim Dəyişikliyi",
+        "image": "https://youthensoc.org/images/articles/global-warming.webp",
+        "desc_en": "Climate change refers to long-term changes in the Earth’s climate, caused by both natural processes and human activities. However, today the main driver is human activity. Climate change is the defining public health issue of the 21st century. Do we really need to learn about climate change, or does it already affect our daily lives more than we think? There are many reasons to understand this problem. Climate change affects the environment in different ways, including rising temperatures, sea level rise, drought, flooding, and more. These events impact things we depend on, such as water, energy, transportation, wildlife, agriculture, ecosystems, and human health. Main sources of emissions include burning fossil fuels, deforestation, livestock farming, and industrial gases.",
+        "desc_az": "İqlim dəyişikliyi Yer kürəsinin iqlimində uzunmüddətli dəyişikliklərə deyilir və bu dəyişikliklər həm təbii proseslər, həm də insan fəaliyyəti nəticəsində yaranır. Lakin bu gün əsas səbəb insan fəaliyyətidir. İqlim dəyişikliyi 21-ci əsrin ən mühüm ictimai sağlamlıq problemlərindən biri hesab olunur. Biz həqiqətən iqlim dəyişikliyini öyrənməliyikmi, yoxsa o artıq gündəlik həyatımıza düşündüyümüzdən daha çox təsir edir? Bu problemi anlamaq üçün çoxlu səbəblər var. İqlim dəyişikliyi ətraf mühitə müxtəlif formalarda təsir edir, o cümlədən temperaturun artması, dəniz səviyyəsinin yüksəlməsi, quraqlıq, daşqınlar və s. Bu hadisələr bizim asılı olduğumuz sistemlərə təsir göstərir: su, enerji, nəqliyyat, canlı aləm, kənd təsərrüfatı, ekosistemlər və insan sağlamlığı. Emissiyaların əsas mənbələri fosil yanacaqların yandırılması, meşələrin qırılması, heyvandarlıq və sənaye qazlarıdır."
+      }
+    ];
+
     var translations = {
       en: {
         nav_about: "Who We Are",
         nav_pillars: "Our Work",
-        nav_articles: "Articles",
+        nav_articles: "All Articles",
         nav_join: "Join Us",
-        gallery_tag: "Articles",
+        gallery_tag: "All Articles",
         gallery_title: "<em style='color:var(--green); font-style:normal'>YES</em> in Action",
         logo_text: "Youth Environment Society",
         footer_logo: "Follow Us",
@@ -227,9 +236,9 @@
       az: {
         nav_about: "Biz Kimik",
         nav_pillars: "Fəaliyyətimiz",
-        nav_articles: "Məqalələr",
+        nav_articles: "Bütün Məqalələr",
         nav_join: "Bizə Qoşulun",
-        gallery_tag: "Məqalələr",
+        gallery_tag: "Bütün Məqalələr",
         gallery_title: "Fəaliyyətdə <em style='color:var(--green); font-style:normal'>YES</em>",
         logo_text: "Gənclərin Ekoloji Cəmiyyəti",
         footer_logo: "Sosial şəbəkələrimiz",
@@ -254,15 +263,9 @@
     }
 
     async function fetchEvents() {
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'getEvents' }) });
-        const result = await response.json();
-        if (result.result === 'success') {
-          allEvents = result.data;
-          renderGallery();
-          handleHash();
-        }
-      } catch (err) { console.error(err); }
+      // Data is hardcoded for speed
+      renderGallery();
+      handleHash();
       document.getElementById('events-loader').style.display = 'none';
     }
 

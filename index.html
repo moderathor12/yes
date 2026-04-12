@@ -1264,7 +1264,7 @@
       en: {
         nav_about: "Who We Are",
         nav_pillars: "Our Work",
-        nav_articles: "Articles",
+        nav_articles: "Last Article",
         nav_join: "Join Us",
         hero_tag: "<span></span> Youth-Led · Planet-Focused",
         hero_title: "Empowering Youth for a <em>Sustainable</em> Future.",
@@ -1298,7 +1298,7 @@
         join_sub: "Sign up to stay updated on our events, campaigns, and opportunities to make a difference.",
         join_placeholder: "Your email address",
         join_btn: "Sign Me Up 🌱",
-        gallery_tag: "Articles",
+        gallery_tag: "Last Article",
         gallery_title: "<em style='color:var(--green); font-style:normal'>YES</em> in Action",
         footer_logo: "Follow Us",
         footer_p: "© 2026 Youth Environment Society. Empowering youth for a sustainable future.",
@@ -1309,7 +1309,7 @@
       az: {
         nav_about: "Biz Kimik",
         nav_pillars: "Fəaliyyətimiz",
-        nav_articles: "Məqalələr",
+        nav_articles: "Ən Son Məqalə",
         nav_join: "Bizə Qoşulun",
         hero_tag: "<span></span> Gənclərin rəhbərliyi ilə · Planet mərkəzli",
         hero_title: "Davamlı gələcək naminə gənclərin <em>potensialını artırırıq</em>.",
@@ -1343,7 +1343,7 @@
         join_sub: "Tədbirlərimiz, kampaniyalarımız və dəyişiklik yaratmaq imkanlarımızdan xəbərdar olmaq üçün qeydiyyatdan keçin.",
         join_placeholder: "Email ünvanınız",
         join_btn: "Abunə ol 🌱",
-        gallery_tag: "Məqalələr",
+        gallery_tag: "Ən Son Məqalə",
         gallery_title: "Fəaliyyətdə <em style='color:var(--green); font-style:normal'>YES</em>",
         footer_logo: "Sosial şəbəkələrimiz",
         footer_p: "© 2026 Youth Environment Society. Davamlı gələcək üçün gənclərin gücləndirilməsi.",
@@ -1631,20 +1631,20 @@
     // ──────────────────────────────────────────────────
     //  GALLERY LOGIC
     // ──────────────────────────────────────────────────
-    var allEvents = [];
+    var allEvents = [
+      {
+        "id": "1",
+        "title_en": "🌍 Global Warming and Climate Change",
+        "title_az": "🌍 Qlobal İstiləşmə və İqlim Dəyişikliyi",
+        "image": "https://youthensoc.org/images/articles/global-warming.webp",
+        "desc_en": "Climate change refers to long-term changes in the Earth’s climate, caused by both natural processes and human activities. However, today the main driver is human activity. Climate change is the defining public health issue of the 21st century. Do we really need to learn about climate change, or does it already affect our daily lives more than we think? There are many reasons to understand this problem. Climate change affects the environment in different ways, including rising temperatures, sea level rise, drought, flooding, and more. These events impact things we depend on, such as water, energy, transportation, wildlife, agriculture, ecosystems, and human health. Main sources of emissions include burning fossil fuels, deforestation, livestock farming, and industrial gases.",
+        "desc_az": "İqlim dəyişikliyi Yer kürəsinin iqlimində uzunmüddətli dəyişikliklərə deyilir və bu dəyişikliklər həm təbii proseslər, həm də insan fəaliyyəti nəticəsində yaranır. Lakin bu gün əsas səbəb insan fəaliyyətidir. İqlim dəyişikliyi 21-ci əsrin ən mühüm ictimai sağlamlıq problemlərindən biri hesab olunur. Biz həqiqətən iqlim dəyişikliyini öyrənməliyikmi, yoxsa o artıq gündəlik həyatımıza düşündüyümüzdən daha çox təsir edir? Bu problemi anlamaq üçün çoxlu səbəblər var. İqlim dəyişikliyi ətraf mühitə müxtəlif formalarda təsir edir, o cümlədən temperaturun artması, dəniz səviyyəsinin yüksəlməsi, quraqlıq, daşqınlar və s. Bu hadisələr bizim asılı olduğumuz sistemlərə təsir göstərir: su, enerji, nəqliyyat, canlı aləm, kənd təsərrüfatı, ekosistemlər və insan sağlamlığı. Emissiyaların əsas mənbələri fosil yanacaqların yandırılması, meşələrin qırılması, heyvandarlıq və sənaye qazlarıdır."
+      }
+    ];
 
     async function fetchEvents() {
-      try {
-        const response = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'getEvents' })
-        });
-        const result = await response.json();
-        if (result.result === 'success') {
-          allEvents = result.data;
-          renderGallery();
-        }
-      } catch (err) { console.error('Fetch events error:', err); }
+      // Data is now hardcoded for instant loading
+      renderGallery();
       document.getElementById('events-loader').style.display = 'none';
     }
 
@@ -1699,25 +1699,27 @@
         return;
       }
 
-      allEvents.forEach((ev, index) => {
-        var card = document.createElement('div');
-        card.className = 'event-card';
-        card.style.cursor = 'pointer';
-        card.onclick = (e) => {
-          // If the click is on the share button, don't open modal
-          if (e.target.closest('.card-share-btn')) return;
-          window.location.href = 'articles.html#article-' + ev.id;
-        };
-        card.innerHTML = `
-          <img class="event-img" src="${ev.image || 'https://via.placeholder.com/400x300?text=YES+Event'}" alt="Event">
-          <div class="event-info">
-            <h3>${lang === 'az' ? ev.title_az : ev.title_en}</h3>
-            <p>${lang === 'az' ? ev.desc_az : ev.desc_en}</p>
-            <button class="card-share-btn" onclick="copyShareLinkById('${ev.id}', event)" title="Share">🔗</button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
+      // Display only the last (latest) article on the home page
+      const ev = allEvents[allEvents.length - 1];
+      const index = allEvents.length - 1;
+      
+      var card = document.createElement('div');
+      card.className = 'event-card';
+      card.style.cursor = 'pointer';
+      card.onclick = (e) => {
+        // If the click is on the share button, don't open modal
+        if (e.target.closest('.card-share-btn')) return;
+        window.location.href = 'articles.html#article-' + ev.id;
+      };
+      card.innerHTML = `
+        <img class="event-img" src="${ev.image || 'https://via.placeholder.com/400x300?text=YES+Event'}" alt="Event">
+        <div class="event-info">
+          <h3>${lang === 'az' ? ev.title_az : ev.title_en}</h3>
+          <p>${lang === 'az' ? ev.desc_az : ev.desc_en}</p>
+          <button class="card-share-btn" onclick="copyShareLinkById('${ev.id}', event)" title="Share">🔗</button>
+        </div>
+      `;
+      container.appendChild(card);
     }
 
     function copyShareLinkById(id, event) {
