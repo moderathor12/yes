@@ -18,7 +18,7 @@ var WELCOME_IMAGE_DATA_AZ = ''; // New Azerbaijani Poster
 // ──────────────────────────────────────────────────
 //  3) ADMIN SETTINGS
 // ──────────────────────────────────────────────────
-var ADMIN_PASSWORD = 'YES_ADMIN_2026'; // Change this to your desired password
+var ADMIN_PASSWORD = 'YOUR_SECRET_PASSWORD_HERE'; // Set this ONLY in script.google.com editor
 
 function doPost(e) {
   try {
