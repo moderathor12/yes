@@ -70,6 +70,12 @@ function doPost(e) {
       return buildResponse({ result: "success", message: "Event deleted!" });
     }
 
+    if (action === "updateEvent") {
+      if (body.password !== ADMIN_PASSWORD) return buildResponse({ result: "error", message: "Invalid password" });
+      updateEvent(body.event);
+      return buildResponse({ result: "success", message: "Event updated!" });
+    }
+
     // Default Email Collection Logic
     if (!email) {
       return buildResponse({ result: "error", message: "Email is required." });
@@ -237,6 +243,23 @@ function deleteEvent(id) {
   for (var i = 1; i < data.length; i++) {
     if (data[i][0] === id) {
       sheet.deleteRow(i + 1);
+      break;
+    }
+  }
+}
+
+function updateEvent(event) {
+  var sheet = getEventsSheet();
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0] === event.id) {
+      sheet.getRange(i + 1, 2, 1, 5).setValues([[
+        event.title_en,
+        event.title_az,
+        event.desc_en,
+        event.desc_az,
+        event.image
+      ]]);
       break;
     }
   }
