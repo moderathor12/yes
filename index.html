@@ -127,6 +127,16 @@
       gap: 2rem;
     }
 
+    .menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--dark);
+      cursor: pointer;
+      z-index: 1001;
+      padding: 0.5rem;
+    }
+
     /* Language Dropdown */
     .lang-dropdown {
       position: relative;
@@ -831,7 +841,39 @@
       }
 
       .nav-links {
-        display: none;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 250px;
+        height: 100vh;
+        background: var(--bg);
+        box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+        padding: 6rem 2rem 2rem;
+        transition: right 0.3s ease;
+        z-index: 999;
+      }
+
+      .nav-links.active {
+        right: 0;
+      }
+
+      .nav-links li {
+        width: 100%;
+      }
+
+      .nav-links a {
+        display: block;
+        padding: 1rem 0;
+        font-size: 1.1rem;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+      }
+
+      .menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .logo {
@@ -1022,6 +1064,9 @@
           <button onclick="setLang('az')" id="opt-az">AZ</button>
         </div>
       </div>
+      <button class="menu-btn" onclick="toggleMenu()" aria-label="Toggle Menu">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+      </button>
     </div>
   </nav>
 
@@ -1198,6 +1243,16 @@
     }
 
     document.getElementById('email-form').addEventListener('submit', submitEmail);
+
+    function toggleMenu() {
+      document.querySelector('.nav-links').classList.toggle('active');
+    }
+
+    document.querySelectorAll('.nav-links a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        document.querySelector('.nav-links').classList.remove('active');
+      });
+    });
 
     // ──────────────────────────────────────────────────
     //  2) Multi-Language Support (EN/AZ)
