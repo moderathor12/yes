@@ -212,7 +212,7 @@
     // ── Supabase Config ─────────────────────────────────────
     const SUPABASE_URL = 'https://wqcugmhjfuvnwxhspytw.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxY3VnbWhqZnV2bnd4aHNweXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMzY2NzcsImV4cCI6MjA5MTYxMjY3N30.A2rZNI2hOpDNC_JLeQNO9Is50HswX-jB5he9wNOpYLo';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     // ────────────────────────────────────────────────────────
 
     var allEvents = []; // Supabase-dən yüklənir
@@ -263,7 +263,7 @@
     async function fetchEvents() {
       // Supabase-dən məqalələri çək (sürətli, birbaşa)
       try {
-        const { data, error } = await supabase
+        const { data, error } = await sbClient
           .from('articles')
           .select('*')
           .order('created_at', { ascending: false });

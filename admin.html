@@ -139,7 +139,7 @@
   // ── Supabase Config ──────────────────────────────
   const SUPABASE_URL = 'https://wqcugmhjfuvnwxhspytw.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxY3VnbWhqZnV2bnd4aHNweXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMzY2NzcsImV4cCI6MjA5MTYxMjY3N30.A2rZNI2hOpDNC_JLeQNO9Is50HswX-jB5he9wNOpYLo';
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   // ────────────────────────────────────────────────
 
   let allArticles = [];
@@ -155,7 +155,7 @@
     btn.disabled = true;
     btn.innerText = 'Giriş edilir...';
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await sbClient.auth.signInWithPassword({ email, password });
 
     if (error) {
       errEl.style.display = 'block';
@@ -168,7 +168,7 @@
   }
 
   async function logout() {
-    await supabase.auth.signOut();
+    await sbClient.auth.signOut();
     location.reload();
   }
 
@@ -180,7 +180,7 @@
 
   // Check existing session on page load
   window.addEventListener('load', async () => {
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { session } } = await sbClient.auth.getSession();
     if (session) showDashboard();
   });
   // ────────────────────────────────────────────────
@@ -190,7 +190,7 @@
     const container = document.getElementById('articles-container');
     container.innerHTML = '<div class="loading-spinner">Yüklənir...</div>';
 
-    const { data, error } = await supabase
+    const { data, error } = await sbClient
       .from('articles')
       .select('*')
       .order('created_at', { ascending: false });
@@ -275,10 +275,10 @@
     let error;
     if (id) {
       // Update
-      ({ error } = await supabase.from('articles').update(article).eq('id', id));
+      ({ error } = await sbClient.from('articles').update(article).eq('id', id));
     } else {
       // Insert
-      ({ error } = await supabase.from('articles').insert(article));
+      ({ error } = await sbClient.from('articles').insert(article));
     }
 
     if (error) {
@@ -295,7 +295,7 @@
   async function deleteArticle(id) {
     if (!confirm('Bu məqaləni silmək istədiyindən əminsən?')) return;
 
-    const { error } = await supabase.from('articles').delete().eq('id', id);
+    const { error } = await sbClient.from('articles').delete().eq('id', id);
     if (error) {
       alert('Xəta: ' + error.message);
     } else {
