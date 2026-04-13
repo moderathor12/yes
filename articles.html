@@ -207,17 +207,15 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    var allEvents = [
-      {
-        "id": "1",
-        "title_en": "🌍 Global Warming and Climate Change",
-        "title_az": "🌍 Qlobal İstiləşmə və İqlim Dəyişikliyi",
-        "image": "https://youthensoc.org/images/articles/global-warming.webp",
-        "desc_en": "Climate change refers to long-term changes in the Earth’s climate, caused by both natural processes and human activities. However, today the main driver is human activity. Climate change is the defining public health issue of the 21st century. Do we really need to learn about climate change, or does it already affect our daily lives more than we think? There are many reasons to understand this problem. Climate change affects the environment in different ways, including rising temperatures, sea level rise, drought, flooding, and more. These events impact things we depend on, such as water, energy, transportation, wildlife, agriculture, ecosystems, and human health. Main sources of emissions include burning fossil fuels, deforestation, livestock farming, and industrial gases.",
-        "desc_az": "İqlim dəyişikliyi Yer kürəsinin iqlimində uzunmüddətli dəyişikliklərə deyilir və bu dəyişikliklər həm təbii proseslər, həm də insan fəaliyyəti nəticəsində yaranır. Lakin bu gün əsas səbəb insan fəaliyyətidir. İqlim dəyişikliyi 21-ci əsrin ən mühüm ictimai sağlamlıq problemlərindən biri hesab olunur. Biz həqiqətən iqlim dəyişikliyini öyrənməliyikmi, yoxsa o artıq gündəlik həyatımıza düşündüyümüzdən daha çox təsir edir? Bu problemi anlamaq üçün çoxlu səbəblər var. İqlim dəyişikliyi ətraf mühitə müxtəlif formalarda təsir edir, o cümlədən temperaturun artması, dəniz səviyyəsinin yüksəlməsi, quraqlıq, daşqınlar və s. Bu hadisələr bizim asılı olduğumuz sistemlərə təsir göstərir: su, enerji, nəqliyyat, canlı aləm, kənd təsərrüfatı, ekosistemlər və insan sağlamlığı. Emissiyaların əsas mənbələri fosil yanacaqların yandırılması, meşələrin qırılması, heyvandarlıq və sənaye qazlarıdır."
-      }
-    ];
+    // ── Supabase Config ─────────────────────────────────────
+    const SUPABASE_URL = 'https://wqcugmhjfuvnwxhspytw.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxY3VnbWhqZnV2bnd4aHNweXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMzY2NzcsImV4cCI6MjA5MTYxMjY3N30.A2rZNI2hOpDNC_JLeQNO9Is50HswX-jB5he9wNOpYLo';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // ────────────────────────────────────────────────────────
+
+    var allEvents = []; // Supabase-dən yüklənir
 
     var translations = {
       en: {
@@ -262,24 +260,23 @@
       renderGallery();
     }
 
-    var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyddf_y2oZn-iH99ekj5V0Y5SQhSbn6BE8KNPLjIOwv736tOboxr1pGX4F89HOgUrNqUA/exec';
-
     async function fetchEvents() {
-      // 1) Show hardcoded data immediately
+      // Supabase-dən məqalələri çək (sürətli, birbaşa)
+      try {
+        const { data, error } = await supabase
+          .from('articles')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        allEvents = data || [];
+      } catch (err) {
+        console.warn('Supabase fetch failed:', err);
+      }
+
+      document.getElementById('events-loader').style.display = 'none';
       renderGallery();
       handleHash();
-      document.getElementById('events-loader').style.display = 'none';
-
-      // 2) Fetch latest data in background for updates
-      try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'getEvents' }) });
-        const result = await response.json();
-        if (result.result === 'success' && JSON.stringify(result.data) !== JSON.stringify(allEvents)) {
-          allEvents = result.data;
-          renderGallery();
-          handleHash();
-        }
-      } catch (err) { console.warn("Background fetch failed:", err); }
     }
 
     function renderGallery() {
