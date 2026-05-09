@@ -264,6 +264,17 @@
       handleHash();
     }
 
+    function linkify(text) {
+      if (!text) return '';
+      var div = document.createElement('div');
+      div.innerText = text;
+      var escaped = div.innerHTML;
+      var urlRegex = /(https?:\/\/[^\s]+)/g;
+      return escaped.replace(urlRegex, function(url) {
+        return '<a href="' + url + '" target="_blank" style="color: #3498db; text-decoration: underline;">' + url + '</a>';
+      });
+    }
+
     function renderGallery() {
       var lang = localStorage.getItem('yes_lang') || 'en';
       var container = document.getElementById('gallery-grid');
@@ -272,12 +283,12 @@
         var card = document.createElement('div');
         card.className = 'event-card';
         card.style.cursor = 'pointer';
-        card.onclick = (e) => { if (!e.target.closest('.card-share-btn')) openModal(index); };
+        card.onclick = (e) => { if (!e.target.closest('.card-share-btn') && !e.target.closest('a')) openModal(index); };
         card.innerHTML = `
           <img class="event-img" src="${ev.image || ''}" alt="Event">
           <div class="event-info">
             <h3>${lang === 'az' ? ev.title_az : ev.title_en}</h3>
-            <p>${lang === 'az' ? ev.desc_az : ev.desc_en}</p>
+            <p>${linkify(lang === 'az' ? ev.desc_az : ev.desc_en)}</p>
             <button class="card-share-btn" onclick="copyShareLinkById('${ev.id}', event)">🔗</button>
           </div>
         `;
@@ -291,7 +302,7 @@
       if (!ev) return;
       document.getElementById('modal-img').src = ev.image || '';
       document.getElementById('modal-title').innerText = lang === 'az' ? ev.title_az : ev.title_en;
-      document.getElementById('modal-desc').innerText = lang === 'az' ? ev.desc_az : ev.desc_en;
+      document.getElementById('modal-desc').innerHTML = linkify(lang === 'az' ? ev.desc_az : ev.desc_en);
       window.location.hash = 'article-' + ev.id;
       var modal = document.getElementById('event-modal');
       modal.style.display = 'flex';

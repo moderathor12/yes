@@ -1661,7 +1661,7 @@
 
       document.getElementById('modal-img').src = ev.image || 'https://via.placeholder.com/800x600?text=YES+Event';
       document.getElementById('modal-title').innerText = lang === 'az' ? ev.title_az : ev.title_en;
-      document.getElementById('modal-desc').innerText = lang === 'az' ? ev.desc_az : ev.desc_en;
+      document.getElementById('modal-desc').innerHTML = linkify(lang === 'az' ? ev.desc_az : ev.desc_en);
 
       // Update URL hash
       window.location.hash = 'article-' + ev.id;
@@ -1694,6 +1694,17 @@
       }
     }
 
+    function linkify(text) {
+      if (!text) return '';
+      var div = document.createElement('div');
+      div.innerText = text;
+      var escaped = div.innerHTML;
+      var urlRegex = /(https?:\/\/[^\s]+)/g;
+      return escaped.replace(urlRegex, function(url) {
+        return '<a href="' + url + '" target="_blank" style="color: #3498db; text-decoration: underline;">' + url + '</a>';
+      });
+    }
+
     function renderGallery() {
       var lang = localStorage.getItem('yes_lang') || 'en';
       var container = document.getElementById('gallery-grid');
@@ -1711,15 +1722,15 @@
       card.className = 'event-card';
       card.style.cursor = 'pointer';
       card.onclick = (e) => {
-        // If the click is on the share button, don't open modal
-        if (e.target.closest('.card-share-btn')) return;
+        // If the click is on the share button or link, don't open modal
+        if (e.target.closest('.card-share-btn') || e.target.closest('a')) return;
         window.location.href = 'articles.html#article-' + ev.id;
       };
       card.innerHTML = `
         <img class="event-img" src="${ev.image || 'https://via.placeholder.com/400x300?text=YES+Event'}" alt="Event">
         <div class="event-info">
           <h3>${lang === 'az' ? ev.title_az : ev.title_en}</h3>
-          <p>${lang === 'az' ? ev.desc_az : ev.desc_en}</p>
+          <p>${linkify(lang === 'az' ? ev.desc_az : ev.desc_en)}</p>
           <button class="card-share-btn" onclick="copyShareLinkById('${ev.id}', event)" title="Share">🔗</button>
         </div>
       `;
