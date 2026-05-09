@@ -308,40 +308,50 @@
     if (e.target.tagName !== 'TEXTAREA') return;
     
     var html = e.clipboardData.getData('text/html');
-    if (!html || (!html.includes('<a ') && !html.includes('<A '))) return;
+    if (!html) return;
+    
+    // Check if there's any anchor tag with href
+    if (!/<a\b[^>]*href=/i.test(html)) return;
     
     e.preventDefault();
     var div = document.createElement('div');
-    // Remove scripts and images
-    var safeHtml = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-                       .replace(/<img[^>]*>/gi, '');
-    div.innerHTML = safeHtml;
+    
+    // Word HTML contains massive <style>, <xml>, <meta> blocks. Remove them.
+    var cleanHtml = html.replace(/<(style|script|xml|meta|link)[^>]*>[\s\S]*?<\/\1>/gi, '');
+    cleanHtml = cleanHtml.replace(/<(meta|link|xml)[^>]*>/gi, '');
+    // Also remove Word's specific conditional comments like <!--[if gte mso 9]>...<![endif]-->
+    cleanHtml = cleanHtml.replace(/<!--[\s\S]*?-->/g, '');
+    
+    div.innerHTML = cleanHtml;
     
     var anchors = div.querySelectorAll('a');
     anchors.forEach(a => {
-      var url = a.href;
+      var url = a.getAttribute('href');
       var text = a.textContent || '';
       if (url && text.trim() && !url.startsWith('javascript:')) {
-        // Only convert if it's not a local anchor link
+        // Create markdown text
         var mark = document.createTextNode(`[${text.trim()}](${url})`);
         a.parentNode.replaceChild(mark, a);
       }
     });
     
-    // Preserve basic line breaks
-    var processedHtml = div.innerHTML;
-    processedHtml = processedHtml.replace(/<br\s*[\/]?>/gi, '\n');
-    processedHtml = processedHtml.replace(/<\/p>/gi, '\n\n');
-    processedHtml = processedHtml.replace(/<\/div>/gi, '\n');
-    processedHtml = processedHtml.replace(/<li[^>]*>/gi, '• ');
-    processedHtml = processedHtml.replace(/<\/li>/gi, '\n');
+    // Preserve newlines for block elements
+    var blocks = div.querySelectorAll('p, div, li, h1, h2, h3, h4, h5, h6, tr');
+    blocks.forEach(b => {
+      b.appendChild(document.createTextNode('\n'));
+    });
+    var brs = div.querySelectorAll('br');
+    brs.forEach(br => {
+      br.parentNode.replaceChild(document.createTextNode('\n'), br);
+    });
     
-    var tempDiv = document.createElement('div');
-    tempDiv.innerHTML = processedHtml;
-    var finalStr = tempDiv.textContent || tempDiv.innerText || '';
+    // Extract text
+    var finalStr = div.textContent || div.innerText || '';
     
-    // Clean up excessive newlines
+    // Clean up excessive newlines and spaces
     finalStr = finalStr.replace(/\n{3,}/g, '\n\n').trim();
+    // Sometimes Word produces many non-breaking spaces
+    finalStr = finalStr.replace(/&nbsp;/g, ' ').replace(/\u00A0/g, ' ');
     
     var start = e.target.selectionStart;
     var end = e.target.selectionEnd;
