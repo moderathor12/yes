@@ -302,6 +302,53 @@
       loadArticles();
     }
   }
+
+  // ── Paste HTML Link Interceptor ──────────────────
+  document.addEventListener('paste', function(e) {
+    if (e.target.tagName !== 'TEXTAREA') return;
+    
+    var html = e.clipboardData.getData('text/html');
+    if (!html || (!html.includes('<a ') && !html.includes('<A '))) return;
+    
+    e.preventDefault();
+    var div = document.createElement('div');
+    // Remove scripts and images
+    var safeHtml = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                       .replace(/<img[^>]*>/gi, '');
+    div.innerHTML = safeHtml;
+    
+    var anchors = div.querySelectorAll('a');
+    anchors.forEach(a => {
+      var url = a.href;
+      var text = a.textContent || '';
+      if (url && text.trim() && !url.startsWith('javascript:')) {
+        // Only convert if it's not a local anchor link
+        var mark = document.createTextNode(`[${text.trim()}](${url})`);
+        a.parentNode.replaceChild(mark, a);
+      }
+    });
+    
+    // Preserve basic line breaks
+    var processedHtml = div.innerHTML;
+    processedHtml = processedHtml.replace(/<br\s*[\/]?>/gi, '\n');
+    processedHtml = processedHtml.replace(/<\/p>/gi, '\n\n');
+    processedHtml = processedHtml.replace(/<\/div>/gi, '\n');
+    processedHtml = processedHtml.replace(/<li[^>]*>/gi, '• ');
+    processedHtml = processedHtml.replace(/<\/li>/gi, '\n');
+    
+    var tempDiv = document.createElement('div');
+    tempDiv.innerHTML = processedHtml;
+    var finalStr = tempDiv.textContent || tempDiv.innerText || '';
+    
+    // Clean up excessive newlines
+    finalStr = finalStr.replace(/\n{3,}/g, '\n\n').trim();
+    
+    var start = e.target.selectionStart;
+    var end = e.target.selectionEnd;
+    var val = e.target.value;
+    e.target.value = val.slice(0, start) + finalStr + val.slice(end);
+    e.target.selectionStart = e.target.selectionEnd = start + finalStr.length;
+  });
   // ────────────────────────────────────────────────
 </script>
 
