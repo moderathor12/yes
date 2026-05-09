@@ -175,24 +175,21 @@
     <p data-i18n="footer_p">© 2026 Youth Environment Society. All rights reserved.</p>
   </footer>
 
-  <!-- EVENT MODAL -->
-  <div id="event-modal" class="event-modal">
-    <div class="modal-content">
-      <button class="modal-close" onclick="closeModal()">✕</button>
-      <div class="modal-body">
-        <img id="modal-img" class="modal-img" src="" alt="Event Detail">
-        <div class="modal-details">
-          <h2 id="modal-title">Event Title</h2>
-          <p id="modal-desc">Event Description goes here.</p>
-          <div style="margin-top: 2rem;">
-            <button id="modal-share-btn" class="btn-primary" style="font-size: 0.85rem; padding: 0.6rem 1.2rem; cursor:pointer;" onclick="copyShareLink()">
-              🔗 <span data-i18n="btn_share_link">Share Article</span>
-            </button>
-          </div>
-        </div>
-      </div>
+  <!-- SINGLE ARTICLE VIEW -->
+  <section id="single-article" class="section" style="display:none; max-width: 900px; margin: 0 auto; padding-top: 8rem; min-height: 80vh;">
+    <button onclick="closeArticle()" style="background:none; border:none; color:var(--green); font-weight:700; font-family:inherit; cursor:pointer; font-size:1.1rem; margin-bottom: 2rem; display:flex; align-items:center; gap:0.5rem;">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> 
+      <span data-i18n="btn_back">Back to Articles</span>
+    </button>
+    <img id="sa-img" style="width: 100%; border-radius: 20px; max-height: 500px; object-fit: cover; margin-bottom: 2rem; display:block;" src="" alt="Article Image">
+    <h1 id="sa-title" style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(2rem, 4vw, 3rem); color: var(--dark); margin-bottom: 1.5rem; line-height: 1.2;"></h1>
+    <div id="sa-desc" style="font-size: 1.1rem; line-height: 1.8; color: var(--dark); opacity: 0.9; white-space: pre-wrap;"></div>
+    <div style="margin-top: 3rem; border-top: 1px solid rgba(45,106,79,0.1); padding-top: 2rem;">
+      <button class="btn-primary" style="font-size: 0.95rem; padding: 0.8rem 1.5rem; background:var(--green); color:white; border:none; border-radius:12px; cursor:pointer; font-weight: 600; font-family: inherit; transition: 0.2s;" onclick="copyShareLink()">
+        🔗 <span data-i18n="btn_share_link">Share Article</span>
+      </button>
     </div>
-  </div>
+  </section>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -227,7 +224,8 @@
         logo_text: "Gənclərin Ekoloji Cəmiyyəti",
         footer_p: "© 2026 Youth Environment Society. Bütün hüquqlar qorunur.",
         btn_share_link: "Məqaləni Paylaş",
-        link_copied: "Link kopyalandı! 🌱"
+        link_copied: "Link kopyalandı! 🌱",
+        btn_back: "Geri qayıt"
       }
     };
 
@@ -269,10 +267,19 @@
       var div = document.createElement('div');
       div.innerText = text;
       var escaped = div.innerHTML;
-      var urlRegex = /(https?:\/\/[^\s]+)/g;
-      return escaped.replace(urlRegex, function(url) {
+      
+      var mdRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+      escaped = escaped.replace(mdRegex, function(match, label, url) {
+        return '<a href="' + url + '" target="_blank" style="color: #3498db; text-decoration: underline;">' + label + '</a>';
+      });
+      
+      var combinedRegex = /(<a\b[^>]*>.*?<\/a>)|(https?:\/\/[^\s<]+)/gi;
+      escaped = escaped.replace(combinedRegex, function(match, aTag, url) {
+        if (aTag) return aTag;
         return '<a href="' + url + '" target="_blank" style="color: #3498db; text-decoration: underline;">' + url + '</a>';
       });
+      
+      return escaped;
     }
 
     function renderGallery() {
@@ -283,7 +290,7 @@
         var card = document.createElement('div');
         card.className = 'event-card';
         card.style.cursor = 'pointer';
-        card.onclick = (e) => { if (!e.target.closest('.card-share-btn') && !e.target.closest('a')) openModal(index); };
+        card.onclick = (e) => { if (!e.target.closest('.card-share-btn') && !e.target.closest('a')) openArticle(index); };
         card.innerHTML = `
           <img class="event-img" src="${ev.image || ''}" alt="Event">
           <div class="event-info">
@@ -296,25 +303,27 @@
       });
     }
 
-    function openModal(index) {
+    function openArticle(index) {
       var lang = localStorage.getItem('yes_lang') || 'en';
       var ev = allEvents[index];
       if (!ev) return;
-      document.getElementById('modal-img').src = ev.image || '';
-      document.getElementById('modal-title').innerText = lang === 'az' ? ev.title_az : ev.title_en;
-      document.getElementById('modal-desc').innerHTML = linkify(lang === 'az' ? ev.desc_az : ev.desc_en);
+      document.getElementById('sa-img').src = ev.image || '';
+      document.getElementById('sa-title').innerText = lang === 'az' ? ev.title_az : ev.title_en;
+      document.getElementById('sa-desc').innerHTML = linkify(lang === 'az' ? ev.desc_az : ev.desc_en);
       window.location.hash = 'article-' + ev.id;
-      var modal = document.getElementById('event-modal');
-      modal.style.display = 'flex';
-      setTimeout(() => modal.classList.add('show'), 10);
-      document.body.style.overflow = 'hidden';
+      
+      document.getElementById('gallery').style.display = 'none';
+      document.querySelector('.articles-hero').style.display = 'none';
+      document.getElementById('single-article').style.display = 'block';
+      window.scrollTo(0, 0);
     }
 
-    function closeModal() {
-      var modal = document.getElementById('event-modal');
-      modal.classList.remove('show');
-      setTimeout(() => { modal.style.display = 'none'; document.body.style.overflow = ''; }, 300);
+    function closeArticle() {
+      document.getElementById('single-article').style.display = 'none';
+      document.getElementById('gallery').style.display = 'block';
+      document.querySelector('.articles-hero').style.display = 'block';
       if (window.location.hash.indexOf('article-') > -1) history.replaceState('', document.title, window.location.pathname);
+      window.scrollTo(0, 0);
     }
 
     function handleHash() {
@@ -322,7 +331,7 @@
       if (hash && hash.startsWith('#article-')) {
         const id = hash.replace('#article-', '');
         const index = allEvents.findIndex(ev => String(ev.id) === id);
-        if (index > -1) openModal(index);
+        if (index > -1) openArticle(index);
       }
     }
 
@@ -354,12 +363,11 @@
       setTimeout(() => { popup.classList.remove('show'); setTimeout(() => popup.remove(), 400); }, 4000);
     }
 
-    window.onclick = function(e) { if (e.target.id == 'event-modal') closeModal(); };
     window.addEventListener('load', () => {
       applyLanguage(localStorage.getItem('yes_lang') || 'en');
       fetchEvents();
     });
-    window.addEventListener('hashchange', () => { if (!window.location.hash) closeModal(); else handleHash(); });
+    window.addEventListener('hashchange', () => { if (!window.location.hash) closeArticle(); else handleHash(); });
   </script>
 </body>
 </html>

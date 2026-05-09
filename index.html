@@ -1699,10 +1699,19 @@
       var div = document.createElement('div');
       div.innerText = text;
       var escaped = div.innerHTML;
-      var urlRegex = /(https?:\/\/[^\s]+)/g;
-      return escaped.replace(urlRegex, function(url) {
+      
+      var mdRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+      escaped = escaped.replace(mdRegex, function(match, label, url) {
+        return '<a href="' + url + '" target="_blank" style="color: #3498db; text-decoration: underline;">' + label + '</a>';
+      });
+      
+      var combinedRegex = /(<a\b[^>]*>.*?<\/a>)|(https?:\/\/[^\s<]+)/gi;
+      escaped = escaped.replace(combinedRegex, function(match, aTag, url) {
+        if (aTag) return aTag;
         return '<a href="' + url + '" target="_blank" style="color: #3498db; text-decoration: underline;">' + url + '</a>';
       });
+      
+      return escaped;
     }
 
     function renderGallery() {
@@ -1752,11 +1761,7 @@
       const hash = window.location.hash;
       if (hash && hash.startsWith('#article-')) {
         const id = hash.replace('#article-', '');
-        // Use loose equality or String comparison to match numbers/strings
-        const index = allEvents.findIndex(ev => String(ev.id) === id);
-        if (index > -1) {
-          openModal(index);
-        }
+        window.location.href = 'articles.html#article-' + id;
       }
     }
 
