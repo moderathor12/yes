@@ -6,27 +6,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Youth Environment Society — YES</title>
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
   <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
   <link rel="manifest" href="favicon/site.webmanifest">
   <link rel="shortcut icon" href="favicon/favicon.ico">
-  
+
   <!-- Open Graph / Social Media Previews (Base Tags) -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://youthensoc.org/">
   <meta property="og:title" content="Youth Environment Society — YES">
-  <meta property="og:description" content="Empowering the next generation of environmental advocates for a sustainable future.">
-  <meta property="og:image" content="https://youthensoc.org/plant%20image.png">
+  <meta property="og:description"
+    content="Empowering the next generation of environmental advocates for a sustainable future.">
+  <meta property="og:image" content="https://youthensoc.org/plant-image.png">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://youthensoc.org/">
   <meta property="twitter:title" content="Youth Environment Society — YES">
   <meta property="twitter:description" content="Empowering the next generation of environmental advocates.">
-  <meta property="twitter:image" content="https://youthensoc.org/plant%20image.png">
+  <meta property="twitter:image" content="https://youthensoc.org/plant-image.png">
 
   <style>
     :root {
@@ -76,7 +78,7 @@
       display: flex;
       align-items: center;
       gap: 0.6rem;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-weight: 800;
       font-size: 1.4rem;
       color: var(--green);
@@ -114,7 +116,7 @@
       background: var(--green);
       color: white;
       padding: 0.6rem 1.4rem;
-      border-radius: 50px;
+      border-radius: 10px;
       font-size: 0.9rem;
       font-weight: 600;
       text-decoration: none;
@@ -147,16 +149,16 @@
     .lang-current {
       background: #f0f0f0;
       color: var(--dark);
-      border: 1px solid rgba(0,0,0,0.05);
+      border: 1px solid rgba(0, 0, 0, 0.05);
       padding: 0.5rem 1rem;
-      border-radius: 12px;
+      border-radius: 8px;
       font-size: 0.9rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 0.4rem;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Manrope', sans-serif;
       transition: background 0.2s;
     }
 
@@ -181,7 +183,7 @@
       right: 0;
       background: white;
       border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       padding: 0.5rem;
       min-width: 80px;
       opacity: 0;
@@ -279,7 +281,7 @@
       background: white;
       border: 2px solid var(--lime);
       padding: 0.35rem 1rem;
-      border-radius: 50px;
+      border-radius: 8px;
       font-size: 0.85rem;
       font-weight: 600;
       color: var(--green);
@@ -296,7 +298,7 @@
     }
 
     h1 {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-size: clamp(3rem, 7vw, 5.5rem);
       font-weight: 800;
       line-height: 1.0;
@@ -330,7 +332,7 @@
       background: var(--green);
       color: white;
       padding: 0.85rem 2rem;
-      border-radius: 50px;
+      border-radius: 10px;
       font-weight: 600;
       font-size: 1rem;
       text-decoration: none;
@@ -347,7 +349,7 @@
       background: transparent;
       color: var(--dark);
       padding: 0.85rem 2rem;
-      border-radius: 50px;
+      border-radius: 10px;
       font-weight: 600;
       font-size: 1rem;
       text-decoration: none;
@@ -419,17 +421,20 @@
     }
 
     .section-tag {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 700;
-      font-size: 0.8rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0;
+      text-transform: none;
       color: var(--green);
       margin-bottom: 1rem;
+      border-left: 3px solid var(--green);
+      padding-left: 0.6rem;
+      display: inline-block;
     }
 
     .section-title {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-weight: 800;
       font-size: clamp(2rem, 4vw, 3.2rem);
       line-height: 1.1;
@@ -474,10 +479,16 @@
     .wc-icon {
       font-size: 2rem;
       margin-bottom: 0.8rem;
+      color: var(--green);
+      line-height: 1;
+    }
+
+    .wc3 .wc-icon {
+      color: var(--lime);
     }
 
     .wc-title {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-weight: 700;
       font-size: 1rem;
       margin-bottom: 0.4rem;
@@ -535,21 +546,23 @@
     }
 
     .pillar-num {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-size: 0.75rem;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       color: var(--lime);
       opacity: 0.6;
       margin-bottom: 1rem;
     }
 
     .pillar-icon {
-      font-size: 2.4rem;
+      font-size: 2rem;
       margin-bottom: 1.2rem;
+      color: var(--lime);
+      line-height: 1;
     }
 
     .pillar h3 {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-weight: 700;
       font-size: 1.2rem;
       color: white;
@@ -607,7 +620,7 @@
 
     .join-form input {
       padding: 0.85rem 1.5rem;
-      border-radius: 50px;
+      border-radius: 10px;
       border: 2px solid transparent;
       background: white;
       font-family: 'DM Sans', sans-serif;
@@ -625,7 +638,7 @@
       background: var(--green);
       color: white;
       padding: 0.85rem 2rem;
-      border-radius: 50px;
+      border-radius: 10px;
       font-weight: 600;
       font-size: 1rem;
       border: none;
@@ -652,7 +665,7 @@
       font-weight: 600;
       margin-top: 0.8rem;
       padding: 0.6rem 1.2rem;
-      border-radius: 50px;
+      border-radius: 8px;
       display: none;
     }
 
@@ -683,7 +696,7 @@
     }
 
     .footer-logo {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-weight: 800;
       font-size: 2rem;
       color: var(--lime);
@@ -751,8 +764,8 @@
       transition: transform 0.3s ease, background 0.3s;
     }
 
-    .event-card:hover { 
-      transform: translateY(-6px); 
+    .event-card:hover {
+      transform: translateY(-6px);
       background: rgba(116, 198, 157, 0.12);
     }
 
@@ -763,27 +776,41 @@
       opacity: 0.9;
     }
 
-    .event-info { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; position: relative; }
-    .event-info h3 { color: white; margin-bottom: 0.2rem; font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; }
-    .event-info p { 
-      font-size: 0.85rem; 
-      color: rgba(255, 255, 255, 0.6); 
+    .event-info {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: relative;
+    }
+
+    .event-info h3 {
+      color: white;
+      margin-bottom: 0.2rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+    }
+
+    .event-info p {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
       line-height: 1.5;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      margin-bottom: 3rem; /* Space for sharing button */
+      margin-bottom: 3rem;
+      /* Space for sharing button */
     }
 
     .card-share-btn {
       position: absolute;
       bottom: 1.2rem;
       right: 1.2rem;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       color: white;
-      border: 1px solid rgba(255,255,255,0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 50%;
       width: 36px;
       height: 36px;
@@ -839,6 +866,7 @@
         padding: 1rem 4%;
         gap: 0.5rem;
       }
+
       .nav-right {
         gap: 0.8rem;
       }
@@ -852,7 +880,7 @@
         width: 250px;
         height: 100vh;
         background: var(--bg);
-        box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
         padding: 6rem 2rem 2rem;
         transition: right 0.3s ease;
         z-index: 999;
@@ -870,7 +898,7 @@
         display: block;
         padding: 1rem 0;
         font-size: 1.1rem;
-        border-bottom: 1px solid rgba(0,0,0,0.05);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
       }
 
       .menu-btn {
@@ -1039,6 +1067,203 @@
         font-size: 1.5rem;
       }
     }
+
+    /* ─── VOLUNTEER PROGRAM SECTION ──────────────────── */
+    .volunteer {
+      background: linear-gradient(160deg, #f0f4f0 0%, #d8f3dc 50%, #f0f4f0 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .volunteer::before {
+      content: '';
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(116, 198, 157, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .volunteer::after {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      left: -60px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(45, 106, 79, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .volunteer-header {
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto 3.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .volunteer-header .section-title {
+      margin-bottom: 1rem;
+    }
+
+    .volunteer-header p {
+      font-size: 1.1rem;
+      line-height: 1.75;
+      color: #3d5a3d;
+    }
+
+    .volunteer-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.4rem;
+      margin-bottom: 3.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .vol-card {
+      background: white;
+      border-radius: 14px;
+      padding: 2rem 1.6rem;
+      box-shadow: 0 4px 20px rgba(45, 106, 79, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1.5px solid rgba(45, 106, 79, 0.12);
+      border-left: 4px solid transparent;
+    }
+
+    .vol-card:nth-child(1) {
+      border-left-color: var(--lime);
+    }
+
+    .vol-card:nth-child(2) {
+      border-left-color: var(--purple);
+    }
+
+    .vol-card:nth-child(3) {
+      border-left-color: var(--pink);
+    }
+
+    .vol-card:nth-child(4) {
+      border-left-color: var(--yellow);
+    }
+
+    .vol-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(45, 106, 79, 0.18);
+    }
+
+    .vol-card-icon {
+      font-size: 1.6rem;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: var(--green);
+    }
+
+    .vol-card-icon i {
+      font-size: 1.6rem;
+    }
+
+    .ph {
+      line-height: 1;
+    }
+
+    .wc-icon i,
+    .pillar-icon i {
+      font-size: inherit;
+    }
+
+    .vol-card h3 {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--dark);
+      margin-bottom: 0.6rem;
+    }
+
+    .vol-card p {
+      font-size: 0.875rem;
+      line-height: 1.65;
+      color: #5a7a5a;
+    }
+
+    .volunteer-cta {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-volunteer {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--green);
+      color: white;
+      padding: 1.1rem 3rem;
+      border-radius: 10px;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      text-decoration: none;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+      box-shadow: 0 6px 28px rgba(45, 106, 79, 0.38);
+      letter-spacing: 0.3px;
+    }
+
+    .btn-volunteer:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 14px 40px rgba(45, 106, 79, 0.5);
+      background: #235c41;
+    }
+
+    .btn-volunteer svg {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    .volunteer-note {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: #6a8f6a;
+    }
+
+    @media (max-width: 1024px) {
+      .volunteer-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .volunteer-cards {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .vol-card {
+        padding: 1.5rem 1.2rem;
+      }
+
+      .btn-volunteer {
+        font-size: 1rem;
+        padding: 0.95rem 2.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .volunteer-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .volunteer-header p {
+        font-size: 1rem;
+      }
+    }
   </style>
 </head>
 
@@ -1055,12 +1280,15 @@
         <li><a href="#about" data-i18n="nav_about">Who We Are</a></li>
         <li><a href="#pillars" data-i18n="nav_pillars">Our Work</a></li>
         <li><a href="articles.html" data-i18n="nav_articles">Articles</a></li>
+        <li><a href="#volunteer" data-i18n="nav_volunteer">Volunteer</a></li>
         <li><a href="#join" data-i18n="nav_join">Join Us</a></li>
       </ul>
       <div class="lang-dropdown">
         <button class="lang-current">
           <span id="active-lang">EN</span>
-          <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          <svg viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5z" />
+          </svg>
         </button>
         <div class="lang-options">
           <button onclick="setLang('en')" id="opt-en">EN</button>
@@ -1068,7 +1296,9 @@
         </div>
       </div>
       <button class="menu-btn" onclick="toggleMenu()" aria-label="Toggle Menu">
-        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+        </svg>
       </button>
     </div>
   </nav>
@@ -1079,7 +1309,7 @@
 
     <!-- Plant image: right side, fades toward left -->
     <div class="hero-plant">
-      <img src="plant image.png" alt="Green plant">
+      <img src="plant-image.png" alt="Green plant">
     </div>
 
 
@@ -1089,7 +1319,8 @@
         <span></span> Youth-Led · Planet-Focused
       </div>
       <h1 data-i18n="hero_title">Empowering Youth for a <em>Sustainable</em> Future.</h1>
-      <p class="hero-sub" data-i18n="hero_sub">We are a community of young activists, thinkers, and doers united by one mission: to protect
+      <p class="hero-sub" data-i18n="hero_sub">We are a community of young activists, thinkers, and doers united by one
+        mission: to protect
         our environment and inspire the next generation of green leaders.</p>
       <div class="hero-btns">
         <a href="#join" class="btn-primary" data-i18n="btn_join">🌱 Join the Movement</a>
@@ -1123,17 +1354,17 @@
     <div class="who-grid">
       <div class="who-visual">
         <div class="who-card wc1">
-          <div class="wc-icon">🌍</div>
+          <div class="wc-icon"><i class="ph ph-globe-hemisphere-west"></i></div>
           <div class="wc-title" data-i18n="card_1_title">Environment First</div>
           <div class="wc-desc" data-i18n="card_1_desc">We put the planet at the center of every decision we make.</div>
         </div>
         <div class="who-card wc3">
-          <div class="wc-icon">✊</div>
+          <div class="wc-icon"><i class="ph ph-hand-fist"></i></div>
           <div class="wc-title" data-i18n="card_2_title">Youth Power</div>
           <div class="wc-desc" data-i18n="card_2_desc">Real change starts with the next generation — us.</div>
         </div>
         <div class="who-card wc2">
-          <div class="wc-icon">⚡</div>
+          <div class="wc-icon"><i class="ph ph-lightning"></i></div>
           <div class="wc-title" data-i18n="card_3_title">Action-Oriented</div>
           <div class="wc-desc" data-i18n="card_3_desc">We don't just talk — we build, organize, and act.</div>
         </div>
@@ -1142,11 +1373,14 @@
       <div class="who-text">
         <div class="section-tag" data-i18n="who_tag">Who We Are</div>
         <h2 class="section-title" data-i18n="who_title">A Generation That Refuses to Wait</h2>
-        <p data-i18n="who_p1">Youth Environment Society (YES) is a youth-led organization dedicated to empowering the next generation of
+        <p data-i18n="who_p1">Youth Environment Society (YES) is a youth-led organization dedicated to empowering the
+          next generation of
           environmental advocates. We believe the time for action is now — not tomorrow, not after graduation.</p>
-        <p data-i18n="who_p2">Through education, community organizing, and direct environmental action, we create meaningful change in our
+        <p data-i18n="who_p2">Through education, community organizing, and direct environmental action, we create
+          meaningful change in our
           communities while building the skills and networks that will shape a greener future.</p>
-        <a href="#join" class="btn-primary" style="display:inline-block; margin-top: 1rem;" data-i18n="who_btn">Join YES Today</a>
+        <a href="#join" class="btn-primary" style="display:inline-block; margin-top: 1rem;" data-i18n="who_btn">Join YES
+          Today</a>
       </div>
     </div>
   </section>
@@ -1159,21 +1393,24 @@
     <div class="pillars-grid">
       <div class="pillar">
         <div class="pillar-num">01</div>
-        <div class="pillar-icon">🌿</div>
+        <div class="pillar-icon"><i class="ph ph-leaf"></i></div>
         <h3 data-i18n="pillar_1_title">Environment</h3>
-        <p data-i18n="pillar_1_desc">Protecting ecosystems, reducing waste, and advocating for clean air, water, and land in our communities.</p>
+        <p data-i18n="pillar_1_desc">Protecting ecosystems, reducing waste, and advocating for clean air, water, and
+          land in our communities.</p>
       </div>
       <div class="pillar">
         <div class="pillar-num">02</div>
-        <div class="pillar-icon">🧠</div>
+        <div class="pillar-icon"><i class="ph ph-brain"></i></div>
         <h3 data-i18n="pillar_2_title">Youth</h3>
-        <p data-i18n="pillar_2_desc">Educating, inspiring, and mobilizing young people to become confident voices for our planet.</p>
+        <p data-i18n="pillar_2_desc">Educating, inspiring, and mobilizing young people to become confident voices for
+          our planet.</p>
       </div>
       <div class="pillar">
         <div class="pillar-num">03</div>
-        <div class="pillar-icon">🚀</div>
+        <div class="pillar-icon"><i class="ph ph-rocket-launch"></i></div>
         <h3 data-i18n="pillar_3_title">Action</h3>
-        <p data-i18n="pillar_3_desc">Running campaigns, events, and initiatives that create tangible, measurable impact where it matters most.</p>
+        <p data-i18n="pillar_3_desc">Running campaigns, events, and initiatives that create tangible, measurable impact
+          where it matters most.</p>
       </div>
     </div>
   </section>
@@ -1181,16 +1418,71 @@
   <!-- GALLERY -->
   <section id="gallery" class="section pillars">
     <div class="section-tag" data-i18n="gallery_tag">Articles</div>
-    <h2 class="section-title" data-i18n="gallery_title"><em style="color:var(--green); font-style:normal">YES</em> in Action</h2>
-    <div id="events-loader" style="text-align:center; padding: 2rem; color: rgba(255,255,255,0.4)">Loading events...</div>
+    <h2 class="section-title" data-i18n="gallery_title"><em style="color:var(--green); font-style:normal">YES</em> in
+      Action</h2>
+    <div id="events-loader" style="text-align:center; padding: 2rem; color: rgba(255,255,255,0.4)">Loading events...
+    </div>
     <div id="gallery-grid" class="gallery-grid"></div>
+  </section>
+
+  <!-- VOLUNTEER PROGRAM -->
+  <section class="section volunteer" id="volunteer">
+    <div class="volunteer-header">
+      <div class="section-tag" data-i18n="vol_tag">Volunteer Program</div>
+      <h2 class="section-title" data-i18n="vol_title">Shape the Future with <em
+          style="color:var(--green);font-style:normal">Your Hands</em></h2>
+      <p data-i18n="vol_sub">Join our volunteer program and be part of a passionate community working for a greener
+        planet. Your time, energy, and ideas can make a real difference.</p>
+    </div>
+
+    <div class="volunteer-cards">
+      <div class="vol-card">
+        <span class="vol-card-icon"><i class="ph ph-handshake"></i></span>
+        <h3 data-i18n="vol_card1_title">Build Your Network</h3>
+        <p data-i18n="vol_card1_desc">Connect with like-minded young activists, mentors, and environmental leaders
+          across Azerbaijan and beyond.</p>
+      </div>
+      <div class="vol-card">
+        <span class="vol-card-icon"><i class="ph ph-graduation-cap"></i></span>
+        <h3 data-i18n="vol_card2_title">Gain Real Experience</h3>
+        <p data-i18n="vol_card2_desc">Develop practical skills in project management, public speaking, research, and
+          environmental advocacy.</p>
+      </div>
+      <div class="vol-card">
+        <span class="vol-card-icon"><i class="ph ph-globe-hemisphere-west"></i></span>
+        <h3 data-i18n="vol_card3_title">Create Real Impact</h3>
+        <p data-i18n="vol_card3_desc">Participate in campaigns, clean-ups, and educational events that leave a
+          measurable mark on your community.</p>
+      </div>
+      <div class="vol-card">
+        <span class="vol-card-icon"><i class="ph ph-shooting-star"></i></span>
+        <h3 data-i18n="vol_card4_title">Grow as a Leader</h3>
+        <p data-i18n="vol_card4_desc">Take on responsibilities, lead initiatives, and discover your potential as a young
+          champion for sustainability.</p>
+      </div>
+    </div>
+
+    <div class="volunteer-cta">
+      <a id="volunteer-form-btn" href="https://forms.gle/YOUR_FORM_LINK_HERE" target="_blank" rel="noopener noreferrer"
+        class="btn-volunteer" data-i18n="vol_btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+        </svg>
+        Qeydiyyatdan keç
+      </a>
+      <p class="volunteer-note" data-i18n="vol_note">Free to join · Open to all youth · Takes only 2 minutes</p>
+    </div>
   </section>
 
   <!-- JOIN -->
   <section class="join" id="join">
     <div class="section-tag" style="position:relative" data-i18n="join_tag">Get Involved</div>
-    <h2 class="section-title" data-i18n="join_title">Ready to Say <em style="color:var(--green); font-style:normal">YES</em>?</h2>
-    <p data-i18n="join_sub">Sign up to stay updated on our events, campaigns, and opportunities to make a difference.</p>
+    <h2 class="section-title" data-i18n="join_title">Ready to Say <em
+        style="color:var(--green); font-style:normal">YES</em>?</h2>
+    <p data-i18n="join_sub">Sign up to stay updated on our events, campaigns, and opportunities to make a difference.
+    </p>
     <form id="email-form" class="join-form">
       <input id="email-input" type="email" placeholder="Your email address" data-i18n="join_placeholder" required>
       <button id="signup-btn" type="submit" data-i18n="join_btn">Sign Me Up 🌱</button>
@@ -1251,8 +1543,8 @@
       document.querySelector('.nav-links').classList.toggle('active');
     }
 
-    document.querySelectorAll('.nav-links a').forEach(function(link) {
-      link.addEventListener('click', function() {
+    document.querySelectorAll('.nav-links a').forEach(function (link) {
+      link.addEventListener('click', function () {
         document.querySelector('.nav-links').classList.remove('active');
       });
     });
@@ -1300,6 +1592,20 @@
         join_btn: "Sign Me Up 🌱",
         gallery_tag: "Last Article",
         gallery_title: "<em style='color:var(--green); font-style:normal'>YES</em> in Action",
+        nav_volunteer: "Volunteer",
+        vol_tag: "Volunteer Program",
+        vol_title: "Shape the Future with <em style='color:var(--green);font-style:normal'>Your Hands</em>",
+        vol_sub: "Join our volunteer program and be part of a passionate community working for a greener planet. Your time, energy, and ideas can make a real difference.",
+        vol_card1_title: "Build Your Network",
+        vol_card1_desc: "Connect with like-minded young activists, mentors, and environmental leaders across Azerbaijan and beyond.",
+        vol_card2_title: "Gain Real Experience",
+        vol_card2_desc: "Develop practical skills in project management, public speaking, research, and environmental advocacy.",
+        vol_card3_title: "Create Real Impact",
+        vol_card3_desc: "Participate in campaigns, clean-ups, and educational events that leave a measurable mark on your community.",
+        vol_card4_title: "Grow as a Leader",
+        vol_card4_desc: "Take on responsibilities, lead initiatives, and discover your potential as a young champion for sustainability.",
+        vol_btn: "Register Now",
+        vol_note: "Free to join · Open to all youth · Takes only 2 minutes",
         footer_logo: "Follow Us",
         footer_p: "© 2026 Youth Environment Society. Empowering youth for a sustainable future.",
         logo_text: "Youth Environment Society",
@@ -1345,6 +1651,20 @@
         join_btn: "Abunə ol 🌱",
         gallery_tag: "Ən Son Məqalə",
         gallery_title: "Fəaliyyətdə <em style='color:var(--green); font-style:normal'>YES</em>",
+        nav_volunteer: "Könüllülük",
+        vol_tag: "Könüllülük Proqramı",
+        vol_title: "Gələcəyi <em style='color:var(--green);font-style:normal'>Öz əllərinizlə</em> Formalaşdırın",
+        vol_sub: "Könüllülük proqramımıza qoşulun və daha yaşıl bir planet üçün çalışan ehtiraslı bir icmanın üzvü olun. Vaxtınız, enerjiniz və ideyalarınız real fərq yarada bilər.",
+        vol_card1_title: "Şəbəkənizi Qurun",
+        vol_card1_desc: "Azərbaycan və dünya üzrə həmfikir gənc fəallar, mentorlar və ekoloji liderlərlə əlaqə yaradın.",
+        vol_card2_title: "Real Təcrübə Qazanın",
+        vol_card2_desc: "Layihə idarəetməsi, ictimai çıxış, tədqiqat və ekoloji müdafiə sahəsində praktiki bacarıqlar inkişaf etdirin.",
+        vol_card3_title: "Real Təsir Yaradın",
+        vol_card3_desc: "İcmanızda ölçülə bilən iz qoyan kampaniyalarda, təmizlik aksiyalarında və təhsil tədbirlərində iştirak edin.",
+        vol_card4_title: "Lider Kimi Böyüyün",
+        vol_card4_desc: "Məsuliyyət götürün, təşəbbüslərə rəhbərlik edin və davamlı inkişaf naminə gənc bir çempion kimi potensialınızı kəşf edin.",
+        vol_btn: "Qeydiyyatdan keç",
+        vol_note: "Pulsuzdur · Bütün gənclərə açıqdır · Cəmi 2 dəqiqə çəkir",
         footer_logo: "Sosial şəbəkələrimiz",
         footer_p: "© 2026 Youth Environment Society. Davamlı gələcək üçün gənclərin gücləndirilməsi.",
         logo_text: "Gənclərin Ekoloji Cəmiyyəti",
@@ -1359,7 +1679,7 @@
     }
 
     function applyLanguage(lang) {
-      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
         var key = el.getAttribute('data-i18n');
         if (translations[lang] && translations[lang][key]) {
           if (el.tagName === 'INPUT') {
@@ -1372,7 +1692,7 @@
 
       // Update active state in dropdown
       document.getElementById('active-lang').innerText = lang.toUpperCase();
-      document.querySelectorAll('.lang-options button').forEach(function(btn) {
+      document.querySelectorAll('.lang-options button').forEach(function (btn) {
         btn.classList.remove('active');
       });
       document.getElementById('opt-' + lang).classList.add('active');
@@ -1387,72 +1707,349 @@
   <style>
     /* Survey Modal Styling */
     .survey-modal {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);
-      z-index: 10000; display: none; align-items: center; justify-content: center;
-      padding: 20px; opacity: 0; transition: opacity 0.3s ease;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
       overflow-y: auto;
     }
-    .survey-modal.show { display: flex; opacity: 1; }
+
+    .survey-modal.show {
+      display: flex;
+      opacity: 1;
+    }
+
     .survey-card {
-      background: white; width: 100%; max-width: 560px;
-      border-radius: 20px; padding: 32px 28px; position: relative;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2); margin: auto;
-      transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      background: white;
+      width: 100%;
+      max-width: 560px;
+      border-radius: 20px;
+      padding: 32px 28px;
+      position: relative;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      margin: auto;
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .survey-modal.show .survey-card { transform: scale(1); }
+
+    .survey-modal.show .survey-card {
+      transform: scale(1);
+    }
+
     .survey-close {
-      position: absolute; top: 16px; right: 16px; width: 36px; height: 36px;
-      background: rgba(0,0,0,0.05); color: var(--dark); border: none; border-radius: 50%;
-      cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--dark);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
     }
-    .survey-close:hover { background: rgba(0,0,0,0.1); transform: rotate(90deg); }
-    .survey-header { text-align: center; margin-bottom: 24px; }
-    .survey-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; color: var(--dark); margin-bottom: 8px; }
-    .survey-header h2 em { color: var(--green); font-style: normal; }
-    .survey-header p { font-size: 0.9rem; opacity: 0.7; }
-    .survey-prog { display: flex; gap: 6px; margin-bottom: 20px; justify-content: center; }
-    .survey-step-dot { height: 4px; flex: 1; max-width: 60px; background: rgba(0,0,0,0.1); border-radius: 4px; transition: 0.4s; }
-    .survey-step-dot.active { background: var(--green); }
-    .survey-step-dot.done { background: var(--lime); }
-    .surv-step { display: none; animation: stepIn 0.3s ease both; text-align: left;}
-    .surv-step.active { display: block; }
-    @keyframes stepIn { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: translateX(0); } }
-    .surv-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; margin-bottom: 16px; color: var(--dark); font-weight:700;}
-    .surv-field { margin-bottom: 16px; }
-    .surv-field label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
-    .surv-field label .req { color: var(--green); }
-    .surv-field input[type="text"], .surv-field select {
-      width: 100%; padding: 10px 14px; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 10px;
-      font-family: inherit; font-size: 0.9rem; background: var(--bg); outline: none; transition: 0.2s;
+
+    .survey-close:hover {
+      background: rgba(0, 0, 0, 0.1);
+      transform: rotate(90deg);
     }
-    .surv-field input[type="text"]:focus, .surv-field select:focus { border-color: var(--green); background: white; box-shadow: 0 0 0 3px rgba(45,106,79,0.1); }
-    .surv-field.has-error input[type="text"], .surv-field.has-error select { border-color: #e07a5f; }
-    .surv-err { font-size: 0.75rem; color: #e07a5f; margin-top: 4px; display: none; }
-    .surv-field.has-error .surv-err { display: block; }
-    .surv-hint { font-size: 0.75rem; color: rgba(0,0,0,0.5); margin-top: 4px; }
-    .surv-radio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .surv-radio-grid.three { grid-template-columns: 1fr 1fr 1fr; }
-    @media (max-width: 480px) { .surv-radio-grid.three { grid-template-columns: 1fr 1fr; } }
-    .surv-radio { position: relative; cursor: pointer; }
-    .surv-radio input { position: absolute; opacity: 0; width: 0; height: 0; }
-    .surv-radio .lbl { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 6px; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 12px; font-size: 0.8rem; font-weight: 500; background: var(--bg); transition: 0.2s; text-align: center; }
-    .surv-radio .icon { font-size: 1.4rem; }
-    .surv-radio input:checked + .lbl { border-color: var(--green); background: rgba(45,106,79,0.1); color: var(--green); box-shadow: 0 0 0 3px rgba(45,106,79,0.1); }
-    .surv-radio:hover .lbl { border-color: var(--lime); background: white; }
-    .surv-cond { display: none; margin-top: 16px; }
-    .surv-cond.show { display: block; animation: stepIn 0.3s ease both; }
-    .surv-actions { display: flex; gap: 10px; margin-top: 24px; }
-    .surv-btn-back { background: none; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 10px; padding: 10px 16px; font-size: 0.85rem; color: var(--dark); cursor: pointer; display: none; font-weight:600; font-family:inherit;}
-    .surv-btn-back:hover { border-color: var(--dark); }
-    .surv-btn-next { flex: 1; background: var(--green); color: white; border: none; border-radius: 10px; padding: 12px 20px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family:inherit; display: flex; align-items: center; justify-content: center; gap:8px;}
-    .surv-btn-next:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(45,106,79,0.3); }
-    .surv-btn-next:disabled { opacity: 0.7; cursor: not-allowed; }
-    .surv-success { display: none; text-align: center; padding: 16px 0; }
-    .surv-success.show { display: block; animation: stepIn 0.3s ease; }
-    .surv-success-icon { font-size: 3rem; margin-bottom: 10px; }
-    .surv-success h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; color: var(--green); margin-bottom: 10px; }
-    .surv-divider { height: 1px; background: rgba(0,0,0,0.1); margin: 20px 0; }
+
+    .survey-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .survey-header h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.8rem;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .survey-header h2 em {
+      color: var(--green);
+      font-style: normal;
+    }
+
+    .survey-header p {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    .survey-prog {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+
+    .survey-step-dot {
+      height: 4px;
+      flex: 1;
+      max-width: 60px;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+      transition: 0.4s;
+    }
+
+    .survey-step-dot.active {
+      background: var(--green);
+    }
+
+    .survey-step-dot.done {
+      background: var(--lime);
+    }
+
+    .surv-step {
+      display: none;
+      animation: stepIn 0.3s ease both;
+      text-align: left;
+    }
+
+    .surv-step.active {
+      display: block;
+    }
+
+    @keyframes stepIn {
+      from {
+        opacity: 0;
+        transform: translateX(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .surv-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+      color: var(--dark);
+      font-weight: 700;
+    }
+
+    .surv-field {
+      margin-bottom: 16px;
+    }
+
+    .surv-field label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+
+    .surv-field label .req {
+      color: var(--green);
+    }
+
+    .surv-field input[type="text"],
+    .surv-field select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: var(--bg);
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .surv-field input[type="text"]:focus,
+    .surv-field select:focus {
+      border-color: var(--green);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
+    }
+
+    .surv-field.has-error input[type="text"],
+    .surv-field.has-error select {
+      border-color: #e07a5f;
+    }
+
+    .surv-err {
+      font-size: 0.75rem;
+      color: #e07a5f;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .surv-field.has-error .surv-err {
+      display: block;
+    }
+
+    .surv-hint {
+      font-size: 0.75rem;
+      color: rgba(0, 0, 0, 0.5);
+      margin-top: 4px;
+    }
+
+    .surv-radio-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .surv-radio-grid.three {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    @media (max-width: 480px) {
+      .surv-radio-grid.three {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .surv-radio {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .surv-radio input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .surv-radio .lbl {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 6px;
+      border: 1.5px solid rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: var(--bg);
+      transition: 0.2s;
+      text-align: center;
+    }
+
+    .surv-radio .icon {
+      font-size: 1.4rem;
+    }
+
+    .surv-radio input:checked+.lbl {
+      border-color: var(--green);
+      background: rgba(45, 106, 79, 0.1);
+      color: var(--green);
+      box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
+    }
+
+    .surv-radio:hover .lbl {
+      border-color: var(--lime);
+      background: white;
+    }
+
+    .surv-cond {
+      display: none;
+      margin-top: 16px;
+    }
+
+    .surv-cond.show {
+      display: block;
+      animation: stepIn 0.3s ease both;
+    }
+
+    .surv-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .surv-btn-back {
+      background: none;
+      border: 1.5px solid rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 0.85rem;
+      color: var(--dark);
+      cursor: pointer;
+      display: none;
+      font-weight: 600;
+      font-family: inherit;
+    }
+
+    .surv-btn-back:hover {
+      border-color: var(--dark);
+    }
+
+    .surv-btn-next {
+      flex: 1;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .surv-btn-next:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
+    }
+
+    .surv-btn-next:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .surv-success {
+      display: none;
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    .surv-success.show {
+      display: block;
+      animation: stepIn 0.3s ease;
+    }
+
+    .surv-success-icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    .surv-success h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+
+    .surv-divider {
+      height: 1px;
+      background: rgba(0, 0, 0, 0.1);
+      margin: 20px 0;
+    }
 
     /* Toast Popup Styling */
     .toast-popup {
@@ -1470,10 +2067,25 @@
       transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       font-family: 'DM Sans', sans-serif;
     }
-    .toast-popup.show { transform: translateX(0); }
-    .toast-content { display: flex; align-items: center; gap: 12px; }
-    .toast-icon { font-size: 1.2rem; }
-    .toast-text { font-weight: 500; font-size: 0.95rem; }
+
+    .toast-popup.show {
+      transform: translateX(0);
+    }
+
+    .toast-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .toast-icon {
+      font-size: 1.2rem;
+    }
+
+    .toast-text {
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
 
     /* Event Modal Styling */
     .event-modal {
@@ -1492,10 +2104,12 @@
       opacity: 0;
       transition: opacity 0.3s ease;
     }
+
     .event-modal.show {
       display: flex;
       opacity: 1;
     }
+
     .modal-content {
       background: var(--dark);
       width: 100%;
@@ -1511,9 +2125,11 @@
       transform: scale(0.9);
       transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
+
     .event-modal.show .modal-content {
       transform: scale(1);
     }
+
     .modal-close {
       position: absolute;
       top: 20px;
@@ -1531,16 +2147,19 @@
       z-index: 2;
       transition: all 0.2s ease;
     }
+
     .modal-close:hover {
       background: var(--green);
       transform: rotate(90deg);
     }
+
     .modal-body {
       display: grid;
       grid-template-columns: 1fr 1fr;
       overflow-y: auto;
       flex: 1;
     }
+
     .modal-img {
       width: 100%;
       height: 500px;
@@ -1549,28 +2168,47 @@
       top: 0;
       align-self: start;
     }
+
     .modal-details {
       padding: 40px;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
+
     .modal-details h2 {
       font-size: 2rem;
       margin-bottom: 20px;
       color: var(--green);
     }
+
     .modal-details p {
       font-size: 1.1rem;
       line-height: 1.6;
       color: rgba(255, 255, 255, 0.8);
     }
+
     @media (max-width: 768px) {
-      .modal-body { grid-template-columns: 1fr; }
-      .modal-img { height: 250px; }
-      .modal-details { padding: 25px; }
-      .modal-details h2 { font-size: 1.4rem; }
-      .modal-content { width: 95%; max-height: 95vh; }
+      .modal-body {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-img {
+        height: 250px;
+      }
+
+      .modal-details {
+        padding: 25px;
+      }
+
+      .modal-details h2 {
+        font-size: 1.4rem;
+      }
+
+      .modal-content {
+        width: 95%;
+        max-height: 95vh;
+      }
     }
   </style>
 
@@ -1619,7 +2257,8 @@
           <h2 id="modal-title">Event Title</h2>
           <p id="modal-desc">Event Description goes here.</p>
           <div style="margin-top: 2rem;">
-            <button id="modal-share-btn" class="btn-primary" style="font-size: 0.85rem; padding: 0.6rem 1.2rem;" onclick="copyShareLink()">
+            <button id="modal-share-btn" class="btn-primary" style="font-size: 0.85rem; padding: 0.6rem 1.2rem;"
+              onclick="copyShareLink()">
               🔗 <span data-i18n="btn_share_link">Share Article</span>
             </button>
           </div>
@@ -1687,7 +2326,7 @@
     }
 
     // Close on click outside
-    window.onclick = function(event) {
+    window.onclick = function (event) {
       var modal = document.getElementById('event-modal');
       if (event.target == modal) {
         closeModal();
@@ -1699,18 +2338,18 @@
       var div = document.createElement('div');
       div.innerText = text;
       var escaped = div.innerHTML;
-      
+
       var mdRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
-      escaped = escaped.replace(mdRegex, function(match, label, url) {
+      escaped = escaped.replace(mdRegex, function (match, label, url) {
         return '<a href="' + url + '" target="_blank" style="color: #3498db; text-decoration: underline;">' + label + '</a>';
       });
-      
+
       var combinedRegex = /(<a\b[^>]*>.*?<\/a>)|(https?:\/\/[^\s<]+)/gi;
-      escaped = escaped.replace(combinedRegex, function(match, aTag, url) {
+      escaped = escaped.replace(combinedRegex, function (match, aTag, url) {
         if (aTag) return aTag;
         return '<a href="' + url + '" target="_blank" style="color: #3498db; text-decoration: underline;">' + url + '</a>';
       });
-      
+
       return escaped;
     }
 
@@ -1718,7 +2357,7 @@
       var lang = localStorage.getItem('yes_lang') || 'en';
       var container = document.getElementById('gallery-grid');
       container.innerHTML = '';
-      
+
       if (allEvents.length === 0) {
         container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color:rgba(255,255,255,0.4)">No events yet.</p>';
         return;
@@ -1726,7 +2365,7 @@
 
       const ev = allEvents[0];
       const index = 0;
-      
+
       var card = document.createElement('div');
       card.className = 'event-card';
       card.style.cursor = 'pointer';
@@ -1768,10 +2407,10 @@
     function copyShareLink() {
       const hash = window.location.hash;
       if (!hash) return;
-      
+
       // Default to the clean site URL (No article-specific preview)
       const shareUrl = window.location.origin + window.location.pathname + hash;
-      
+
       navigator.clipboard.writeText(shareUrl).then(() => {
         const btn = document.getElementById('modal-share-btn');
         const lang = localStorage.getItem('yes_lang') || 'en';
@@ -1788,7 +2427,7 @@
       await fetchEvents();
       handleHash();
     });
-    
+
     // Listen for hash changes (e.g. back button)
     window.addEventListener('hashchange', () => {
       if (!window.location.hash) {
@@ -1800,7 +2439,7 @@
 
     // Also re-render gallery when language changes
     var originalApplyLanguage = applyLanguage;
-    applyLanguage = function(lang) {
+    applyLanguage = function (lang) {
       originalApplyLanguage(lang);
       renderGallery();
     };
@@ -1809,7 +2448,7 @@
   <div id="survey-modal" class="survey-modal">
     <div class="survey-card">
       <button class="survey-close" onclick="closeSurvey()">✕</button>
-      
+
       <div class="survey-header">
         <h2>İcmamıza <em>qoşul</em></h2>
         <p>Gənc ekoloji lider kimi bizimlə addımla.<br>Sadəcə bir neçə sual — 1 dəqiqə çəkir.</p>
@@ -1829,14 +2468,18 @@
           <input type="text" id="s-name" placeholder="Əli Hüseynov">
           <div class="surv-err">Bu sahəni doldurun</div>
         </div>
-        
+
         <div class="surv-field" id="f-scity">
           <label>Şəhər / Rayon <span class="req">*</span></label>
           <select id="s-city" onchange="sOnCity()">
             <option value="">— Seçin —</option>
             <optgroup label="Böyük şəhərlər">
-              <option>Bakı</option><option>Gəncə</option><option>Sumqayıt</option>
-              <option>Mingəçevir</option><option>Lənkəran</option><option>Naxçıvan</option>
+              <option>Bakı</option>
+              <option>Gəncə</option>
+              <option>Sumqayıt</option>
+              <option>Mingəçevir</option>
+              <option>Lənkəran</option>
+              <option>Naxçıvan</option>
             </optgroup>
             <option value="diger">Digər rayon və ya kənd</option>
           </select>
@@ -1856,14 +2499,22 @@
             <label>Bakı daxilindəki rayon</label>
             <select id="s-district">
               <option value="">— Seçin (ixtiyari) —</option>
-              <option>Binəqədi</option><option>Xətai</option><option>Xəzər</option>
-              <option>Nərimanov</option><option>Nəsimi</option><option>Nizami</option>
-              <option>Pirallahı</option><option>Qaradağ</option><option>Sabunçu</option>
-              <option>Səbail</option><option>Suraxanı</option><option>Abşeron</option>
+              <option>Binəqədi</option>
+              <option>Xətai</option>
+              <option>Xəzər</option>
+              <option>Nərimanov</option>
+              <option>Nəsimi</option>
+              <option>Nizami</option>
+              <option>Pirallahı</option>
+              <option>Qaradağ</option>
+              <option>Sabunçu</option>
+              <option>Səbail</option>
+              <option>Suraxanı</option>
+              <option>Abşeron</option>
             </select>
           </div>
         </div>
-        
+
         <div class="surv-actions">
           <button class="surv-btn-next" onclick="sNext(1)">Davam et ➔</button>
         </div>
@@ -1902,8 +2553,13 @@
             <label>Sinif</label>
             <select id="s-school-grade">
               <option value="">— Seçin —</option>
-              <option>5-ci sinif</option><option>6-cı sinif</option><option>7-ci sinif</option>
-              <option>8-ci sinif</option><option>9-cu sinif</option><option>10-cu sinif</option><option>11-ci sinif</option>
+              <option>5-ci sinif</option>
+              <option>6-cı sinif</option>
+              <option>7-ci sinif</option>
+              <option>8-ci sinif</option>
+              <option>9-cu sinif</option>
+              <option>10-cu sinif</option>
+              <option>11-ci sinif</option>
             </select>
           </div>
         </div>
@@ -1914,10 +2570,19 @@
             <label>Universitetinizin adı <span class="req">*</span></label>
             <select id="s-uni-name" onchange="sOnUniChange()">
               <option value="">— Seçin —</option>
-              <option>BDU</option><option>ADU</option><option>ADPU</option><option>ATU</option>
-              <option>AzTU</option><option>BHOS</option><option>ADA University</option>
-              <option>Xəzər Universiteti</option><option>UNEC</option><option>Tibb Universiteti</option>
-              <option>Naxçıvan Dövlət Universiteti</option><option>Gəncə Dövlət Universiteti</option><option>Sumqayıt Dövlət Universiteti</option>
+              <option>BDU</option>
+              <option>ADU</option>
+              <option>ADPU</option>
+              <option>ATU</option>
+              <option>AzTU</option>
+              <option>BHOS</option>
+              <option>ADA University</option>
+              <option>Xəzər Universiteti</option>
+              <option>UNEC</option>
+              <option>Tibb Universiteti</option>
+              <option>Naxçıvan Dövlət Universiteti</option>
+              <option>Gəncə Dövlət Universiteti</option>
+              <option>Sumqayıt Dövlət Universiteti</option>
               <option value="other">Digər</option>
             </select>
             <div class="surv-err">Universitet seçin</div>
@@ -1934,7 +2599,11 @@
             <label>Kurs</label>
             <select id="s-uni-year">
               <option value="">— Seçin —</option>
-              <option>1-ci kurs</option><option>2-ci kurs</option><option>3-cü kurs</option><option>4-cü kurs</option><option>Magistr</option>
+              <option>1-ci kurs</option>
+              <option>2-ci kurs</option>
+              <option>3-cü kurs</option>
+              <option>4-cü kurs</option>
+              <option>Magistr</option>
             </select>
           </div>
         </div>
@@ -1960,12 +2629,24 @@
         <div class="surv-field">
           <label>YES-də hansı sahələr sizi maraqlandırır?</label>
           <div class="surv-radio-grid">
-            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Ecology"><div class="lbl"><span class="icon">🌿</span>Ekologiya</div></label>
-            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Climate"><div class="lbl"><span class="icon">🌡️</span>İqlim dəyişikliyi</div></label>
-            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Volunteer"><div class="lbl"><span class="icon">🤝</span>Könüllülük</div></label>
-            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Events"><div class="lbl"><span class="icon">📅</span>Tədbirlər</div></label>
-            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Education"><div class="lbl"><span class="icon">📚</span>Ekoloji təhsil</div></label>
-            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Media"><div class="lbl"><span class="icon">📸</span>Media / SMM</div></label>
+            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Ecology">
+              <div class="lbl"><span class="icon">🌿</span>Ekologiya</div>
+            </label>
+            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Climate">
+              <div class="lbl"><span class="icon">🌡️</span>İqlim dəyişikliyi</div>
+            </label>
+            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Volunteer">
+              <div class="lbl"><span class="icon">🤝</span>Könüllülük</div>
+            </label>
+            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Events">
+              <div class="lbl"><span class="icon">📅</span>Tədbirlər</div>
+            </label>
+            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Education">
+              <div class="lbl"><span class="icon">📚</span>Ekoloji təhsil</div>
+            </label>
+            <label class="surv-radio"><input type="checkbox" name="s_interest" value="Media">
+              <div class="lbl"><span class="icon">📸</span>Media / SMM</div>
+            </label>
           </div>
         </div>
 
@@ -1973,7 +2654,11 @@
           <label>Bizimlə necə tanış oldunuz?</label>
           <select id="s-source">
             <option value="">— Seçin —</option>
-            <option>Instagram</option><option>Dostumun tövsiyəsi</option><option>Məktəb/Universitet</option><option>Tədbirdə</option><option>Digər</option>
+            <option>Instagram</option>
+            <option>Dostumun tövsiyəsi</option>
+            <option>Məktəb/Universitet</option>
+            <option>Tədbirdə</option>
+            <option>Digər</option>
           </select>
         </div>
 
@@ -1992,7 +2677,8 @@
       <div class="surv-success" id="s-success">
         <div class="surv-success-icon">🌿</div>
         <h2>Xoş gəldiniz!</h2>
-        <p style="opacity:0.8; font-size:0.95rem;">Müraciətiniz alındı. Tezliklə YES komandası ilə əlaqə saxlayacağıq!</p>
+        <p style="opacity:0.8; font-size:0.95rem;">Müraciətiniz alındı. Tezliklə YES komandası ilə əlaqə saxlayacağıq!
+        </p>
         <button class="surv-btn-next" style="margin-top:20px; width:100%" onclick="closeSurvey()">Bağla</button>
       </div>
 
@@ -2029,7 +2715,7 @@
     function updateSProg(step) {
       for (let i = 1; i <= sTotal; i++) {
         const el = document.getElementById('sp-' + i);
-        if(!el) continue;
+        if (!el) continue;
         if (i < step) { el.className = 'survey-step-dot done'; }
         else if (i === step) { el.className = 'survey-step-dot active'; }
         else { el.className = 'survey-step-dot'; }
@@ -2038,11 +2724,11 @@
 
     function sSetErr(id) {
       const el = document.getElementById('f-' + id);
-      if(el) el.classList.add('has-error');
+      if (el) el.classList.add('has-error');
     }
     function sClrErr(id) {
       const el = document.getElementById('f-' + id);
-      if(el) el.classList.remove('has-error');
+      if (el) el.classList.remove('has-error');
     }
 
     function sNext(step) {
@@ -2060,8 +2746,8 @@
       if (step === 2) {
         const edu = document.querySelector('input[name="s_edu_type"]:checked');
         const errEl = document.getElementById('s-edu-type-err');
-        if(errEl) errEl.style.display = 'none';
-        if (!edu) { if(errEl) errEl.style.display = 'block'; ok = false; }
+        if (errEl) errEl.style.display = 'none';
+        if (!edu) { if (errEl) errEl.style.display = 'block'; ok = false; }
         else {
           if (edu.value === 'school') {
             sClrErr('sschool-name');
@@ -2107,7 +2793,7 @@
       document.getElementById('s-uni-block').classList.toggle('show', val === 'university');
       document.getElementById('s-other-edu-block').classList.toggle('show', val === 'other');
       const errEl = document.getElementById('s-edu-type-err');
-      if(errEl) errEl.style.display = 'none';
+      if (errEl) errEl.style.display = 'none';
     }
 
     function sOnUniChange() {
@@ -2121,11 +2807,11 @@
       btn.textContent = 'Göndərilir...';
 
       let cityVal = document.getElementById('s-city').value;
-      if(cityVal === 'diger') cityVal = document.getElementById('s-city-other').value.trim();
+      if (cityVal === 'diger') cityVal = document.getElementById('s-city-other').value.trim();
       let uniVal = document.getElementById('s-uni-name').value;
-      if(uniVal === 'other') uniVal = document.getElementById('s-uni-other').value.trim();
+      if (uniVal === 'other') uniVal = document.getElementById('s-uni-other').value.trim();
 
-      const interests = [...document.querySelectorAll('input[name="s_interest"]:checked')].map(c=>c.value).join(', ');
+      const interests = [...document.querySelectorAll('input[name="s_interest"]:checked')].map(c => c.value).join(', ');
 
       const data = {
         action: 'join',
@@ -2153,19 +2839,19 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       })
-      .then(() => {
-        document.querySelectorAll('.surv-step').forEach(s => s.classList.remove('active'));
-        document.querySelector('.survey-prog').style.display = 'none';
-        document.querySelector('.survey-header').style.display = 'none';
-        document.getElementById('s-success').classList.add('show');
-      })
-      .catch((err) => {
-        alert('Təəssüf ki, qeydiyyat zamanı xəta baş verdi. Xahiş edirik yenidən cəhd edin.');
-      })
-      .finally(() => {
-        btn.disabled = false;
-        btn.textContent = 'Qoşul! 🌱';
-      });
+        .then(() => {
+          document.querySelectorAll('.surv-step').forEach(s => s.classList.remove('active'));
+          document.querySelector('.survey-prog').style.display = 'none';
+          document.querySelector('.survey-header').style.display = 'none';
+          document.getElementById('s-success').classList.add('show');
+        })
+        .catch((err) => {
+          alert('Təəssüf ki, qeydiyyat zamanı xəta baş verdi. Xahiş edirik yenidən cəhd edin.');
+        })
+        .finally(() => {
+          btn.disabled = false;
+          btn.textContent = 'Qoşul! 🌱';
+        });
     }
   </script>
 </body>
