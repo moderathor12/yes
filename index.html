@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Youth Environment Society — YES</title>
   <link
-    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
   <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
@@ -15,20 +15,102 @@
   <link rel="manifest" href="favicon/site.webmanifest">
   <link rel="shortcut icon" href="favicon/favicon.ico">
 
-  <!-- Open Graph / Social Media Previews (Base Tags) -->
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Youth Environment Society (YES) — Azərbaycanın gənc ekoloji liderləri üçün platforma. Könüllülük, ekoloji təhsil və davamlı gələcək naminə fəaliyyət.">
+  <meta name="keywords" content="youth environment society, YES Azerbaijan, ekoloji gənclər, könüllülük, davamlılıq, ətraf mühit">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Youth Environment Society — YES">
+  <link rel="canonical" href="https://youthensoc.org/">
+
+  <!-- Open Graph / Social Media -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://youthensoc.org/">
   <meta property="og:title" content="Youth Environment Society — YES">
-  <meta property="og:description"
-    content="Empowering the next generation of environmental advocates for a sustainable future.">
+  <meta property="og:description" content="Empowering the next generation of environmental advocates for a sustainable future. Join Azerbaijan's youth-led green movement.">
   <meta property="og:image" content="https://youthensoc.org/plant-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Youth Environment Society — YES">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="az_AZ">
+  <meta property="og:site_name" content="Youth Environment Society — YES">
 
   <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://youthensoc.org/">
-  <meta property="twitter:title" content="Youth Environment Society — YES">
-  <meta property="twitter:description" content="Empowering the next generation of environmental advocates.">
-  <meta property="twitter:image" content="https://youthensoc.org/plant-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://youthensoc.org/">
+  <meta name="twitter:title" content="Youth Environment Society — YES">
+  <meta name="twitter:description" content="Empowering the next generation of environmental advocates for a sustainable future.">
+  <meta name="twitter:image" content="https://youthensoc.org/plant-image.png">
+  <meta name="twitter:site" content="@youthensoc">
+
+  <!-- JSON-LD: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Youth Environment Society",
+    "alternateName": "YES",
+    "url": "https://youthensoc.org/",
+    "logo": "https://youthensoc.org/favicon/apple-touch-icon.png",
+    "image": "https://youthensoc.org/plant-image.png",
+    "description": "Youth Environment Society (YES) is a youth-led organization in Azerbaijan dedicated to empowering the next generation of environmental advocates through education, community organizing, and direct environmental action.",
+    "foundingDate": "2024",
+    "areaServed": "Azerbaijan",
+    "knowsAbout": ["Environmental Advocacy", "Sustainability", "Youth Empowerment", "Climate Change", "Ecology"],
+    "sameAs": [
+      "https://www.instagram.com/youthensoc",
+      "https://www.linkedin.com/company/youth-environment-society-yes/"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "General Inquiry",
+      "url": "https://youthensoc.org/#join"
+    }
+  }
+  </script>
+
+  <!-- JSON-LD: FAQ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is Youth Environment Society (YES)?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Youth Environment Society (YES) is a youth-led environmental organization in Azerbaijan that empowers young people through education, community organizing, and direct environmental action for a sustainable future."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How can I join YES?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can join YES by signing up on our website at youthensoc.org/#join or by registering as a volunteer through our volunteer program. It's free and open to all youth."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does YES do?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "YES focuses on three pillars: Environment (protecting ecosystems and advocating for clean air, water, and land), Youth (educating and mobilizing young people), and Action (running campaigns, events, and initiatives that create real impact)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the volunteer program free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, the YES volunteer program is completely free to join and open to all youth. Registration takes only 2 minutes."
+        }
+      }
+    ]
+  }
+  </script>
+
 
   <style>
     :root {
@@ -304,7 +386,8 @@
       line-height: 1.0;
       color: var(--dark);
       margin-bottom: 1.4rem;
-      animation: fadeUp 0.7s 0.1s ease both;
+      /* No opacity:0 start — H1 must be visible immediately for SEO */
+      animation: fadeUpVisible 0.4s ease;
     }
 
     h1 em {
@@ -366,6 +449,19 @@
       from {
         opacity: 0;
         transform: translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* H1-safe animation: starts visible, no opacity:0 flash */
+    @keyframes fadeUpVisible {
+      from {
+        opacity: 1;
+        transform: translateY(10px);
       }
 
       to {
@@ -1309,7 +1405,7 @@
 
     <!-- Plant image: right side, fades toward left -->
     <div class="hero-plant">
-      <img src="plant-image.png" alt="Green plant">
+      <img src="plant-image.png" alt="Green plant" width="800" height="900" loading="lazy">
     </div>
 
 
@@ -2252,7 +2348,7 @@
     <div class="modal-content">
       <button class="modal-close" onclick="closeModal()">✕</button>
       <div class="modal-body">
-        <img id="modal-img" class="modal-img" src="" alt="Event Detail">
+        <img id="modal-img" class="modal-img" src="" alt="Event Detail" width="800" height="500" loading="lazy">
         <div class="modal-details">
           <h2 id="modal-title">Event Title</h2>
           <p id="modal-desc">Event Description goes here.</p>
@@ -2375,7 +2471,7 @@
         window.location.href = 'articles.html#article-' + ev.id;
       };
       card.innerHTML = `
-        <img class="event-img" src="${ev.image || 'https://via.placeholder.com/400x300?text=YES+Event'}" alt="Event">
+        <img class="event-img" src="${ev.image || 'https://via.placeholder.com/400x300?text=YES+Event'}" alt="Event" width="400" height="220" loading="lazy">
         <div class="event-info">
           <h3>${lang === 'az' ? ev.title_az : ev.title_en}</h3>
           <p>${linkify(lang === 'az' ? ev.desc_az : ev.desc_en)}</p>
