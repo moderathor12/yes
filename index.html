@@ -1328,6 +1328,69 @@
       color: #6a8f6a;
     }
 
+    /* FAQ SECTION */
+    .faq-section {
+      padding: 5rem 5%;
+      background: var(--bg);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      border: 1px solid rgba(45, 106, 79, 0.1);
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: 1.5rem;
+      background: none;
+      border: none;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: color 0.2s;
+    }
+
+    .faq-question:hover {
+      color: var(--green);
+    }
+
+    .faq-question i {
+      font-size: 1.2rem;
+      color: var(--green);
+      transition: transform 0.3s ease;
+    }
+
+    .faq-item.active .faq-question i {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      color: #3d5a3d;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .faq-item.active .faq-answer {
+      padding: 0 1.5rem 1.5rem;
+      max-height: 500px;
+    }
+
     @media (max-width: 1024px) {
       .volunteer-cards {
         grid-template-columns: repeat(2, 1fr);
@@ -1572,6 +1635,56 @@
     </div>
   </section>
 
+  <!-- FAQ -->
+  <section class="section faq-section" id="faq">
+    <div style="text-align: center; margin-bottom: 3rem;">
+      <div class="section-tag" data-i18n="faq_tag">FAQ</div>
+      <h2 class="section-title" data-i18n="faq_title">Frequently Asked Questions</h2>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-i18n="faq_q1">What is Youth Environment Society (YES)?</span>
+          <i class="ph ph-caret-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p data-i18n="faq_a1">Youth Environment Society (YES) is a youth-led environmental organization in Azerbaijan that empowers young people through education, community organizing, and direct environmental action for a sustainable future.</p>
+        </div>
+      </div>
+      
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-i18n="faq_q2">How can I join YES?</span>
+          <i class="ph ph-caret-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p data-i18n="faq_a2">You can join YES by signing up on our website or by registering as a volunteer through our volunteer program. It's free and open to all youth.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-i18n="faq_q3">What does YES do?</span>
+          <i class="ph ph-caret-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p data-i18n="faq_a3">YES focuses on three pillars: Environment (protecting ecosystems), Youth (educating and mobilizing young people), and Action (running campaigns, events, and initiatives that create real impact).</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-i18n="faq_q4">Is the volunteer program free?</span>
+          <i class="ph ph-caret-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p data-i18n="faq_a4">Yes, the YES volunteer program is completely free to join and open to all youth. Registration takes only 2 minutes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- JOIN -->
   <section class="join" id="join">
     <div class="section-tag" style="position:relative" data-i18n="join_tag">Get Involved</div>
@@ -1706,7 +1819,17 @@
         footer_p: "© 2026 Youth Environment Society. Empowering youth for a sustainable future.",
         logo_text: "Youth Environment Society",
         btn_share_link: "Share Link",
-        link_copied: "Link copied to clipboard! 🌱"
+        link_copied: "Link copied to clipboard! 🌱",
+        faq_tag: "FAQ",
+        faq_title: "Frequently Asked Questions",
+        faq_q1: "What is Youth Environment Society (YES)?",
+        faq_a1: "Youth Environment Society (YES) is a youth-led environmental organization in Azerbaijan that empowers young people through education, community organizing, and direct environmental action for a sustainable future.",
+        faq_q2: "How can I join YES?",
+        faq_a2: "You can join YES by signing up on our website or by registering as a volunteer through our volunteer program. It's free and open to all youth.",
+        faq_q3: "What does YES do?",
+        faq_a3: "YES focuses on three pillars: Environment (protecting ecosystems), Youth (educating and mobilizing young people), and Action (running campaigns, events, and initiatives that create real impact).",
+        faq_q4: "Is the volunteer program free?",
+        faq_a4: "Yes, the YES volunteer program is completely free to join and open to all youth. Registration takes only 2 minutes."
       },
       az: {
         nav_about: "Biz Kimik",
@@ -1765,7 +1888,17 @@
         footer_p: "© 2026 Youth Environment Society. Davamlı gələcək üçün gənclərin gücləndirilməsi.",
         logo_text: "Gənclərin Ekoloji Cəmiyyəti",
         btn_share_link: "Linki Paylaş",
-        link_copied: "Link kopyalandı! 🌱"
+        link_copied: "Link kopyalandı! 🌱",
+        faq_tag: "Tez-tez Verilən Suallar",
+        faq_title: "Ən Çox Verilən Suallar",
+        faq_q1: "Youth Environment Society (YES) nədir?",
+        faq_a1: "YES (Gənclərin Ekoloji Cəmiyyəti), təhsil, icma təşkilatlanması və birbaşa ekoloji fəaliyyətlər vasitəsilə davamlı gələcək üçün gəncləri gücləndirən gənclərin rəhbərlik etdiyi təşkilatdır.",
+        faq_q2: "YES-ə necə qoşula bilərəm?",
+        faq_a2: "Veb saytımızda qeydiyyatdan keçərək və ya Könüllülük proqramımıza müraciət edərək bizə qoşula bilərsiniz. Proqram pulsuzdur və bütün gənclər üçün açıqdır.",
+        faq_q3: "YES hansı fəaliyyətləri həyata keçirir?",
+        faq_a3: "YES 3 əsas sütun üzərində fəaliyyət göstərir: Ətraf mühit (ekosistemləri qorumaq), Gənclik (gəncləri maarifləndirmək) və Fəaliyyət (real təsir yaradan kampaniyalar, təmizlik aksiyaları və tədbirlər təşkil etmək).",
+        faq_q4: "Könüllü proqramı pulsuzdurmu?",
+        faq_a4: "Bəli, YES könüllülük proqramına qoşulmaq tamamilə pulsuzdur və bütün gənclər iştirak edə bilər. Qeydiyyat cəmi 2 dəqiqə vaxt aparır."
       }
     };
 
@@ -1793,6 +1926,21 @@
       });
       document.getElementById('opt-' + lang).classList.add('active');
       document.documentElement.lang = lang;
+    }
+
+    function toggleFaq(btn) {
+      const item = btn.parentElement;
+      const isActive = item.classList.contains('active');
+      
+      // Bütün FAQ-ları bağla
+      document.querySelectorAll('.faq-item').forEach(faq => {
+        faq.classList.remove('active');
+      });
+      
+      // Əgər əvvəlcədən açıq deyildisə, aç
+      if (!isActive) {
+        item.classList.add('active');
+      }
     }
 
     // Load saved language
