@@ -16,8 +16,10 @@
   <link rel="shortcut icon" href="favicon/favicon.ico">
 
   <!-- SEO Meta Tags -->
-  <meta name="description" content="Youth Environment Society (YES) — Azərbaycanın gənc ekoloji liderləri üçün platforma. Könüllülük, ekoloji təhsil və davamlı gələcək naminə fəaliyyət.">
-  <meta name="keywords" content="youth environment society, YES Azerbaijan, ekoloji gənclər, könüllülük, davamlılıq, ətraf mühit">
+  <meta name="description"
+    content="Youth Environment Society (YES) — Azərbaycanın gənc ekoloji liderləri üçün platforma. Könüllülük, ekoloji təhsil və davamlı gələcək naminə fəaliyyət.">
+  <meta name="keywords"
+    content="youth environment society, YES Azerbaijan, ekoloji gənclər, könüllülük, davamlılıq, ətraf mühit">
   <meta name="robots" content="index, follow">
   <meta name="author" content="Youth Environment Society — YES">
   <link rel="canonical" href="https://youthensoc.org/">
@@ -26,7 +28,8 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://youthensoc.org/">
   <meta property="og:title" content="Youth Environment Society — YES">
-  <meta property="og:description" content="Empowering the next generation of environmental advocates for a sustainable future. Join Azerbaijan's youth-led green movement.">
+  <meta property="og:description"
+    content="Empowering the next generation of environmental advocates for a sustainable future. Join Azerbaijan's youth-led green movement.">
   <meta property="og:image" content="https://youthensoc.org/plant-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -39,7 +42,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://youthensoc.org/">
   <meta name="twitter:title" content="Youth Environment Society — YES">
-  <meta name="twitter:description" content="Empowering the next generation of environmental advocates for a sustainable future.">
+  <meta name="twitter:description"
+    content="Empowering the next generation of environmental advocates for a sustainable future.">
   <meta name="twitter:image" content="https://youthensoc.org/plant-image.png">
   <meta name="twitter:site" content="@youthensoc">
 
@@ -1439,6 +1443,7 @@
         <li><a href="#about" data-i18n="nav_about">Who We Are</a></li>
         <li><a href="#pillars" data-i18n="nav_pillars">Our Work</a></li>
         <li><a href="articles.html" data-i18n="nav_articles">Articles</a></li>
+        <li><a href="wiki.html" data-i18n="nav_wiki">Wiki</a></li>
         <li><a href="#volunteer" data-i18n="nav_volunteer">Volunteer</a></li>
         <li><a href="#join" data-i18n="nav_join">Join Us</a></li>
       </ul>
@@ -1649,17 +1654,20 @@
           <i class="ph ph-caret-down"></i>
         </button>
         <div class="faq-answer">
-          <p data-i18n="faq_a1">Youth Environment Society (YES) is a youth-led environmental organization in Azerbaijan that empowers young people through education, community organizing, and direct environmental action for a sustainable future.</p>
+          <p data-i18n="faq_a1">Youth Environment Society (YES) is a youth-led environmental organization in Azerbaijan
+            that empowers young people through education, community organizing, and direct environmental action for a
+            sustainable future.</p>
         </div>
       </div>
-      
+
       <div class="faq-item">
         <button class="faq-question" onclick="toggleFaq(this)">
           <span data-i18n="faq_q2">How can I join YES?</span>
           <i class="ph ph-caret-down"></i>
         </button>
         <div class="faq-answer">
-          <p data-i18n="faq_a2">You can join YES by signing up on our website or by registering as a volunteer through our volunteer program. It's free and open to all youth.</p>
+          <p data-i18n="faq_a2">You can join YES by signing up on our website or by registering as a volunteer through
+            our volunteer program. It's free and open to all youth.</p>
         </div>
       </div>
 
@@ -1669,7 +1677,9 @@
           <i class="ph ph-caret-down"></i>
         </button>
         <div class="faq-answer">
-          <p data-i18n="faq_a3">YES focuses on three pillars: Environment (protecting ecosystems), Youth (educating and mobilizing young people), and Action (running campaigns, events, and initiatives that create real impact).</p>
+          <p data-i18n="faq_a3">YES focuses on three pillars: Environment (protecting ecosystems), Youth (educating and
+            mobilizing young people), and Action (running campaigns, events, and initiatives that create real impact).
+          </p>
         </div>
       </div>
 
@@ -1679,7 +1689,8 @@
           <i class="ph ph-caret-down"></i>
         </button>
         <div class="faq-answer">
-          <p data-i18n="faq_a4">Yes, the YES volunteer program is completely free to join and open to all youth. Registration takes only 2 minutes.</p>
+          <p data-i18n="faq_a4">Yes, the YES volunteer program is completely free to join and open to all youth.
+            Registration takes only 2 minutes.</p>
         </div>
       </div>
     </div>
@@ -1766,6 +1777,7 @@
         nav_about: "Who We Are",
         nav_pillars: "Our Work",
         nav_articles: "Articles",
+        nav_wiki: "Wiki",
         nav_join: "Join Us",
         hero_tag: "<span></span> Youth-Led · Planet-Focused",
         hero_title: "Empowering Youth for a <em>Sustainable</em> Future.",
@@ -1835,6 +1847,7 @@
         nav_about: "Biz Kimik",
         nav_pillars: "Fəaliyyətimiz",
         nav_articles: "Məqalələr",
+        nav_wiki: "Wiki",
         nav_join: "Bizə Qoşulun",
         hero_tag: "<span></span> Gənclərin rəhbərliyi ilə · Planet mərkəzli",
         hero_title: "Davamlı gələcək naminə gənclərin <em>potensialını artırırıq</em>.",
@@ -1931,12 +1944,12 @@
     function toggleFaq(btn) {
       const item = btn.parentElement;
       const isActive = item.classList.contains('active');
-      
+
       // Bütün FAQ-ları bağla
       document.querySelectorAll('.faq-item').forEach(faq => {
         faq.classList.remove('active');
       });
-      
+
       // Əgər əvvəlcədən açıq deyildisə, aç
       if (!isActive) {
         item.classList.add('active');
@@ -2744,6 +2757,7 @@
             <select id="s-district">
               <option value="">— Seçin (ixtiyari) —</option>
               <option>Binəqədi</option>
+              <option>Yasamal</option>
               <option>Xətai</option>
               <option>Xəzər</option>
               <option>Nərimanov</option>
@@ -3102,7 +3116,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       const statsSection = document.querySelector('.stats');
       const memberCounter = document.querySelector('.stat:nth-child(1) .stat-number');
-      
+
       if (statsSection && memberCounter && memberCounter.innerText.includes('100')) {
         let started = false;
         // Start from 0
@@ -3118,20 +3132,20 @@
             const updateCounter = (currentTime) => {
               const elapsedTime = currentTime - startTime;
               const progress = Math.min(elapsedTime / duration, 1);
-              
+
               // Easing function (easeOutQuart)
               const easeProgress = 1 - Math.pow(1 - progress, 4);
-              
+
               const currentVal = Math.floor(easeProgress * target);
               memberCounter.innerText = currentVal + '+';
-              
+
               if (progress < 1) {
                 requestAnimationFrame(updateCounter);
               } else {
                 memberCounter.innerText = '100+';
               }
             };
-            
+
             requestAnimationFrame(updateCounter);
           }
         }, { threshold: 0.3 });

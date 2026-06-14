@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wiki — Youth Environment Society</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+  
+  <style>
+    :root {
+      /* YES Brand Colors */
+      --green: #2d6a4f;
+      --lime: #74c69d;
+      --bright: #b7e4c7;
+      --yellow: #f4d35e;
+      --pink: #e07a5f;
+      --purple: #9b72cf;
+      --dark: #1a2e1a;
+      
+      /* Wiki App Colors */
+      --app-bg: #f4f7f4;
+      --sidebar-bg: #ffffff;
+      --header-bg: rgba(255, 255, 255, 0.85);
+      --border: rgba(45, 106, 79, 0.1);
+      --text-main: #2a3f2a;
+      --text-muted: #5a7a5a;
+      --accent-bg: rgba(116, 198, 157, 0.15);
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--app-bg);
+      color: var(--text-main);
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--header-bg);
+      backdrop-filter: blur(12px);
+      height: 60px;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 20px;
+      z-index: 100;
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--green);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      text-decoration: none;
+      width: 240px; /* match sidebar width */
+    }
+
+    .logo-badge {
+      background: var(--green);
+      color: white;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    .search-wrap {
+      flex: 1;
+      max-width: 480px;
+      position: relative;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 10px 16px 10px 40px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text-main);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-wrap input:focus {
+      border-color: var(--lime);
+      box-shadow: 0 0 0 3px rgba(116, 198, 157, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .header-right {
+      display: flex; gap: 12px; align-items: center; margin-left: auto;
+    }
+
+    .btn-icon {
+      background: white;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      background: var(--accent-bg);
+      color: var(--green);
+      border-color: var(--lime);
+    }
+
+    .lang-btn {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border: none;
+      background: var(--accent-bg);
+      color: var(--green);
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .lang-btn:hover {
+      background: rgba(116, 198, 157, 0.3);
+    }
+
+    /* ── LAYOUT ── */
+    .layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── SIDEBAR ── */
+    aside {
+      width: 260px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      flex-shrink: 0;
+      padding: 16px 12px;
+    }
+
+    .nav-section {
+      margin-bottom: 8px;
+    }
+
+    .nav-item-toggle {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 10px 12px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      gap: 10px;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.2s;
+    }
+
+    .nav-item-toggle i {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .nav-item-toggle:hover {
+      background: var(--app-bg);
+    }
+
+    .nav-item-toggle.active-main {
+      background: var(--accent-bg);
+      color: var(--green);
+    }
+    .nav-item-toggle.active-main i {
+      color: var(--green);
+    }
+
+    .nav-arrow {
+      margin-left: auto;
+      font-size: 0.8rem;
+      transition: transform 0.2s;
+      color: var(--text-muted);
+    }
+
+    .nav-item-toggle.open .nav-arrow {
+      transform: rotate(90deg);
+    }
+
+    .sub-nav {
+      display: none;
+      flex-direction: column;
+      padding-left: 36px;
+      margin-top: 4px;
+      margin-bottom: 8px;
+    }
+
+    .sub-nav.open { display: flex; }
+
+    .sub-nav a {
+      padding: 8px 12px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 2px;
+      transition: all 0.2s;
+      border-left: 2px solid transparent;
+    }
+
+    .sub-nav a:hover {
+      color: var(--green);
+      background: var(--app-bg);
+    }
+
+    .sub-nav a.active {
+      color: var(--green);
+      background: var(--accent-bg);
+      font-weight: 600;
+    }
+
+    .sidebar-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 16px 12px;
+    }
+
+    .back-link {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 10px;
+      transition: all 0.2s;
+      margin-top: auto;
+    }
+
+    .back-link:hover {
+      background: var(--app-bg);
+      color: var(--dark);
+    }
+
+    /* ── MAIN CONTENT ── */
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+      scroll-behavior: smooth;
+    }
+
+    .content-wrap {
+      padding: 40px 5%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .breadcrumb {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .breadcrumb span { margin: 0 6px; opacity: 0.5; }
+
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 30px;
+      line-height: 1.1;
+    }
+
+    /* Hero Banner for Home */
+    .org-hero {
+      background: linear-gradient(135deg, #2d6a4f 0%, #1a2e1a 100%);
+      border-radius: 20px;
+      padding: 40px;
+      color: white;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      box-shadow: 0 15px 40px rgba(45, 106, 79, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .org-hero::after {
+      content: '';
+      position: absolute;
+      top: -50%; right: -10%;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(116, 198, 157, 0.3) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .org-hero-icon {
+      width: 80px; height: 80px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+      flex-shrink: 0;
+      backdrop-filter: blur(10px);
+    }
+
+    .org-hero h2 { 
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.8rem; 
+      margin-bottom: 10px; 
+    }
+    
+    .org-hero p { 
+      opacity: 0.9; 
+      font-size: 1.05rem; 
+      line-height: 1.6; 
+    }
+
+    /* Cards Grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .nav-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .nav-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(45, 106, 79, 0.08);
+      border-color: var(--lime);
+    }
+
+    .nav-card-icon { 
+      font-size: 32px; 
+      margin-bottom: 16px; 
+      color: var(--green);
+    }
+    .nav-card h3 { 
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem; 
+      font-weight: 700; 
+      margin-bottom: 8px; 
+      color: var(--dark); 
+    }
+    .nav-card p { 
+      font-size: 0.9rem; 
+      color: var(--text-muted); 
+      line-height: 1.6; 
+    }
+
+    /* Content Typography */
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 40px 0 16px;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .body-text {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--text-main);
+      margin-bottom: 16px;
+    }
+
+    .wiki-list {
+      margin: 0 0 24px 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .wiki-list li {
+      font-size: 1.05rem;
+      color: var(--text-main);
+      line-height: 1.7;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    
+    .wiki-list li::before {
+      content: '•';
+      color: var(--lime);
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .wiki-list li a { 
+      color: var(--green); 
+      text-decoration: none; 
+      font-weight: 600;
+    }
+    .wiki-list li a:hover { text-decoration: underline; }
+
+    /* Callouts */
+    .callout {
+      background: var(--accent-bg);
+      border-left: 4px solid var(--green);
+      padding: 20px 24px;
+      border-radius: 0 12px 12px 0;
+      margin: 24px 0;
+      font-size: 1rem;
+      color: var(--dark);
+      line-height: 1.7;
+    }
+    .callout strong { font-weight: 700; color: var(--green); }
+
+    /* Tags */
+    .tag {
+      display: inline-block;
+      background: white;
+      border: 1px solid var(--border);
+      color: var(--green);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-right: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .tag.done { background: rgba(116, 198, 157, 0.2); border-color: var(--lime); }
+    .tag.ongoing { background: rgba(244, 211, 94, 0.2); border-color: var(--yellow); color: #9c7f1a; }
+    .tag.planned { background: rgba(224, 122, 95, 0.1); border-color: var(--pink); color: var(--pink); }
+
+    /* Team Grid */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 24px 0;
+    }
+
+    .member-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 16px;
+      background: white;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .member-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      border-color: var(--lime);
+    }
+
+    .member-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--lime), var(--green));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; color: white; font-weight: 700; font-family: 'Space Grotesk', sans-serif;
+      margin: 0 auto 16px;
+    }
+
+    .member-name { font-size: 1.05rem; font-weight: 700; color: var(--dark); font-family: 'Space Grotesk', sans-serif; }
+    .member-role { font-size: 0.9rem; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
+
+    /* Pages */
+    .page { display: none; animation: fadeIn 0.3s ease; }
+    .page.active { display: block; }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--dark);
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-toggle { display: block; }
+      aside {
+        position: fixed;
+        left: -100%;
+        top: 60px;
+        height: calc(100vh - 60px);
+        z-index: 99;
+        transition: left 0.3s ease;
+        box-shadow: 5px 0 15px rgba(0,0,0,0.05);
+      }
+      aside.open { left: 0; }
+      .search-wrap { display: none; }
+      .org-hero { flex-direction: column; text-align: center; gap: 20px; padding: 30px 20px; }
+      .content-wrap { padding: 30px 20px; }
+      .page-title { font-size: 2rem; }
+    }
+    
+    mark {
+      background: var(--yellow);
+      color: var(--dark);
+      padding: 0 2px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <button class="mobile-toggle" onclick="toggleSidebar()"><i class="ph ph-list"></i></button>
+  <a class="logo" href="index.html">
+    <span class="logo-badge">YES</span>
+    Wiki
+  </a>
+  
+  <div class="search-wrap">
+    <i class="ph ph-magnifying-glass search-icon"></i>
+    <input type="text" id="searchInput" data-i18n-ph="search_ph" placeholder="Axtar..." oninput="handleSearch(this.value)">
+  </div>
+  
+  <div class="header-right">
+    <button class="lang-btn" onclick="toggleLang()" id="lang-toggle">EN</button>
+    <a href="index.html" class="btn-icon" title="Go to Website"><i class="ph ph-globe"></i></a>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="nav-section">
+      <button class="nav-item-toggle active-main" onclick="showPage('home')" id="btn-home">
+        <i class="ph ph-house"></i>
+        <span data-i18n="nav_home">Ana Səhifə</span>
+      </button>
+    </div>
+
+    <div class="nav-section">
+      <button class="nav-item-toggle" onclick="toggleSub(this, 'nav-about')">
+        <i class="ph ph-info"></i>
+        <span data-i18n="nav_about">Haqqımızda</span>
+        <i class="ph ph-caret-right nav-arrow"></i>
+      </button>
+      <div class="sub-nav" id="nav-about">
+        <a href="#" onclick="showPage('about', 'mission')" data-i18n="nav_about_mission">Missiya & Vizyon</a>
+        <a href="#" onclick="showPage('about', 'history')" data-i18n="nav_about_history">Tarixçə</a>
+        <a href="#" onclick="showPage('about', 'values')" data-i18n="nav_about_values">Dəyərlərimiz</a>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <button class="nav-item-toggle" onclick="showPage('team')" id="btn-team">
+        <i class="ph ph-users"></i>
+        <span data-i18n="nav_team">Komanda</span>
+      </button>
+    </div>
+
+    <div class="nav-section">
+      <button class="nav-item-toggle" onclick="toggleSub(this, 'nav-projects')">
+        <i class="ph ph-folder-open"></i>
+        <span data-i18n="nav_projects">Fəaliyyətimiz</span>
+        <i class="ph ph-caret-right nav-arrow"></i>
+      </button>
+      <div class="sub-nav" id="nav-projects">
+        <a href="#" onclick="showPage('projects', 'active')" data-i18n="nav_proj_active">Aktiv Layihələr</a>
+        <a href="#" onclick="showPage('projects', 'completed')" data-i18n="nav_proj_done">Uğurlarımız</a>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <button class="nav-item-toggle" onclick="toggleSub(this, 'nav-docs')">
+        <i class="ph ph-scroll"></i>
+        <span data-i18n="nav_docs">Sənədlər</span>
+        <i class="ph ph-caret-right nav-arrow"></i>
+      </button>
+      <div class="sub-nav" id="nav-docs">
+        <a href="#" onclick="showPage('docs', 'reports')" data-i18n="nav_docs_reports">İllik Hesabatlar</a>
+        <a href="#" onclick="showPage('docs', 'charter')" data-i18n="nav_docs_charter">Nizamnamə</a>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <button class="nav-item-toggle" onclick="showPage('contact')" id="btn-contact">
+        <i class="ph ph-address-book"></i>
+        <span data-i18n="nav_contact">Əlaqə & Dəstək</span>
+      </button>
+    </div>
+
+    <hr class="sidebar-divider"/>
+
+    <a class="back-link" href="index.html">
+      <i class="ph ph-arrow-left"></i> <span data-i18n="nav_back">Əsas Səhifəyə Qayıt</span>
+    </a>
+  </aside>
+
+  <!-- MAIN -->
+  <main id="main-content">
+    <!-- Dynamic Content Rendered Here -->
+  </main>
+</div>
+
+<script>
+  // Content Data (Bilingual)
+  const wikiData = {
+    en: {
+      search_ph: "Search...",
+      nav_home: "Home",
+      nav_about: "About Us",
+      nav_about_mission: "Mission & Vision",
+      nav_about_history: "History",
+      nav_about_values: "Our Values",
+      nav_team: "Team",
+      nav_projects: "Our Work",
+      nav_proj_active: "Active Projects",
+      nav_proj_done: "Our Successes",
+      nav_docs: "Documents",
+      nav_docs_reports: "Annual Reports",
+      nav_docs_charter: "Charter",
+      nav_contact: "Contact & Support",
+      nav_back: "Back to Main Site",
+
+      pages: {
+        home: `
+          <div class="breadcrumb">Wiki <span>›</span> Home</div>
+          <h1 class="page-title">Welcome to YES Wiki</h1>
+          <div class="org-hero">
+            <div class="org-hero-icon"><i class="ph ph-leaf"></i></div>
+            <div>
+              <h2>Public Knowledge Base</h2>
+              <p>Everything you need to know about Youth Environment Society (YES). Learn about our mission, our impact on nature, and how you can be a part of the change.</p>
+            </div>
+          </div>
+          <p class="body-text">Welcome to the official public directory for YES. Explore our structure, read our public reports, or learn more about our ongoing initiatives.</p>
+          <div class="card-grid">
+            <a class="nav-card" href="#" onclick="showPage('about')">
+              <div class="nav-card-icon"><i class="ph ph-info"></i></div>
+              <h3>About Us</h3>
+              <p>Discover our mission, vision, values, and the history behind YES.</p>
+            </a>
+            <a class="nav-card" href="#" onclick="showPage('projects')">
+              <div class="nav-card-icon"><i class="ph ph-folder-open"></i></div>
+              <h3>Our Impact</h3>
+              <p>Explore our active campaigns and read about our past successes.</p>
+            </a>
+            <a class="nav-card" href="#" onclick="showPage('docs')">
+              <div class="nav-card-icon"><i class="ph ph-scroll"></i></div>
+              <h3>Public Documents</h3>
+              <p>Transparency is key. Read our annual reports and organizational charter.</p>
+            </a>
+            <a class="nav-card" href="#" onclick="showPage('contact')">
+              <div class="nav-card-icon"><i class="ph ph-handshake"></i></div>
+              <h3>Join & Support</h3>
+              <p>Find out how you can volunteer, partner with us, or support our cause.</p>
+            </a>
+          </div>
+        `,
+        about: `
+          <div class="breadcrumb">Wiki <span>›</span> About Us</div>
+          <h1 class="page-title">About YES</h1>
+          <h2 class="section-title" id="mission"><i class="ph ph-target"></i> Mission</h2>
+          <p class="body-text">To foster sustainability through youth-led initiatives, educational programs, and direct community action across the region.</p>
+          <h2 class="section-title"><i class="ph ph-binoculars"></i> Vision</h2>
+          <p class="body-text">A green, sustainable future where youth play a central, educated role in driving environmental conservation and climate action.</p>
+          <h2 class="section-title" id="values"><i class="ph ph-diamond"></i> Our Values</h2>
+          <ul class="wiki-list">
+            <li><strong>Transparency</strong> — We operate with an open-door policy and publish our results publicly.</li>
+            <li><strong>Action-Oriented</strong> — We prioritize real-world impact over endless planning.</li>
+            <li><strong>Inclusivity</strong> — We welcome voices from all backgrounds and communities.</li>
+            <li><strong>Eco-Consciousness</strong> — The planet's health dictates every decision we make.</li>
+          </ul>
+          <h2 class="section-title" id="history"><i class="ph ph-clock-counter-clockwise"></i> Our Story</h2>
+          <ul class="wiki-list">
+            <li><span class="tag">2026</span> <strong>Foundation:</strong> YES was established to address local ecological issues and rapidly grew to over 100+ members.</li>
+          </ul>
+        `,
+        team: `
+          <div class="breadcrumb">Wiki <span>›</span> Team</div>
+          <h1 class="page-title" id="members">Our Team</h1>
+          <p class="body-text">The Youth Environment Society is driven by dedicated young leaders and professionals who are passionate about the environment.</p>
+          <div class="team-grid">
+            <div class="member-card">
+              <div class="member-avatar">AE</div>
+              <div class="member-name">Amirali Eyvazli</div>
+              <div class="member-role">Founder</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">SA</div>
+              <div class="member-name">Sadiq Azizali</div>
+              <div class="member-role">Executive Assistant</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">RH</div>
+              <div class="member-name">Ramal Huseynzade</div>
+              <div class="member-role">Developer / Tech Support</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">N</div>
+              <div class="member-name">Nigar</div>
+              <div class="member-role">Designer</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">S</div>
+              <div class="member-name">Shargiyya</div>
+              <div class="member-role">PR</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">L</div>
+              <div class="member-name">Lale</div>
+              <div class="member-role">SMM</div>
+            </div>
+          </div>
+        `,
+        projects: `
+          <div class="breadcrumb">Wiki <span>›</span> Our Work</div>
+          <h1 class="page-title">Our Impact & Projects</h1>
+          <h2 class="section-title" id="active"><i class="ph ph-play-circle"></i> Active Initiatives</h2>
+          <ul class="wiki-list">
+            <li><span class="tag planned">Upcoming</span> <strong>Volunteer Program</strong> — Our new volunteer program is starting soon. Check the main site for details.</li>
+          </ul>
+          <h2 class="section-title" id="completed"><i class="ph ph-check-circle"></i> Past Successes</h2>
+          <p class="body-text">We are just getting started! Stay tuned for our future achievements.</p>
+        `,
+        docs: `
+          <div class="breadcrumb">Wiki <span>›</span> Documents</div>
+          <h1 class="page-title">Public Documents</h1>
+          <div class="callout">
+            <strong>Transparency Commitment:</strong> We believe in open data. All our major reports and organizational charters are available for public viewing.
+          </div>
+          <h2 class="section-title" id="reports"><i class="ph ph-chart-bar"></i> Annual Reports</h2>
+          <p class="body-text">Annual reports will be published here.</p>
+          <h2 class="section-title" id="charter"><i class="ph ph-file-text"></i> Organizational Charter</h2>
+          <ul class="wiki-list">
+            <li><a href="#" download="YES_Charter_2025.pdf"><i class="ph ph-download-simple"></i> Official Charter and Rules (Updated: 2025)</a></li>
+            <li><a href="#" download="YES_Code_of_Ethics.pdf"><i class="ph ph-download-simple"></i> Public Code of Ethics</a></li>
+          </ul>
+        `,
+        contact: `
+          <div class="breadcrumb">Wiki <span>›</span> Contact & Support</div>
+          <h1 class="page-title">Contact & Join Us</h1>
+          <h2 class="section-title"><i class="ph ph-hand-heart"></i> Get Involved</h2>
+          <p class="body-text">We are always looking for passionate individuals and organizations to join our cause.</p>
+          <ul class="wiki-list">
+            <li><strong>Volunteer:</strong> Want to get your hands dirty? Join our field operations by filling out the <a href="index.html#join">Volunteer Form</a>.</li>
+            <li><strong>Partner:</strong> If you represent an organization or business looking to support green initiatives, reach out to our partnership team.</li>
+            <li><strong>Donate:</strong> Support our projects directly. (Donation portal coming soon).</li>
+          </ul>
+          <h2 class="section-title"><i class="ph ph-envelope-simple"></i> Contact Information</h2>
+          <ul class="wiki-list">
+            <li><strong>General Inquiries:</strong> info@yescommunity.org</li>
+          </ul>
+          <div class="callout">
+            <strong>Stay Updated:</strong> Follow us on our social media platforms to get the latest news on our projects and events!
+          </div>
+        `
+      }
+    },
+    az: {
+      search_ph: "Axtar...",
+      nav_home: "Ana Səhifə",
+      nav_about: "Haqqımızda",
+      nav_about_mission: "Missiya & Vizyon",
+      nav_about_history: "Tarixçə",
+      nav_about_values: "Dəyərlərimiz",
+      nav_team: "Komanda",
+      nav_projects: "Fəaliyyətimiz",
+      nav_proj_active: "Aktiv Layihələr",
+      nav_proj_done: "Uğurlarımız",
+      nav_docs: "Sənədlər",
+      nav_docs_reports: "İllik Hesabatlar",
+      nav_docs_charter: "Nizamnamə",
+      nav_contact: "Əlaqə & Dəstək",
+      nav_back: "Əsas Səhifəyə Qayıt",
+
+      pages: {
+        home: `
+          <div class="breadcrumb">Wiki <span>›</span> Ana Səhifə</div>
+          <h1 class="page-title">YES Wiki-yə Xoş Gəldiniz</h1>
+          <div class="org-hero">
+            <div class="org-hero-icon"><i class="ph ph-leaf"></i></div>
+            <div>
+              <h2>İctimai Məlumat Bazası</h2>
+              <p>Youth Environment Society (YES) haqqında bilmək istədiyiniz hər şey buradadır. Missiyamız, təbiətə təsirlərimiz və dəyişikliyin necə bir hissəsi ola biləcəyiniz barədə öyrənin.</p>
+            </div>
+          </div>
+          <p class="body-text">YES-in rəsmi ictimai məlumat səhifəsinə xoş gəldiniz. Qurumumuzun strukturu ilə tanış olun, ictimai hesabatlarımızı oxuyun və ya davam edən təşəbbüslərimiz haqqında daha çox məlumat əldə edin.</p>
+          <div class="card-grid">
+            <a class="nav-card" href="#" onclick="showPage('about')">
+              <div class="nav-card-icon"><i class="ph ph-info"></i></div>
+              <h3>Haqqımızda</h3>
+              <p>Missiyamızı, vizyonumuzu, dəyərlərimizi və YES-in yaranma tarixini kəşf edin.</p>
+            </a>
+            <a class="nav-card" href="#" onclick="showPage('projects')">
+              <div class="nav-card-icon"><i class="ph ph-folder-open"></i></div>
+              <h3>Fəaliyyətimiz</h3>
+              <p>Aktiv kampaniyalarımızla tanış olun və keçmiş uğurlarımız haqqında oxuyun.</p>
+            </a>
+            <a class="nav-card" href="#" onclick="showPage('docs')">
+              <div class="nav-card-icon"><i class="ph ph-scroll"></i></div>
+              <h3>İctimai Sənədlər</h3>
+              <p>Şəffaflıq önəmlidir. İllik hesabatlarımızı və təşkilati nizamnaməmizi oxuyun.</p>
+            </a>
+            <a class="nav-card" href="#" onclick="showPage('contact')">
+              <div class="nav-card-icon"><i class="ph ph-handshake"></i></div>
+              <h3>Qoşul və Dəstək Ol</h3>
+              <p>Necə könüllü ola, bizimlə tərəfdaşlıq edə və ya dəstək ola biləcəyinizi öyrənin.</p>
+            </a>
+          </div>
+        `,
+        about: `
+          <div class="breadcrumb">Wiki <span>›</span> Haqqımızda</div>
+          <h1 class="page-title">YES Haqqında</h1>
+          <h2 class="section-title" id="mission"><i class="ph ph-target"></i> Missiyamız</h2>
+          <p class="body-text">Gənclərin rəhbərlik etdiyi təşəbbüslər, təhsil proqramları və birbaşa icma fəaliyyətləri vasitəsilə regionda dayanıqlılığı (sustainability) inkişaf etdirmək.</p>
+          <h2 class="section-title"><i class="ph ph-binoculars"></i> Vizyonumuz</h2>
+          <p class="body-text">Gənclərin ətraf mühitin mühafizəsi və iqlim fəaliyyətində mərkəzi və savadlı rol oynadığı yaşıl, davamlı bir gələcək.</p>
+          <h2 class="section-title" id="values"><i class="ph ph-diamond"></i> Dəyərlərimiz</h2>
+          <ul class="wiki-list">
+            <li><strong>Şəffaflıq</strong> — Açıq qapı siyasəti ilə fəaliyyət göstəririk və nəticələrimizi ictimaiyyətə açıqlayırıq.</li>
+            <li><strong>Fəaliyyət Yönümlü</strong> — Bitməyən planlamalardansa, real dünyadakı təsirlərə üstünlük veririk.</li>
+            <li><strong>İnklüzivlik</strong> — Bütün cəmiyyətlərdən və təbəqələrdən gələn səsləri məmnuniyyətlə qəbul edirik.</li>
+            <li><strong>Ekoloji Şüur</strong> — Planetin sağlamlığı verdiyimiz hər bir qərarı müəyyən edir.</li>
+          </ul>
+          <h2 class="section-title" id="history"><i class="ph ph-clock-counter-clockwise"></i> Tarixçəmiz</h2>
+          <ul class="wiki-list">
+            <li><span class="tag">2026</span> <strong>Yaranma:</strong> YES yerli ekoloji problemləri həll etmək məqsədi ilə təsis edildi və fəaliyyətə başladı, qısa müddətdə 100-dən çox üzvə çatdıq.</li>
+          </ul>
+        `,
+        team: `
+          <div class="breadcrumb">Wiki <span>›</span> Komanda</div>
+          <h1 class="page-title" id="members">Komandamız</h1>
+          <p class="body-text">Youth Environment Society ətraf mühitə can yandıran fədakar gənc liderlər və peşəkarlar tərəfindən idarə olunur.</p>
+          <div class="team-grid">
+            <div class="member-card">
+              <div class="member-avatar">ƏE</div>
+              <div class="member-name">Əmirəli Eyvazlı</div>
+              <div class="member-role">Qurucu</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">SA</div>
+              <div class="member-name">Sadiq Azizali</div>
+              <div class="member-role">İcraçı Köməkçisi</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">RH</div>
+              <div class="member-name">Ramal Hüseynzadə</div>
+              <div class="member-role">Developer / Texniki Dəstək</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">N</div>
+              <div class="member-name">Nigar</div>
+              <div class="member-role">Dizayner</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">Ş</div>
+              <div class="member-name">Şərqiyyə</div>
+              <div class="member-role">PR</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">L</div>
+              <div class="member-name">Lalə</div>
+              <div class="member-role">SMM</div>
+            </div>
+          </div>
+        `,
+        projects: `
+          <div class="breadcrumb">Wiki <span>›</span> Fəaliyyətimiz</div>
+          <h1 class="page-title">Fəaliyyətimiz və Layihələr</h1>
+          <h2 class="section-title" id="active"><i class="ph ph-play-circle"></i> Aktiv Təşəbbüslər</h2>
+          <ul class="wiki-list">
+            <li><span class="tag planned">Planlaşdırılır</span> <strong>Könüllülük Proqramı</strong> — Hələ başlamayıb, yaxında başlayacaq. Ətraflı məlumat üçün əsas sayta daxil olun.</li>
+          </ul>
+          <h2 class="section-title" id="completed"><i class="ph ph-check-circle"></i> Keçmiş Uğurlarımız</h2>
+          <p class="body-text">Biz hələ yeni başlayırıq! Gələcək uğurlarımız üçün bizi izləməyə davam edin.</p>
+        `,
+        docs: `
+          <div class="breadcrumb">Wiki <span>›</span> Sənədlər</div>
+          <h1 class="page-title">İctimai Sənədlər</h1>
+          <div class="callout">
+            <strong>Şəffaflıq Öhdəliyi:</strong> Biz açıq məlumatlara inanırıq. Bütün əsas hesabatlarımız və təşkilati nizamnamələrimiz ictimaiyyətə açıqdır.
+          </div>
+          <h2 class="section-title" id="reports"><i class="ph ph-chart-bar"></i> İllik Hesabatlar</h2>
+          <p class="body-text">İllik hesabatlar burada dərc olunacaq.</p>
+          <h2 class="section-title" id="charter"><i class="ph ph-file-text"></i> Təşkilati Nizamnamə</h2>
+          <ul class="wiki-list">
+            <li><a href="#" download="YES_Nizamname_2025.pdf"><i class="ph ph-download-simple"></i> Rəsmi Nizamnamə və Qaydalar (Yeniləndi: 2025)</a></li>
+            <li><a href="#" download="YES_Etika_Mecellesi.pdf"><i class="ph ph-download-simple"></i> İctimai Etika Məcəlləsi</a></li>
+          </ul>
+        `,
+        contact: `
+          <div class="breadcrumb">Wiki <span>›</span> Əlaqə & Dəstək</div>
+          <h1 class="page-title">Əlaqə & Bizə Qoşulun</h1>
+          <h2 class="section-title"><i class="ph ph-hand-heart"></i> Bizə Qoşulun</h2>
+          <p class="body-text">Biz həmişə məqsədimizə qoşulmaq üçün həvəsli şəxslər və təşkilatlar axtarırıq.</p>
+          <ul class="wiki-list">
+            <li><strong>Könüllü:</strong> Təbiət üçün real iş görmək istəyirsiniz? <a href="index.html#join">Könüllü Formunu</a> dolduraraq sahə əməliyyatlarımıza qoşulun.</li>
+            <li><strong>Tərəfdaş:</strong> Yaşıl təşəbbüsləri dəstəkləmək istəyən bir təşkilat və ya biznesi təmsil edirsinizsə, tərəfdaşlıq komandamızla əlaqə saxlayın.</li>
+            <li><strong>İanə:</strong> Layihələrimizi birbaşa dəstəkləyin. (İanə portalı tezliklə açılacaq).</li>
+          </ul>
+          <h2 class="section-title"><i class="ph ph-envelope-simple"></i> Əlaqə Məlumatları</h2>
+          <ul class="wiki-list">
+            <li><strong>Ümumi Suallar:</strong> info@yescommunity.org</li>
+          </ul>
+          <div class="callout">
+            <strong>Yeniliklərdən Xəbərdar Olun:</strong> Layihələrimiz və tədbirlərimiz haqqında ən son xəbərləri almaq üçün bizi sosial media platformalarımızda izləyin!
+          </div>
+        `
+      }
+    }
+  };
+
+  let currentLang = localStorage.getItem('yes_lang') || 'az';
+
+  function toggleSub(btn, id) {
+    const sub = document.getElementById(id);
+    const isOpen = sub.classList.contains('open');
+    
+    // Close others
+    document.querySelectorAll('.sub-nav').forEach(el => el.classList.remove('open'));
+    document.querySelectorAll('.nav-item-toggle').forEach(el => el.classList.remove('open'));
+    
+    if (!isOpen) {
+      sub.classList.add('open');
+      btn.classList.add('open');
+    }
+  }
+
+  function showPage(pageId, hashId = null) {
+    // Render content
+    const mainContent = document.getElementById('main-content');
+    mainContent.innerHTML = '<div class="content-wrap page active">' + wikiData[currentLang].pages[pageId] + '</div>';
+
+    // Update active nav main buttons
+    document.querySelectorAll('.nav-item-toggle').forEach(btn => btn.classList.remove('active-main'));
+    if (pageId === 'home' || pageId === 'contact' || pageId === 'team') {
+      const btn = document.getElementById('btn-' + pageId);
+      if(btn) btn.classList.add('active-main');
+    } else {
+      // Find the parent nav toggle and set active
+      const subNav = document.getElementById('nav-' + pageId);
+      if (subNav && subNav.previousElementSibling) {
+        subNav.previousElementSibling.classList.add('active-main');
+        // ensure it's open
+        subNav.classList.add('open');
+        subNav.previousElementSibling.classList.add('open');
+      }
+    }
+
+    // Scroll to hash if provided, else scroll to top
+    if (hashId) {
+      setTimeout(() => {
+        const el = document.getElementById(hashId);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
+    } else {
+      mainContent.scrollTo(0, 0);
+    }
+    
+    // Close sidebar on mobile
+    const sidebar = document.getElementById('sidebar');
+    if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+    }
+    
+    // Clear search if any
+    document.getElementById('searchInput').value = '';
+  }
+
+  function applyLanguage() {
+    const data = wikiData[currentLang];
+    
+    // Update texts with data-i18n
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (data[key]) el.innerHTML = data[key];
+    });
+
+    // Update placeholders
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+      const key = el.getAttribute('data-i18n-ph');
+      if (data[key]) el.setAttribute('placeholder', data[key]);
+    });
+
+    document.getElementById('lang-toggle').innerText = currentLang.toUpperCase();
+    
+    // Re-render current page
+    let activePage = 'home';
+    const activeToggle = document.querySelector('.nav-item-toggle.active-main');
+    if (activeToggle && activeToggle.id) {
+      if (activeToggle.id.startsWith('btn-')) {
+        activePage = activeToggle.id.replace('btn-', '');
+      } else {
+        const subNav = activeToggle.nextElementSibling;
+        if (subNav) {
+          activePage = subNav.id.replace('nav-', '');
+        }
+      }
+    }
+    showPage(activePage);
+  }
+
+  function toggleLang() {
+    currentLang = currentLang === 'en' ? 'az' : 'en';
+    localStorage.setItem('yes_lang', currentLang);
+    applyLanguage();
+  }
+  
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  function handleSearch(val) {
+    const mainContent = document.getElementById('main-content');
+    // First, re-render the clean page to remove old highlights
+    let activePage = 'home';
+    const activeToggle = document.querySelector('.nav-item-toggle.active-main');
+    if (activeToggle && activeToggle.id) {
+      if (activeToggle.id.startsWith('btn-')) {
+        activePage = activeToggle.id.replace('btn-', '');
+      } else {
+        const subNav = activeToggle.nextElementSibling;
+        if (subNav) activePage = subNav.id.replace('nav-', '');
+      }
+    }
+    
+    mainContent.innerHTML = '<div class="content-wrap page active">' + wikiData[currentLang].pages[activePage] + '</div>';
+    
+    if (!val.trim()) return;
+    
+    const textNodes = [];
+    const walker = document.createTreeWalker(mainContent, NodeFilter.SHOW_TEXT, null, false);
+    let node;
+    while(node = walker.nextNode()) {
+      if (node.parentNode.nodeName !== 'SCRIPT' && node.parentNode.nodeName !== 'STYLE') {
+        textNodes.push(node);
+      }
+    }
+    
+    const regex = new RegExp('(' + val.replace(/[.*+?^$\/{}()|[\\]\\\\]/g, '\\\\$&') + ')', 'gi');
+    textNodes.forEach(node => {
+      if (regex.test(node.nodeValue)) {
+        const span = document.createElement('span');
+        span.innerHTML = node.nodeValue.replace(regex, '<mark>$1</mark>');
+        node.parentNode.replaceChild(span, node);
+      }
+    });
+  }
+
+  // Init
+  window.addEventListener('load', () => {
+    applyLanguage();
+  });
+</script>
+
+</body>
+</html>
