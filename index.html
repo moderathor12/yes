@@ -1496,7 +1496,7 @@
   <!-- STATS -->
   <div class="stats">
     <div class="stat">
-      <div class="stat-number">100+</div>
+      <div class="stat-number">150+</div>
       <div class="stat-label" data-i18n="stat_1_label">Community Members</div>
     </div>
     <div class="stat">
@@ -3112,12 +3112,12 @@
         });
     }
 
-    // Animated 100+ counter
+    // Animated 150+ counter
     document.addEventListener('DOMContentLoaded', () => {
       const statsSection = document.querySelector('.stats');
       const memberCounter = document.querySelector('.stat:nth-child(1) .stat-number');
 
-      if (statsSection && memberCounter && memberCounter.innerText.includes('100')) {
+      if (statsSection && memberCounter && memberCounter.innerText.includes('150')) {
         let started = false;
         // Start from 0
         memberCounter.innerText = '0+';
@@ -3125,7 +3125,7 @@
         const observer = new IntersectionObserver((entries) => {
           if (entries[0].isIntersecting && !started) {
             started = true;
-            const target = 100;
+            const target = 150;
             const duration = 2000; // 2 seconds
             const startTime = performance.now();
 
@@ -3142,7 +3142,7 @@
               if (progress < 1) {
                 requestAnimationFrame(updateCounter);
               } else {
-                memberCounter.innerText = '100+';
+                memberCounter.innerText = '150+';
               }
             };
 
