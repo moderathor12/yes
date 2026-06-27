@@ -135,14 +135,7 @@
     }
 
     html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 75px;
-    }
-
-    /* Navbar offset for all anchor targets */
-    section[id],
-    div[id] {
-      scroll-margin-top: 75px;
+      scroll-behavior: auto;
     }
 
     body {
@@ -1779,10 +1772,25 @@
       document.querySelector('.nav-links').classList.toggle('active');
     }
 
-    // ── Close mobile menu on nav link click ──
-    document.querySelectorAll('.nav-links a').forEach(function (link) {
-      link.addEventListener('click', function () {
-        document.querySelector('.nav-links').classList.remove('active');
+    // ── Smooth scroll with exact navbar offset ──
+    function scrollToAnchor(targetId) {
+      var target = document.getElementById(targetId);
+      if (!target) return;
+      var nav = document.querySelector('nav');
+      var navH = nav ? nav.offsetHeight : 0;
+      var targetTop = target.offsetTop - navH;
+      window.scrollTo({ top: targetTop, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        var href = this.getAttribute('href');
+        if (href && href.length > 1) {
+          e.preventDefault();
+          var targetId = href.slice(1);
+          document.querySelector('.nav-links').classList.remove('active');
+          setTimeout(function () { scrollToAnchor(targetId); }, 50);
+        }
       });
     });
 
