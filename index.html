@@ -1077,7 +1077,8 @@
       }
 
       .who-grid {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column-reverse;
         gap: 2rem;
       }
 
@@ -1778,7 +1779,12 @@
       if (!target) return;
       var nav = document.querySelector('nav');
       var navH = nav ? nav.offsetHeight : 0;
-      var targetTop = target.offsetTop - navH;
+      
+      var computedStyle = window.getComputedStyle(target);
+      var paddingTop = parseFloat(computedStyle.paddingTop) || 0;
+      
+      // Calculate position: offsetTop + paddingTop - navbar height - 24px breathing room
+      var targetTop = target.offsetTop + paddingTop - navH - 24;
       window.scrollTo({ top: targetTop, behavior: 'smooth' });
     }
 
