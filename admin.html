@@ -700,9 +700,21 @@
         </div>
         <div class="article-actions">
           <button class="btn btn-blue btn-sm" onclick="showEditModal(${idx})">✏️ Düzəlt</button>
-          <button class="btn btn-red btn-sm" onclick="confirmDelete('${art.id}')">🗑️</button>
+          <button class="btn btn-red btn-sm delete-btn" data-id="${art.id}">🗑️</button>
         </div>`;
       container.appendChild(div);
+    });
+
+    // Attach delete listeners via data-id to avoid 'null' string bug
+    container.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        if (!id || id === 'null' || id === 'undefined') {
+          notify('Bu məqalənin ID-si tapılmadı, yenidən yükləyin', 'error');
+          return;
+        }
+        confirmDelete(id);
+      });
     });
   }
 
@@ -875,6 +887,10 @@
   }
   async function doDelete() {
     closeConfirm();
+    if (!pendingDeleteId || pendingDeleteId === 'null' || pendingDeleteId === 'undefined') {
+      notify('Xəta: Məqalənin ID-si tapılmadı', 'error');
+      return;
+    }
     const { error } = await sb.from('articles').delete().eq('id', pendingDeleteId);
     if (error) { notify('Xəta: ' + error.message, 'error'); return; }
     notify('Məqalə silindi 🗑️', 'success');
