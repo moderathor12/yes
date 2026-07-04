@@ -87,6 +87,12 @@
     .modal-details h2 { font-size: 2rem; margin-bottom: 20px; color: var(--green); }
     .modal-details p { font-size: 1.1rem; line-height: 1.6; color: rgba(255, 255, 255, 0.8); }
 
+    /* CATEGORY FILTER */
+    .cat-filter-bar { display: flex; gap: 0.6rem; padding: 0 5% 1.5rem; flex-wrap: wrap; }
+    .cat-filter-btn { padding: 0.4rem 1rem; border: 1.5px solid rgba(255,255,255,0.2); border-radius: 20px; background: transparent; color: rgba(255,255,255,0.6); font-size: 0.8rem; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .cat-filter-btn:hover { border-color: var(--lime); color: var(--lime); }
+    .cat-filter-btn.active { background: var(--lime); border-color: var(--lime); color: var(--dark); font-weight: 700; }
+
     /* FOOTER */
     footer { background: var(--dark); color: white; padding: 3rem 5%; text-align: center; }
     .footer-logo { font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 2rem; color: var(--lime); margin-bottom: 1rem; }
@@ -168,6 +174,7 @@
   <!-- GALLERY -->
   <section id="gallery" class="section pillars">
     <div id="events-loader" style="text-align:center; padding: 2rem; color: rgba(255,255,255,0.4)">Loading articles...</div>
+    <div id="cat-filter-bar" class="cat-filter-bar"></div>
     <div id="gallery-grid" class="gallery-grid"></div>
   </section>
 
@@ -248,23 +255,48 @@
       renderGallery();
     }
 
+    var currentCatFilter = 'all';
+
     async function fetchEvents() {
-      // Supabase-dən məqalələri çək (sürətli, birbaşa)
+      // Supabase-dən yalnız dərc olunmuş məqalələri çək
       try {
         const { data, error } = await sbClient
           .from('articles')
           .select('*')
+          .or('status.eq.published,status.is.null')
           .order('created_at', { ascending: false });
 
-        if (error) throw error;
-        allEvents = data || [];
+        if (error) {
+          // fallback: if status column doesn't exist, get all
+          const { data: allData } = await sbClient.from('articles').select('*').order('created_at', { ascending: false });
+          allEvents = allData || [];
+        } else {
+          allEvents = data || [];
+        }
       } catch (err) {
         console.warn('Supabase fetch failed:', err);
       }
 
       document.getElementById('events-loader').style.display = 'none';
+      buildCategoryFilter();
       renderGallery();
       handleHash();
+    }
+
+    function buildCategoryFilter() {
+      const bar = document.getElementById('cat-filter-bar');
+      if (!bar) return;
+      const cats = [...new Set(allEvents.map(e => e.category).filter(Boolean))];
+      if (cats.length === 0) { bar.style.display = 'none'; return; }
+      bar.innerHTML = `<button class="cat-filter-btn active" onclick="setCatFilter('all', this)">All</button>` +
+        cats.map(c => `<button class="cat-filter-btn" onclick="setCatFilter('${c}', this)">${c}</button>`).join('');
+    }
+
+    function setCatFilter(cat, btn) {
+      currentCatFilter = cat;
+      document.querySelectorAll('.cat-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGallery();
     }
 
     function linkify(text) {
@@ -291,13 +323,23 @@
       var lang = localStorage.getItem('yes_lang') || 'en';
       var container = document.getElementById('gallery-grid');
       container.innerHTML = '';
-      allEvents.forEach((ev, index) => {
+      var filtered = currentCatFilter === 'all' ? allEvents : allEvents.filter(e => e.category === currentCatFilter);
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="color:rgba(255,255,255,0.4); text-align:center; padding:3rem; grid-column:1/-1;">Bu kateqoriyada məqalə yoxdur.</div>';
+        return;
+      }
+      filtered.forEach((ev) => {
+        var index = allEvents.indexOf(ev);
         var card = document.createElement('div');
         card.className = 'event-card';
         card.style.cursor = 'pointer';
         card.onclick = (e) => { if (!e.target.closest('.card-share-btn') && !e.target.closest('a')) openArticle(index); };
+        var catBadge = ev.category ? `<span style="position:absolute;top:1rem;left:1rem;background:rgba(116,198,157,0.85);color:#1a2e1a;padding:0.2rem 0.6rem;border-radius:20px;font-size:0.72rem;font-weight:700;">${ev.category}</span>` : '';
         card.innerHTML = `
-          <img class="event-img" src="${ev.image || ''}" alt="Event">
+          <div style="position:relative;">
+            <img class="event-img" src="${ev.image || ''}" alt="Event">
+            ${catBadge}
+          </div>
           <div class="event-info">
             <h3>${lang === 'az' ? ev.title_az : ev.title_en}</h3>
             <p>${linkify(lang === 'az' ? ev.desc_az : ev.desc_en)}</p>

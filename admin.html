@@ -1,366 +1,971 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="az">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel — YES Community</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
   <style>
     :root {
       --green: #2d6a4f;
       --lime: #74c69d;
+      --bright: #b7e4c7;
       --bg: #f0f4f0;
       --dark: #1a2e1a;
+      --sidebar-w: 240px;
+      --header-h: 64px;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--dark); padding: 2rem; }
-    .container { max-width: 1000px; margin: 0 auto; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--dark); }
 
-    /* Login */
+    /* ── LAYOUT ──────────────────────────────────────────── */
     #login-screen {
-      height: 80vh; display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #d8f3dc 0%, #b7e4c7 100%);
     }
-    .login-box {
-      background: white; padding: 3rem; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-      width: 100%; max-width: 400px; text-align: center;
+    .login-card {
+      background: white; padding: 3rem 2.5rem; border-radius: 24px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.12); width: 100%; max-width: 420px; text-align: center;
     }
-    .login-box h1 { font-family: 'Space Grotesk', sans-serif; margin-bottom: 0.5rem; color: var(--green); }
-    .login-box p { opacity: 0.55; font-size: 0.9rem; margin-bottom: 1.8rem; }
-    input[type="password"], input[type="email"], input[type="text"], textarea {
-      width: 100%; padding: 1rem; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 12px; margin-bottom: 1rem;
-      font-family: inherit; font-size: 1rem; outline: none; transition: 0.2s;
-    }
-    input:focus, textarea:focus { border-color: var(--green); box-shadow: 0 0 0 4px rgba(45,106,79,0.1); }
-    button {
-      width: 100%; padding: 1rem; background: var(--green); color: white; border: none; border-radius: 12px;
-      font-weight: 700; cursor: pointer; transition: 0.2s; font-family: inherit; font-size: 1rem;
-    }
-    button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(45,106,79,0.2); }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .login-logo { width: 56px; height: 56px; background: var(--green); border-radius: 14px;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 800; color: white; font-size: 1.3rem; }
+    .login-card h1 { font-family: 'Space Grotesk', sans-serif; color: var(--dark); margin-bottom: 0.3rem; }
+    .login-card p { opacity: 0.55; font-size: 0.9rem; margin-bottom: 2rem; }
 
-    /* Dashboard */
-    #admin-dashboard { display: none; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-    .header h1 { font-family: 'Space Grotesk', sans-serif; }
+    input[type="password"], input[type="email"], input[type="text"], textarea, select {
+      width: 100%; padding: 0.9rem 1rem; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 12px;
+      margin-bottom: 1rem; font-family: inherit; font-size: 0.95rem; outline: none; transition: 0.2s;
+      background: #fafafa; color: var(--dark);
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--green); box-shadow: 0 0 0 4px rgba(45,106,79,0.1); background: white;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.5rem; border: none; border-radius: 10px;
+      font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; font-size: 0.9rem;
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+    .btn-primary { background: var(--green); color: white; width: 100%; justify-content: center; padding: 1rem; font-size: 1rem; border-radius: 12px; }
+    .btn-green  { background: var(--green); color: white; }
+    .btn-lime   { background: var(--lime); color: var(--dark); }
+    .btn-blue   { background: #3498db; color: white; }
+    .btn-red    { background: #e74c3c; color: white; }
+    .btn-ghost  { background: transparent; border: 1.5px solid rgba(0,0,0,0.15); color: var(--dark); }
+    .btn-sm     { padding: 0.45rem 0.9rem; font-size: 0.8rem; border-radius: 8px; }
 
-    .article-list { display: grid; gap: 1rem; }
+    #login-err { color: #e74c3c; margin-top: 0.8rem; font-size: 0.9rem; display: none; }
+
+    /* ── APP SHELL ───────────────────────────────────────── */
+    #app { display: none; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed; top: 0; left: 0; height: 100vh; width: var(--sidebar-w);
+      background: var(--dark); color: white; z-index: 50;
+      display: flex; flex-direction: column; padding: 0;
+    }
+    .sidebar-logo {
+      display: flex; align-items: center; gap: 0.8rem;
+      padding: 1.2rem 1.4rem; border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1rem; color: var(--lime);
+    }
+    .sidebar-logo-badge {
+      background: var(--green); border-radius: 8px; width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800;
+    }
+    .sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+    .nav-section { padding: 0.4rem 1.4rem 0.2rem; font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 1.5px; opacity: 0.4; font-weight: 600; margin-top: 0.8rem; }
+    .nav-item {
+      display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 1.4rem;
+      cursor: pointer; transition: all 0.2s; color: rgba(255,255,255,0.65); font-size: 0.9rem; border: none;
+      background: none; width: 100%; text-align: left; border-left: 3px solid transparent;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.06); color: white; }
+    .nav-item.active { background: rgba(116,198,157,0.12); color: var(--lime); border-left-color: var(--lime); }
+    .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .sidebar-footer {
+      padding: 1rem 1.4rem; border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar-footer .btn { width: 100%; justify-content: center; }
+
+    /* Top Header */
+    .app-header {
+      position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--header-h);
+      background: white; border-bottom: 1px solid rgba(0,0,0,0.08); z-index: 40;
+      display: flex; align-items: center; padding: 0 2rem; gap: 1rem;
+    }
+    .app-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; flex: 1; }
+    .header-actions { display: flex; gap: 0.6rem; align-items: center; }
+
+    /* Main Content */
+    .app-main {
+      margin-left: var(--sidebar-w); margin-top: var(--header-h);
+      padding: 2rem; min-height: calc(100vh - var(--header-h));
+    }
+
+    /* ── PAGES ───────────────────────────────────────────── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* Stats Page */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem; margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: white; border-radius: 16px; padding: 1.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06); border-left: 4px solid transparent;
+      display: flex; flex-direction: column; gap: 0.4rem;
+    }
+    .stat-card.green  { border-left-color: var(--green); }
+    .stat-card.lime   { border-left-color: var(--lime); }
+    .stat-card.blue   { border-left-color: #3498db; }
+    .stat-card.orange { border-left-color: #f39c12; }
+    .stat-label { font-size: 0.8rem; opacity: 0.55; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-number { font-family: 'Space Grotesk', sans-serif; font-size: 2.8rem; font-weight: 700; line-height: 1; }
+    .stat-card.green  .stat-number { color: var(--green); }
+    .stat-card.lime   .stat-number { color: #27ae60; }
+    .stat-card.blue   .stat-number { color: #3498db; }
+    .stat-card.orange .stat-number { color: #f39c12; }
+    .stat-sub { font-size: 0.8rem; opacity: 0.5; }
+
+    /* Recent articles in stats */
+    .recent-articles { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .recent-articles h3 { font-family: 'Space Grotesk', sans-serif; margin-bottom: 1.2rem; font-size: 1rem; }
+    .recent-row { display: flex; align-items: center; gap: 1rem; padding: 0.7rem 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .recent-row:last-child { border-bottom: none; }
+    .recent-row img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; background: #eee; flex-shrink: 0; }
+    .recent-row-info { flex: 1; min-width: 0; }
+    .recent-row-info h4 { font-size: 0.875rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .recent-row-info span { font-size: 0.75rem; opacity: 0.5; }
+
+    /* Article list */
+    .list-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .list-header h2 { font-family: 'Space Grotesk', sans-serif; flex: 1; }
+    .search-box { display: flex; align-items: center; gap: 0.5rem; background: white; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 10px; padding: 0.5rem 0.9rem; }
+    .search-box input { border: none; background: none; margin: 0; padding: 0; width: 180px; font-size: 0.875rem; }
+    .search-box input:focus { box-shadow: none; }
+    .filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+    .filter-btn { padding: 0.35rem 0.9rem; border: 1.5px solid rgba(0,0,0,0.12); border-radius: 20px; background: white; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; font-family: inherit; color: var(--dark); }
+    .filter-btn:hover, .filter-btn.active { background: var(--green); color: white; border-color: var(--green); }
+
+    .articles-list { display: grid; gap: 0.8rem; }
     .article-item {
-      background: white; padding: 1.5rem; border-radius: 16px; display: flex; gap: 1.5rem; align-items: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      background: white; padding: 1.2rem 1.5rem; border-radius: 14px;
+      display: flex; gap: 1.2rem; align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: box-shadow 0.2s;
+      border-left: 3px solid transparent;
     }
-    .article-item img { width: 100px; height: 100px; object-fit: cover; border-radius: 12px; background: #eee; }
-    .article-content { flex: 1; }
-    .article-content h3 { margin-bottom: 0.5rem; }
-    .article-actions { display: flex; gap: 0.5rem; }
-    .btn-edit { background: #3498db; }
-    .btn-delete { background: #e74c3c; }
-    .btn-add { margin-bottom: 1.5rem; background: var(--green); }
-    .btn-small { width: auto; padding: 0.5rem 1rem; font-size: 0.85rem; }
+    .article-item:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .article-item.draft { border-left-color: #f39c12; }
+    .article-item.published { border-left-color: var(--lime); }
+    .article-item img { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; background: #eee; flex-shrink: 0; }
+    .article-meta { flex: 1; min-width: 0; }
+    .article-meta h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .article-meta p { font-size: 0.8rem; opacity: 0.55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.4rem; }
+    .article-meta-row { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+    .badge { display: inline-flex; align-items: center; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+    .badge-published { background: rgba(116,198,157,0.2); color: var(--green); }
+    .badge-draft     { background: rgba(243,156,18,0.15); color: #b7770d; }
+    .badge-cat       { background: rgba(52,152,219,0.15); color: #1a6a9a; }
+    .badge-tag       { background: rgba(155,114,207,0.15); color: #5a3d8a; }
+    .article-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+
+    /* Categories Page */
+    .categories-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .cat-card { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .cat-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; margin-bottom: 1rem; }
+    .cat-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .cat-row { display: flex; align-items: center; gap: 0.8rem; padding: 0.6rem 0.8rem; border-radius: 10px; background: var(--bg); }
+    .cat-row .cat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .cat-row span { flex: 1; font-size: 0.875rem; font-weight: 500; }
+    .cat-row small { opacity: 0.5; font-size: 0.75rem; }
+    .add-cat-form { display: flex; gap: 0.5rem; margin-top: 1rem; }
+    .add-cat-form input { flex: 1; margin: 0; padding: 0.65rem 0.9rem; font-size: 0.875rem; }
+    .color-preview { width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid rgba(0,0,0,0.1); cursor: pointer; padding: 2px; }
 
     /* Modal */
-    .modal {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8);
-      display: none; align-items: center; justify-content: center; padding: 20px; z-index: 100;
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200;
+      display: none; align-items: flex-start; justify-content: center; padding: 2rem; overflow-y: auto;
     }
-    .modal-content {
-      background: white; padding: 2rem; border-radius: 20px; width: 100%; max-width: 600px;
-      max-height: 90vh; overflow-y: auto;
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: white; border-radius: 20px; width: 100%; max-width: 760px;
+      padding: 2rem; position: relative; margin: auto;
     }
-    .modal-close { float: right; cursor: pointer; font-size: 1.5rem; line-height: 1; }
-    .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .modal-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; }
+    .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; line-height: 1; opacity: 0.5; padding: 0.25rem; }
+    .modal-close:hover { opacity: 1; }
+    .modal-footer { display: flex; gap: 0.8rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0,0,0,0.08); }
 
-    /* Status */
-    #login-err { color: #e74c3c; margin-top: 1rem; font-size: 0.9rem; display: none; }
-    .empty-state { text-align: center; padding: 3rem; opacity: 0.5; }
-    .loading-spinner {
-      text-align: center; padding: 3rem; opacity: 0.5; 
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.825rem; opacity: 0.7; }
+    .form-group input, .form-group textarea, .form-group select { margin-bottom: 0; }
+
+    /* Status toggle */
+    .status-toggle { display: flex; gap: 0.5rem; }
+    .status-option { flex: 1; padding: 0.65rem; border: 2px solid rgba(0,0,0,0.1); border-radius: 10px;
+      text-align: center; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
+    .status-option.selected-published { border-color: var(--lime); background: rgba(116,198,157,0.12); color: var(--green); }
+    .status-option.selected-draft { border-color: #f39c12; background: rgba(243,156,18,0.12); color: #b7770d; }
+
+    /* EasyMDE tweaks */
+    .EasyMDEContainer .CodeMirror {
+      border-radius: 0 0 10px 10px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      min-height: 160px; border-color: rgba(0,0,0,0.1);
+    }
+    .EasyMDEContainer .editor-toolbar {
+      border-radius: 10px 10px 0 0; border-color: rgba(0,0,0,0.1); background: #f8f9fa;
+    }
+    .EasyMDEContainer .editor-preview { font-family: 'DM Sans', sans-serif; }
+    .EasyMDEContainer { margin-bottom: 1rem; }
+
+    /* Tags input */
+    .tags-input-wrap { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0.6rem 0.8rem; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 12px; background: #fafafa; cursor: text; transition: 0.2s; }
+    .tags-input-wrap:focus-within { border-color: var(--green); box-shadow: 0 0 0 4px rgba(45,106,79,0.1); background: white; }
+    .tag-chip { display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(155,114,207,0.15); color: #5a3d8a; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
+    .tag-chip button { background: none; border: none; cursor: pointer; font-size: 0.85rem; line-height: 1; padding: 0; opacity: 0.6; color: inherit; width: auto; }
+    .tag-chip button:hover { opacity: 1; }
+    #tags-input-field { border: none; background: none; margin: 0; padding: 0.1rem 0.2rem; outline: none; font-size: 0.875rem; min-width: 100px; flex: 1; }
+    #tags-input-field:focus { box-shadow: none; }
+
+    /* Empty & loading states */
+    .empty-state { text-align: center; padding: 4rem 2rem; opacity: 0.4; }
+    .empty-state svg { width: 60px; height: 60px; margin-bottom: 1rem; }
+    .loading-dots { display: flex; gap: 0.4rem; justify-content: center; padding: 3rem; }
+    .loading-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--lime); animation: pulse 1.2s ease infinite; }
+    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes pulse { 0%, 100% { transform: scale(0.7); opacity: 0.5; } 50% { transform: scale(1); opacity: 1; } }
+
+    /* Notification */
+    .notif { position: fixed; bottom: 2rem; right: 2rem; z-index: 999; display: flex; flex-direction: column; gap: 0.5rem; }
+    .notif-item { background: var(--dark); color: white; padding: 0.8rem 1.2rem; border-radius: 12px; font-size: 0.875rem; box-shadow: 0 8px 24px rgba(0,0,0,0.2); animation: slideIn 0.3s ease; max-width: 300px; }
+    .notif-item.success { background: var(--green); }
+    .notif-item.error   { background: #c0392b; }
+    @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* Confirm dialog */
+    .confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; display: none; align-items: center; justify-content: center; }
+    .confirm-overlay.open { display: flex; }
+    .confirm-box { background: white; border-radius: 16px; padding: 2rem; max-width: 400px; width: 90%; text-align: center; }
+    .confirm-box h3 { font-family: 'Space Grotesk', sans-serif; margin-bottom: 0.5rem; }
+    .confirm-box p { opacity: 0.6; font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .confirm-box .confirm-actions { display: flex; gap: 0.8rem; }
+    .confirm-box .confirm-actions .btn { flex: 1; justify-content: center; }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+      .sidebar.open { transform: translateX(0); }
+      .app-header, .app-main { left: 0; margin-left: 0; }
+      .form-row { grid-template-columns: 1fr; }
+      .categories-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<div class="container" id="login-screen">
-  <div class="login-box">
-    <h1>YES Admin</h1>
-    <p>Supabase ilə daxil ol</p>
-    <input type="email" id="admin-email" placeholder="Admin Email">
-    <input type="password" id="admin-pass" placeholder="Şifrə">
-    <button id="login-btn" onclick="login()">Daxil ol ➔</button>
-    <p id="login-err">E-poçt və ya şifrə səhvdir!</p>
+<!-- ── LOGIN ──────────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">YES</div>
+    <h1>Admin Panel</h1>
+    <p>Daxil olmaq üçün hesab məlumatlarınızı daxil edin</p>
+    <input type="email" id="admin-email" placeholder="Admin E-poçtu">
+    <input type="password" id="admin-pass" placeholder="Şifrə" onkeydown="if(event.key==='Enter') login()">
+    <button class="btn btn-primary" id="login-btn" onclick="login()">Daxil ol →</button>
+    <p id="login-err">E-poçt və ya şifrə yanlışdır!</p>
   </div>
 </div>
 
-<div class="container" id="admin-dashboard">
-  <div class="header">
-    <h1>Məqalələri İdarə Et</h1>
-    <button class="btn-small btn-delete" onclick="logout()" style="width:auto;">Çıxış</button>
-  </div>
+<!-- ── APP SHELL ───────────────────────────────────────── -->
+<div id="app">
 
-  <button class="btn-add" onclick="showAddModal()">+ Yeni Məqalə Əlavə Et</button>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-badge">YES</div>
+      Admin Panel
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Əsas</div>
+      <button class="nav-item active" onclick="showPage('stats')" id="nav-stats">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="13" width="4" height="8"/><rect x="10" y="9" width="4" height="12"/><rect x="17" y="5" width="4" height="16"/></svg>
+        Statistika
+      </button>
+      <button class="nav-item" onclick="showPage('articles')" id="nav-articles">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Məqalələr
+      </button>
+      <button class="nav-item" onclick="showPage('categories')" id="nav-categories">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        Kateqoriya & Teqlər
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-ghost btn-sm" onclick="logout()" style="width:100%; justify-content:center;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Çıxış
+      </button>
+    </div>
+  </aside>
 
-  <div id="articles-container" class="article-list">
-    <div class="loading-spinner">Yüklənir...</div>
-  </div>
+  <!-- Top Header -->
+  <header class="app-header">
+    <h2 id="page-title">Statistika</h2>
+    <div class="header-actions">
+      <button class="btn btn-green btn-sm" onclick="showPage('articles'); setTimeout(showAddModal, 100)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Yeni Məqalə
+      </button>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="app-main">
+
+    <!-- ── STATS PAGE ─────────────────────────────── -->
+    <div class="page active" id="page-stats">
+      <div class="stats-grid">
+        <div class="stat-card green">
+          <div class="stat-label">Ümumi Məqalə</div>
+          <div class="stat-number" id="st-total">—</div>
+          <div class="stat-sub">Bütün məqalələr</div>
+        </div>
+        <div class="stat-card lime">
+          <div class="stat-label">Dərc Olunmuş</div>
+          <div class="stat-number" id="st-published">—</div>
+          <div class="stat-sub">Saytda görünür</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-label">Qaralama</div>
+          <div class="stat-number" id="st-draft">—</div>
+          <div class="stat-sub">Gizli saxlanıb</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Bu Ay</div>
+          <div class="stat-number" id="st-month">—</div>
+          <div class="stat-sub">Son 30 gündə</div>
+        </div>
+      </div>
+
+      <!-- Category breakdown -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+        <div class="recent-articles">
+          <h3>📁 Kateqoriya Bölgüsü</h3>
+          <div id="cat-breakdown"></div>
+        </div>
+        <div class="recent-articles">
+          <h3>🕐 Son Əlavə Olunanlar</h3>
+          <div id="recent-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ARTICLES PAGE ──────────────────────────── -->
+    <div class="page" id="page-articles">
+      <div class="list-header">
+        <h2>Məqalələr</h2>
+        <div class="search-box">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="art-search" placeholder="Məqalə axtar..." oninput="filterArticles()">
+        </div>
+        <button class="btn btn-green" onclick="showAddModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Yeni Məqalə
+        </button>
+      </div>
+
+      <div class="filter-bar" id="art-filter-bar">
+        <button class="filter-btn active" onclick="setStatusFilter('all', this)">Hamısı</button>
+        <button class="filter-btn" onclick="setStatusFilter('published', this)">✅ Dərc Olunmuş</button>
+        <button class="filter-btn" onclick="setStatusFilter('draft', this)">📝 Qaralama</button>
+      </div>
+
+      <div id="articles-container" class="articles-list">
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+
+    <!-- ── CATEGORIES PAGE ────────────────────────── -->
+    <div class="page" id="page-categories">
+      <div class="list-header">
+        <h2>Kateqoriya & Teqlər</h2>
+      </div>
+      <div class="categories-grid">
+        <div class="cat-card">
+          <h3>📁 Kateqoriyalar</h3>
+          <div id="cat-list-ui" class="cat-list"></div>
+          <div class="add-cat-form" style="margin-top:1.2rem;">
+            <input type="text" id="new-cat-name" placeholder="Yeni kateqoriya adı..." style="margin:0; padding: 0.65rem 0.9rem; font-size:0.875rem;">
+            <input type="color" id="new-cat-color" value="#2d6a4f" class="color-preview">
+            <button class="btn btn-green btn-sm" onclick="addCategory()">Əlavə et</button>
+          </div>
+        </div>
+        <div class="cat-card">
+          <h3>🏷️ Populyar Teqlər</h3>
+          <p style="font-size:0.85rem; opacity:0.55; margin-bottom:1rem;">Məqalələrdə istifadə olunan teqlər avtomatik burada görünür.</p>
+          <div id="tags-cloud" style="display:flex; flex-wrap:wrap; gap:0.5rem;"></div>
+          <div style="margin-top:2rem; padding:1rem; background:var(--bg); border-radius:12px;">
+            <p style="font-size:0.8rem; opacity:0.6; font-weight:600;">💡 Məlumat</p>
+            <p style="font-size:0.8rem; opacity:0.5; margin-top:0.3rem;">Teqlər məqalə əlavə edərkən "Teqlər" bölməsindən idarə olunur. Vergüllə ayıraraq birdən çox teq yazın.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
 </div>
 
-<!-- Add/Edit Modal -->
-<div class="modal" id="article-modal">
-  <div class="modal-content">
-    <span class="modal-close" onclick="closeModal()">×</span>
-    <h2 id="modal-title" style="margin-bottom: 1.5rem;">Məqalə Əlavə Et</h2>
-    <div class="form-group">
-      <label>Başlıq (EN)</label>
-      <input type="text" id="art-title-en">
+<!-- ── ARTICLE MODAL ─────────────────────────────────── -->
+<div class="modal-overlay" id="article-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="modal-title">Yeni Məqalə</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
     </div>
-    <div class="form-group">
-      <label>Başlıq (AZ)</label>
-      <input type="text" id="art-title-az">
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Başlıq (EN) *</label>
+        <input type="text" id="art-title-en" placeholder="Article title in English">
+      </div>
+      <div class="form-group">
+        <label>Başlıq (AZ) *</label>
+        <input type="text" id="art-title-az" placeholder="Azərbaycanca başlıq">
+      </div>
     </div>
+
     <div class="form-group">
       <label>Şəkil URL-i</label>
-      <input type="text" id="art-image" placeholder="https://...">
+      <input type="text" id="art-image" placeholder="https://example.com/image.jpg">
     </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Kateqoriya</label>
+        <select id="art-category">
+          <option value="">— Seç —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <div class="status-toggle">
+          <div class="status-option selected-published" id="opt-published" onclick="selectStatus('published')">✅ Dərc et</div>
+          <div class="status-option" id="opt-draft" onclick="selectStatus('draft')">📝 Qaralama</div>
+        </div>
+      </div>
+    </div>
+
     <div class="form-group">
-      <label>Açıqlama (EN)</label>
+      <label>Teqlər (vergüllə ayır)</label>
+      <div class="tags-input-wrap" id="tags-wrap" onclick="document.getElementById('tags-input-field').focus()">
+        <input type="text" id="tags-input-field" placeholder="məs: iqlim, gənclər, ekoloji..."
+          onkeydown="handleTagInput(event)" oninput="tagInputHint(event)">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Məzmun (EN) — Markdown dəstəklənir *</label>
       <textarea id="art-desc-en" rows="5"></textarea>
     </div>
+
     <div class="form-group">
-      <label>Açıqlama (AZ)</label>
+      <label>Məzmun (AZ) — Markdown dəstəklənir *</label>
       <textarea id="art-desc-az" rows="5"></textarea>
     </div>
+
     <input type="hidden" id="art-id">
-    <button id="save-btn" onclick="saveArticle()">Yadda Saxla</button>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Ləğv et</button>
+      <button class="btn btn-green" id="save-btn" onclick="saveArticle()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Yadda Saxla
+      </button>
+    </div>
   </div>
 </div>
 
+<!-- ── CONFIRM DIALOG ─────────────────────────────────── -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <h3>Silmək istəyirsiniz?</h3>
+    <p>Bu əməliyyat geri alına bilməz. Məqalə həmişəlik silinəcək.</p>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" onclick="closeConfirm()">Ləğv et</button>
+      <button class="btn btn-red" id="confirm-ok-btn">Sil</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── NOTIFICATIONS ─────────────────────────────────── -->
+<div class="notif" id="notif-container"></div>
+
 <script>
-  // ── Supabase Config ──────────────────────────────
+  // ── SUPABASE ─────────────────────────────────────────
   const SUPABASE_URL = 'https://wqcugmhjfuvnwxhspytw.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxY3VnbWhqZnV2bnd4aHNweXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMzY2NzcsImV4cCI6MjA5MTYxMjY3N30.A2rZNI2hOpDNC_JLeQNO9Is50HswX-jB5he9wNOpYLo';
-  const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  // ────────────────────────────────────────────────
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  // ── STATE ─────────────────────────────────────────────
   let allArticles = [];
+  let filteredArticles = [];
+  let currentStatusFilter = 'all';
+  let currentTags = [];
+  let mdeEN = null, mdeAZ = null;
 
-  // ── Auth ────────────────────────────────────────
+  // Categories stored in localStorage (since no separate table)
+  let categories = JSON.parse(localStorage.getItem('yes_categories') || '[]');
+  if (categories.length === 0) {
+    categories = [
+      { name: 'Ətraf Mühit', color: '#2d6a4f' },
+      { name: 'Gənclər',     color: '#3498db' },
+      { name: 'Tədbirlər',   color: '#9b59b6' },
+      { name: 'Könüllülük',  color: '#e67e22' },
+    ];
+    saveCategories();
+  }
+  function saveCategories() { localStorage.setItem('yes_categories', JSON.stringify(categories)); }
+
+  // ── AUTH ──────────────────────────────────────────────
   async function login() {
     const btn = document.getElementById('login-btn');
     const email = document.getElementById('admin-email').value.trim();
-    const password = document.getElementById('admin-pass').value;
-    const errEl = document.getElementById('login-err');
-
-    errEl.style.display = 'none';
-    btn.disabled = true;
-    btn.innerText = 'Giriş edilir...';
-
-    const { error } = await sbClient.auth.signInWithPassword({ email, password });
-
+    const pass  = document.getElementById('admin-pass').value;
+    const err   = document.getElementById('login-err');
+    err.style.display = 'none';
+    btn.disabled = true; btn.innerText = 'Daxil olunur...';
+    const { error } = await sb.auth.signInWithPassword({ email, password: pass });
     if (error) {
-      errEl.style.display = 'block';
-      btn.disabled = false;
-      btn.innerText = 'Daxil ol ➔';
+      err.style.display = 'block';
+      btn.disabled = false; btn.innerText = 'Daxil ol →';
       return;
     }
-
-    showDashboard();
+    showApp();
   }
 
   async function logout() {
-    await sbClient.auth.signOut();
+    await sb.auth.signOut();
     location.reload();
   }
 
-  function showDashboard() {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('admin-dashboard').style.display = 'block';
-    loadArticles();
-  }
-
-  // Check existing session on page load
   window.addEventListener('load', async () => {
-    const { data: { session } } = await sbClient.auth.getSession();
-    if (session) showDashboard();
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) showApp();
   });
-  // ────────────────────────────────────────────────
 
-  // ── Articles CRUD ────────────────────────────────
-  async function loadArticles() {
-    const container = document.getElementById('articles-container');
-    container.innerHTML = '<div class="loading-spinner">Yüklənir...</div>';
-
-    const { data, error } = await sbClient
-      .from('articles')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      container.innerHTML = '<div class="empty-state">Xəta: ' + error.message + '</div>';
-      return;
-    }
-
-    allArticles = data || [];
-    renderArticles();
+  function showApp() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initMDE();
+    loadArticles();
+    renderCategoryUI();
   }
 
-  function renderArticles() {
-    const container = document.getElementById('articles-container');
-    container.innerHTML = '';
+  // ── PAGES ─────────────────────────────────────────────
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    document.getElementById('nav-' + name).classList.add('active');
+    const titles = { stats: 'Statistika', articles: 'Məqalələr', categories: 'Kateqoriya & Teqlər' };
+    document.getElementById('page-title').innerText = titles[name] || name;
+    if (name === 'categories') { renderCategoryUI(); renderTagsCloud(); }
+  }
 
-    if (allArticles.length === 0) {
-      container.innerHTML = '<div class="empty-state">Hələ heç bir məqalə yoxdur. Yeni əlavə edin.</div>';
+  // ── LOAD ARTICLES ─────────────────────────────────────
+  async function loadArticles() {
+    document.getElementById('articles-container').innerHTML =
+      '<div class="loading-dots"><span></span><span></span><span></span></div>';
+    document.getElementById('recent-list').innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
+
+    const { data, error } = await sb.from('articles').select('*').order('created_at', { ascending: false });
+    if (error) { notify('Xəta: ' + error.message, 'error'); return; }
+    allArticles = data || [];
+    renderStats();
+    filterArticles();
+    renderRecentList();
+    renderCategoryBreakdown();
+  }
+
+  // ── STATS ─────────────────────────────────────────────
+  function renderStats() {
+    const total = allArticles.length;
+    const published = allArticles.filter(a => !a.status || a.status === 'published').length;
+    const draft = allArticles.filter(a => a.status === 'draft').length;
+    const now = new Date();
+    const monthAgo = new Date(now.getFullYear(), now.getMonth(), 1);
+    const thisMonth = allArticles.filter(a => new Date(a.created_at) >= monthAgo).length;
+
+    document.getElementById('st-total').innerText     = total;
+    document.getElementById('st-published').innerText = published;
+    document.getElementById('st-draft').innerText     = draft;
+    document.getElementById('st-month').innerText     = thisMonth;
+  }
+
+  function renderCategoryBreakdown() {
+    const container = document.getElementById('cat-breakdown');
+    const catCounts = {};
+    allArticles.forEach(a => {
+      const cat = a.category || 'Kateqoriyasız';
+      catCounts[cat] = (catCounts[cat] || 0) + 1;
+    });
+    const entries = Object.entries(catCounts).sort((a,b) => b[1] - a[1]);
+    if (entries.length === 0) { container.innerHTML = '<div class="empty-state" style="padding:1rem; font-size:0.85rem;">Hələ məqalə yoxdur</div>'; return; }
+    container.innerHTML = entries.map(([cat, count]) => {
+      const catObj = categories.find(c => c.name === cat);
+      const color = catObj ? catObj.color : '#999';
+      const pct = Math.round((count / allArticles.length) * 100);
+      return `<div class="recent-row">
+        <div class="cat-dot" style="background:${color}; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></div>
+        <div style="flex:1"><div style="font-size:0.85rem; font-weight:600;">${cat}</div>
+          <div style="height:4px; background:#eee; border-radius:4px; margin-top:4px;"><div style="height:4px; background:${color}; border-radius:4px; width:${pct}%;"></div></div>
+        </div>
+        <span style="font-size:0.8rem; opacity:0.5; font-weight:600;">${count}</span>
+      </div>`;
+    }).join('');
+  }
+
+  function renderRecentList() {
+    const recent = allArticles.slice(0, 5);
+    const container = document.getElementById('recent-list');
+    if (recent.length === 0) { container.innerHTML = '<div style="opacity:0.4; font-size:0.85rem; padding:1rem;">Hələ məqalə yoxdur</div>'; return; }
+    container.innerHTML = recent.map(a => `
+      <div class="recent-row">
+        <img src="${a.image || ''}" alt="" onerror="this.style.background='#eee';this.removeAttribute('src')">
+        <div class="recent-row-info">
+          <h4>${a.title_en || '(başlıq yoxdur)'}</h4>
+          <span>${new Date(a.created_at).toLocaleDateString('az-AZ')}</span>
+        </div>
+        <span class="badge ${(!a.status || a.status==='published') ? 'badge-published' : 'badge-draft'}">${(!a.status || a.status==='published') ? 'Dərc' : 'Qaralama'}</span>
+      </div>
+    `).join('');
+  }
+
+  // ── FILTER & RENDER ───────────────────────────────────
+  function setStatusFilter(status, btn) {
+    currentStatusFilter = status;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterArticles();
+  }
+
+  function filterArticles() {
+    const q = (document.getElementById('art-search').value || '').toLowerCase();
+    filteredArticles = allArticles.filter(a => {
+      const matchStatus = currentStatusFilter === 'all'
+        || (currentStatusFilter === 'published' && (!a.status || a.status === 'published'))
+        || (currentStatusFilter === 'draft' && a.status === 'draft');
+      const matchSearch = !q || (a.title_en||'').toLowerCase().includes(q) || (a.title_az||'').toLowerCase().includes(q);
+      return matchStatus && matchSearch;
+    });
+    renderArticleList();
+  }
+
+  function renderArticleList() {
+    const container = document.getElementById('articles-container');
+    if (filteredArticles.length === 0) {
+      container.innerHTML = `<div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <p>Məqalə tapılmadı</p></div>`;
       return;
     }
-
-    allArticles.forEach((art, index) => {
+    container.innerHTML = '';
+    filteredArticles.forEach((art, i) => {
+      const isPublished = !art.status || art.status === 'published';
+      const idx = allArticles.findIndex(a => a.id === art.id);
+      const tags = art.tags ? art.tags.split(',').map(t=>t.trim()).filter(Boolean) : [];
       const div = document.createElement('div');
-      div.className = 'article-item';
+      div.className = 'article-item ' + (isPublished ? 'published' : 'draft');
       div.innerHTML = `
-        <img src="${art.image || ''}" alt="" onerror="this.style.background='#eee';this.removeAttribute('src')">
-        <div class="article-content">
+        <img src="${art.image||''}" alt="" onerror="this.style.background='#eee';this.removeAttribute('src')">
+        <div class="article-meta">
           <h3>${art.title_en || '(başlıq yoxdur)'}</h3>
-          <p style="font-size:0.85rem; opacity:0.7;">${art.title_az || ''}</p>
+          <p>${art.title_az || ''}</p>
+          <div class="article-meta-row">
+            <span class="badge ${isPublished ? 'badge-published' : 'badge-draft'}">${isPublished ? '✅ Dərc' : '📝 Qaralama'}</span>
+            ${art.category ? `<span class="badge badge-cat">📁 ${art.category}</span>` : ''}
+            ${tags.slice(0,3).map(t=>`<span class="badge badge-tag">#${t}</span>`).join('')}
+            <span style="font-size:0.72rem; opacity:0.4; margin-left:auto;">${new Date(art.created_at).toLocaleDateString('az-AZ')}</span>
+          </div>
         </div>
         <div class="article-actions">
-          <button class="btn-small btn-edit" onclick="showEditModal(${index})">Düzəlt</button>
-          <button class="btn-small btn-delete" onclick="deleteArticle('${art.id}')">Sil</button>
-        </div>
-      `;
+          <button class="btn btn-blue btn-sm" onclick="showEditModal(${idx})">✏️ Düzəlt</button>
+          <button class="btn btn-red btn-sm" onclick="confirmDelete('${art.id}')">🗑️</button>
+        </div>`;
       container.appendChild(div);
     });
   }
 
+  // ── MARKDOWN EDITORS ──────────────────────────────────
+  function initMDE() {
+    mdeEN = new EasyMDE({
+      element: document.getElementById('art-desc-en'),
+      placeholder: 'Məqaləni ingilis dilində yazın...',
+      spellChecker: false,
+      autofocus: false,
+      status: false,
+      toolbar: ['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','|','preview','guide'],
+    });
+    mdeAZ = new EasyMDE({
+      element: document.getElementById('art-desc-az'),
+      placeholder: 'Məqaləni Azərbaycan dilində yazın...',
+      spellChecker: false,
+      autofocus: false,
+      status: false,
+      toolbar: ['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','|','preview','guide'],
+    });
+  }
+
+  // ── STATUS TOGGLE ─────────────────────────────────────
+  let selectedStatus = 'published';
+  function selectStatus(val) {
+    selectedStatus = val;
+    document.getElementById('opt-published').className = 'status-option' + (val==='published' ? ' selected-published' : '');
+    document.getElementById('opt-draft').className     = 'status-option' + (val==='draft'     ? ' selected-draft'     : '');
+  }
+
+  // ── TAGS INPUT ────────────────────────────────────────
+  function handleTagInput(e) {
+    const input = document.getElementById('tags-input-field');
+    if ((e.key === ',' || e.key === 'Enter') && input.value.trim()) {
+      e.preventDefault();
+      addTag(input.value.replace(',','').trim());
+      input.value = '';
+    } else if (e.key === 'Backspace' && !input.value && currentTags.length > 0) {
+      removeTag(currentTags.length - 1);
+    }
+  }
+  function tagInputHint(e) {
+    const v = e.target.value;
+    if (v.endsWith(',')) { addTag(v.slice(0,-1).trim()); e.target.value = ''; }
+  }
+  function addTag(tag) {
+    if (!tag || currentTags.includes(tag)) return;
+    currentTags.push(tag);
+    renderTagChips();
+  }
+  function removeTag(i) {
+    currentTags.splice(i, 1);
+    renderTagChips();
+  }
+  function renderTagChips() {
+    const wrap = document.getElementById('tags-wrap');
+    const input = document.getElementById('tags-input-field');
+    wrap.querySelectorAll('.tag-chip').forEach(c => c.remove());
+    currentTags.forEach((tag, i) => {
+      const chip = document.createElement('span');
+      chip.className = 'tag-chip';
+      chip.innerHTML = `#${tag} <button onclick="removeTag(${i})" type="button">×</button>`;
+      wrap.insertBefore(chip, input);
+    });
+  }
+
+  // ── MODALS ────────────────────────────────────────────
   function showAddModal() {
-    document.getElementById('modal-title').innerText = 'Yeni Məqalə Əlavə Et';
+    document.getElementById('modal-title').innerText = 'Yeni Məqalə';
     document.getElementById('art-id').value = '';
     document.getElementById('art-title-en').value = '';
     document.getElementById('art-title-az').value = '';
     document.getElementById('art-image').value = '';
-    document.getElementById('art-desc-en').value = '';
-    document.getElementById('art-desc-az').value = '';
-    document.getElementById('article-modal').style.display = 'flex';
+    document.getElementById('art-category').value = '';
+    if (mdeEN) mdeEN.value(''); if (mdeAZ) mdeAZ.value('');
+    currentTags = []; renderTagChips();
+    selectStatus('published');
+    populateCategorySelect();
+    document.getElementById('article-modal').classList.add('open');
   }
 
-  function showEditModal(index) {
-    const art = allArticles[index];
+  function showEditModal(idx) {
+    const art = allArticles[idx];
     document.getElementById('modal-title').innerText = 'Məqaləni Düzəlt';
     document.getElementById('art-id').value = art.id;
     document.getElementById('art-title-en').value = art.title_en || '';
     document.getElementById('art-title-az').value = art.title_az || '';
     document.getElementById('art-image').value = art.image || '';
-    document.getElementById('art-desc-en').value = art.desc_en || '';
-    document.getElementById('art-desc-az').value = art.desc_az || '';
-    document.getElementById('article-modal').style.display = 'flex';
+    if (mdeEN) mdeEN.value(art.desc_en || ''); if (mdeAZ) mdeAZ.value(art.desc_az || '');
+    currentTags = art.tags ? art.tags.split(',').map(t=>t.trim()).filter(Boolean) : [];
+    renderTagChips();
+    selectStatus(art.status || 'published');
+    populateCategorySelect(art.category);
+    document.getElementById('article-modal').classList.add('open');
   }
 
   function closeModal() {
-    document.getElementById('article-modal').style.display = 'none';
+    document.getElementById('article-modal').classList.remove('open');
   }
 
+  function populateCategorySelect(selected) {
+    const sel = document.getElementById('art-category');
+    sel.innerHTML = '<option value="">— Kateqoriya seç —</option>';
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.name; opt.textContent = c.name;
+      if (selected && selected === c.name) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  }
+
+  // ── SAVE ARTICLE ──────────────────────────────────────
   async function saveArticle() {
     const btn = document.getElementById('save-btn');
     const id = document.getElementById('art-id').value;
+    const titleEN = document.getElementById('art-title-en').value.trim();
+    const titleAZ = document.getElementById('art-title-az').value.trim();
+    if (!titleEN || !titleAZ) { notify('Başlıqlar mütləqdir!', 'error'); return; }
+
     const article = {
-      title_en: document.getElementById('art-title-en').value,
-      title_az: document.getElementById('art-title-az').value,
-      image:    document.getElementById('art-image').value,
-      desc_en:  document.getElementById('art-desc-en').value,
-      desc_az:  document.getElementById('art-desc-az').value,
+      title_en:  titleEN,
+      title_az:  titleAZ,
+      image:     document.getElementById('art-image').value.trim(),
+      desc_en:   mdeEN ? mdeEN.value() : '',
+      desc_az:   mdeAZ ? mdeAZ.value() : '',
+      category:  document.getElementById('art-category').value,
+      tags:      currentTags.join(', '),
+      status:    selectedStatus,
     };
 
-    btn.disabled = true;
-    btn.innerText = 'Saxlanılır...';
-
+    btn.disabled = true; btn.innerText = 'Saxlanılır...';
     let error;
     if (id) {
-      // Update
-      ({ error } = await sbClient.from('articles').update(article).eq('id', id));
+      ({ error } = await sb.from('articles').update(article).eq('id', id));
     } else {
-      // Insert
-      ({ error } = await sbClient.from('articles').insert(article));
+      ({ error } = await sb.from('articles').insert(article));
     }
+    btn.disabled = false; btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Yadda Saxla`;
 
     if (error) {
-      alert('Xəta: ' + error.message);
+      // If columns don't exist, save without new fields
+      if (error.message && error.message.includes('column')) {
+        const basicArticle = { title_en: article.title_en, title_az: article.title_az, image: article.image, desc_en: article.desc_en, desc_az: article.desc_az };
+        let e2;
+        if (id) { ({ error: e2 } = await sb.from('articles').update(basicArticle).eq('id', id)); }
+        else     { ({ error: e2 } = await sb.from('articles').insert(basicArticle)); }
+        if (e2) { notify('Xəta: ' + e2.message, 'error'); return; }
+        notify('Yadda saxlandı (yeni sahələr üçün Supabase-də sütun əlavə edin)', 'success');
+      } else {
+        notify('Xəta: ' + error.message, 'error'); return;
+      }
     } else {
-      closeModal();
-      loadArticles();
+      notify(id ? 'Məqalə yeniləndi ✅' : 'Məqalə əlavə olundu ✅', 'success');
     }
-
-    btn.disabled = false;
-    btn.innerText = 'Yadda Saxla';
+    closeModal();
+    loadArticles();
   }
 
-  async function deleteArticle(id) {
-    if (!confirm('Bu məqaləni silmək istədiyindən əminsən?')) return;
-
-    const { error } = await sbClient.from('articles').delete().eq('id', id);
-    if (error) {
-      alert('Xəta: ' + error.message);
-    } else {
-      loadArticles();
-    }
+  // ── DELETE ────────────────────────────────────────────
+  let pendingDeleteId = null;
+  function confirmDelete(id) {
+    pendingDeleteId = id;
+    document.getElementById('confirm-overlay').classList.add('open');
+    document.getElementById('confirm-ok-btn').onclick = doDelete;
+  }
+  function closeConfirm() {
+    pendingDeleteId = null;
+    document.getElementById('confirm-overlay').classList.remove('open');
+  }
+  async function doDelete() {
+    closeConfirm();
+    const { error } = await sb.from('articles').delete().eq('id', pendingDeleteId);
+    if (error) { notify('Xəta: ' + error.message, 'error'); return; }
+    notify('Məqalə silindi 🗑️', 'success');
+    loadArticles();
   }
 
-  // ── Paste HTML Link Interceptor ──────────────────
+  // ── CATEGORIES ────────────────────────────────────────
+  function renderCategoryUI() {
+    const list = document.getElementById('cat-list-ui');
+    const colors = { 'Ətraf Mühit': '#2d6a4f','Gənclər':'#3498db','Tədbirlər':'#9b59b6','Könüllülük':'#e67e22' };
+    if (categories.length === 0) { list.innerHTML = '<div style="opacity:0.4; font-size:0.85rem;">Hələ kateqoriya yoxdur</div>'; return; }
+    list.innerHTML = categories.map((c, i) => `
+      <div class="cat-row">
+        <div class="cat-dot" style="background:${c.color}"></div>
+        <span>${c.name}</span>
+        <small>${allArticles.filter(a=>a.category===c.name).length} məqalə</small>
+        <button class="btn btn-ghost btn-sm" onclick="deleteCategory(${i})" style="padding:0.2rem 0.5rem; font-size:0.75rem;">×</button>
+      </div>`).join('');
+    populateCategorySelect();
+  }
+
+  function addCategory() {
+    const name = document.getElementById('new-cat-name').value.trim();
+    const color = document.getElementById('new-cat-color').value;
+    if (!name) { notify('Ad boş ola bilməz', 'error'); return; }
+    if (categories.find(c => c.name === name)) { notify('Bu kateqoriya artıq var', 'error'); return; }
+    categories.push({ name, color });
+    saveCategories();
+    document.getElementById('new-cat-name').value = '';
+    renderCategoryUI();
+    notify('Kateqoriya əlavə olundu ✅', 'success');
+  }
+
+  function deleteCategory(i) {
+    categories.splice(i, 1);
+    saveCategories();
+    renderCategoryUI();
+  }
+
+  function renderTagsCloud() {
+    const tagCount = {};
+    allArticles.forEach(a => {
+      if (!a.tags) return;
+      a.tags.split(',').map(t=>t.trim()).filter(Boolean).forEach(t => { tagCount[t] = (tagCount[t]||0)+1; });
+    });
+    const container = document.getElementById('tags-cloud');
+    const entries = Object.entries(tagCount).sort((a,b)=>b[1]-a[1]);
+    if (entries.length === 0) { container.innerHTML = '<span style="opacity:0.4; font-size:0.85rem;">Hələ teq yoxdur</span>'; return; }
+    container.innerHTML = entries.map(([tag, count]) =>
+      `<span class="badge badge-tag" style="font-size:0.8rem; padding:0.3rem 0.8rem;">#${tag} <small style="opacity:0.6; margin-left:3px;">${count}</small></span>`
+    ).join('');
+  }
+
+  // ── NOTIFICATIONS ─────────────────────────────────────
+  function notify(msg, type = 'success') {
+    const container = document.getElementById('notif-container');
+    const el = document.createElement('div');
+    el.className = 'notif-item ' + type;
+    el.innerText = msg;
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 3500);
+  }
+
+  // ── PASTE INTERCEPTOR (preserved from original) ───────
   document.addEventListener('paste', function(e) {
     if (e.target.tagName !== 'TEXTAREA') return;
-    
     var html = e.clipboardData.getData('text/html');
     if (!html) return;
-    
-    // Check if there's any anchor tag with href
-    if (!/<a\b[^>]*href=/i.test(html)) return;
-    
+    if (!/\<a\b[^>]*href=/i.test(html)) return;
     e.preventDefault();
     var div = document.createElement('div');
-    
-    // Word HTML contains massive <style>, <xml>, <meta> blocks. Remove them.
     var cleanHtml = html.replace(/<(style|script|xml|meta|link)[^>]*>[\s\S]*?<\/\1>/gi, '');
     cleanHtml = cleanHtml.replace(/<(meta|link|xml)[^>]*>/gi, '');
-    // Also remove Word's specific conditional comments like <!--[if gte mso 9]>...<![endif]-->
     cleanHtml = cleanHtml.replace(/<!--[\s\S]*?-->/g, '');
-    
     div.innerHTML = cleanHtml;
-    
     var anchors = div.querySelectorAll('a');
     anchors.forEach(a => {
       var url = a.getAttribute('href');
       var text = a.textContent || '';
       if (url && text.trim() && !url.startsWith('javascript:')) {
-        // Create markdown text
-        var mark = document.createTextNode(`[${text.trim()}](${url})`);
-        a.parentNode.replaceChild(mark, a);
+        a.parentNode.replaceChild(document.createTextNode(`[${text.trim()}](${url})`), a);
       }
     });
-    
-    // Preserve newlines for block elements
     var blocks = div.querySelectorAll('p, div, li, h1, h2, h3, h4, h5, h6, tr');
-    blocks.forEach(b => {
-      b.appendChild(document.createTextNode('\n'));
-    });
-    var brs = div.querySelectorAll('br');
-    brs.forEach(br => {
-      br.parentNode.replaceChild(document.createTextNode('\n'), br);
-    });
-    
-    // Extract text
-    var finalStr = div.textContent || div.innerText || '';
-    
-    // Clean up excessive newlines and spaces
-    finalStr = finalStr.replace(/\n{3,}/g, '\n\n').trim();
-    // Sometimes Word produces many non-breaking spaces
-    finalStr = finalStr.replace(/&nbsp;/g, ' ').replace(/\u00A0/g, ' ');
-    
-    var start = e.target.selectionStart;
-    var end = e.target.selectionEnd;
-    var val = e.target.value;
+    blocks.forEach(b => b.appendChild(document.createTextNode('\n')));
+    div.querySelectorAll('br').forEach(br => br.parentNode.replaceChild(document.createTextNode('\n'), br));
+    var finalStr = (div.textContent || div.innerText || '').replace(/\n{3,}/g, '\n\n').trim().replace(/&nbsp;/g, ' ').replace(/\u00A0/g, ' ');
+    var start = e.target.selectionStart, end = e.target.selectionEnd, val = e.target.value;
     e.target.value = val.slice(0, start) + finalStr + val.slice(end);
     e.target.selectionStart = e.target.selectionEnd = start + finalStr.length;
   });
-  // ────────────────────────────────────────────────
 </script>
-
 </body>
 </html>
