@@ -886,12 +886,14 @@
     document.getElementById('confirm-overlay').classList.remove('open');
   }
   async function doDelete() {
+    // Save ID to local variable BEFORE closeConfirm clears pendingDeleteId
+    const idToDelete = pendingDeleteId;
     closeConfirm();
-    if (!pendingDeleteId || pendingDeleteId === 'null' || pendingDeleteId === 'undefined') {
+    if (!idToDelete || idToDelete === 'null' || idToDelete === 'undefined') {
       notify('Xəta: Məqalənin ID-si tapılmadı', 'error');
       return;
     }
-    const { error } = await sb.from('articles').delete().eq('id', pendingDeleteId);
+    const { error } = await sb.from('articles').delete().eq('id', idToDelete);
     if (error) { notify('Xəta: ' + error.message, 'error'); return; }
     notify('Məqalə silindi 🗑️', 'success');
     loadArticles();
