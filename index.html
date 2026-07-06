@@ -2705,22 +2705,40 @@
       btn.disabled = true;
       btn.innerText = 'Gözləyin...';
       err.style.display = 'none';
+      err.style.color = '#e74c3c'; // Reset error color
 
       if (authMode === 'login') {
         const { error } = await sbClient.auth.signInWithPassword({ email, password: pass });
-        if (error) { err.innerText = error.message; err.style.display = 'block'; btn.disabled = false; btn.innerText = 'Daxil ol'; return; }
+        if (error) { 
+          err.innerText = error.message === 'Invalid login credentials' ? 'E-poçt ünvanı və ya şifrə yanlışdır.' : error.message; 
+          err.style.display = 'block'; btn.disabled = false; btn.innerText = 'Daxil ol'; return; 
+        }
         closeAuthModal();
         window.location.href = 'dashboard.html';
       } else {
         if (!fName || !lName) { err.innerText = 'Ad və Soyadı daxil edin.'; err.style.display = 'block'; btn.disabled = false; btn.innerText = 'Qeydiyyatı Tamamla'; return; }
-        const { data, error } = await sbClient.auth.signUp({ email, password: pass });
-        if (error) { err.innerText = error.message; err.style.display = 'block'; btn.disabled = false; btn.innerText = 'Qeydiyyatı Tamamla'; return; }
+        const { data, error } = await sbClient.auth.signUp({ 
+          email, 
+          password: pass,
+          options: { data: { first_name: fName, last_name: lName } }
+        });
         
-        if (data.user) {
-          // Create profile
+        if (error) { 
+          err.innerText = error.message; err.style.display = 'block'; btn.disabled = false; btn.innerText = 'Qeydiyyatı Tamamla'; return; 
+        }
+        
+        if (data.session) {
+          // Email confirmation NOT required, we are logged in!
+          // Try to create profile directly
           await sbClient.from('profiles').insert({ id: data.user.id, first_name: fName, last_name: lName, status: 'Namizəd' });
           closeAuthModal();
           window.location.href = 'dashboard.html';
+        } else {
+          // Email confirmation required!
+          err.innerText = "Qeydiyyat uğurla tamamlandı! Zəhmət olmasa e-poçtunuza (Spam qovluğuna da baxa bilərsiniz) göndərilən təsdiq linkinə klikləyin.";
+          err.style.display = 'block';
+          err.style.color = 'var(--green)'; // Show success color
+          btn.style.display = 'none'; // Hide the button
         }
       }
     }

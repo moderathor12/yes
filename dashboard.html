@@ -226,9 +226,21 @@
         document.getElementById('prof-id').innerText = data.id;
         document.getElementById('prof-date').innerText = new Date(data.created_at).toLocaleDateString('az-AZ');
       } else {
-        // If profile doesn't exist, try to read from metadata if they signed up recently
+        // If profile doesn't exist (because of email confirmation step), create it now from metadata
         const fName = currentUser.user_metadata?.first_name || 'İstifadəçi';
-        document.getElementById('prof-name').innerText = fName;
+        const lName = currentUser.user_metadata?.last_name || '';
+        
+        // Insert new profile
+        await sb.from('profiles').insert({ id: currentUser.id, first_name: fName, last_name: lName, status: 'Namizəd' });
+        
+        const fullName = `${fName} ${lName}`.trim();
+        document.getElementById('nav-name').innerText = fullName;
+        document.getElementById('nav-avatar').innerText = fName.charAt(0);
+        
+        document.getElementById('prof-name').innerText = fullName;
+        document.getElementById('prof-status').innerText = 'Namizəd';
+        document.getElementById('prof-id').innerText = currentUser.id;
+        document.getElementById('prof-date').innerText = new Date().toLocaleDateString('az-AZ');
       }
     }
 
