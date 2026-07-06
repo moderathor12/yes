@@ -242,18 +242,12 @@
     async function loadEvents() {
       // Fetch all events
       const { data: events } = await sb.from('events').select('*').order('created_at', { ascending: false });
-      // Fetch registrations for current user
-      const { data: regs } = await sb.from('event_registrations').select('event_id').eq('user_id', currentUser.id);
-      
-      const regIds = regs ? regs.map(r => r.event_id) : [];
       
       const activeList = document.getElementById('active-events-list');
-      const pastList = document.getElementById('past-events-list');
-      activeList.innerHTML = ''; pastList.innerHTML = '';
+      activeList.innerHTML = '';
 
       if (!events || events.length === 0) {
         activeList.innerHTML = '<p style="color:gray;">Heç bir tədbir yoxdur.</p>';
-        pastList.innerHTML = '<p style="color:gray;">Heç bir tədbir yoxdur.</p>';
         return;
       }
 
@@ -274,12 +268,6 @@
       });
 
       if(activeList.innerHTML === '') activeList.innerHTML = '<p style="color:gray;">Aktiv tədbir yoxdur.</p>';
-    }
-
-    async function registerEvent(eventId) {
-      const { error } = await sb.from('event_registrations').insert({ event_id: eventId, user_id: currentUser.id });
-      if (error) { alert('Xəta: ' + error.message); }
-      else { alert('Uğurla qeydiyyatdan keçdiniz!'); loadEvents(); }
     }
 
     async function loadDocuments() {
