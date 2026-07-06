@@ -2642,7 +2642,7 @@
 
     function updateNavAuthButton() {
       const btn = document.getElementById('nav-auth-btn');
-      btn.style.display = 'flex';
+      btn.style.display = 'none'; // Temporarily hidden, change to 'flex' to show
       const lang = localStorage.getItem('yes_lang') || 'en';
       if (currentUser) {
         btn.title = lang === 'az' ? 'Şəxsi Kabinet' : 'Dashboard';
