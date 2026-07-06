@@ -346,7 +346,7 @@
           </div>
           <div class="event-info">
             <h3>${lang === 'az' ? ev.title_az : ev.title_en}</h3>
-            <p>${linkify(lang === 'az' ? ev.desc_az : ev.desc_en, true)}</p>
+            <p>${(lang === 'az' ? ev.desc_az : ev.desc_en).replace(/[*#_~`>]/g, '')}</p>
             <button class="card-share-btn" onclick="copyShareLinkById('${ev.id}', event)">🔗</button>
           </div>
         `;
@@ -360,7 +360,7 @@
       if (!ev) return;
       document.getElementById('sa-img').src = ev.image || '';
       document.getElementById('sa-title').innerText = lang === 'az' ? ev.title_az : ev.title_en;
-      document.getElementById('sa-desc').innerHTML = linkify(lang === 'az' ? ev.desc_az : ev.desc_en);
+      document.getElementById('sa-desc').innerHTML = marked.parse(lang === 'az' ? (ev.desc_az || '') : (ev.desc_en || ''));
       window.location.hash = 'article-' + ev.id;
       
       document.getElementById('gallery').style.display = 'none';
