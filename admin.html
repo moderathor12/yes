@@ -1229,10 +1229,9 @@
     const date = document.getElementById('ev-date').value;
     const link = document.getElementById('ev-link').value;
     if(!taz && !ten) { notify('Zəhmət olmasa başlıq yazın', 'error'); return; }
+    if(!link) { notify('Zəhmət olmasa Qeydiyyat Linkini daxil edin', 'error'); return; }
     
-    // Check if link was provided
-    const eventData = { title_az: taz, title_en: ten, event_date: date || null };
-    if (link) eventData.registration_link = link;
+    const eventData = { title_az: taz, title_en: ten, event_date: date || null, registration_link: link };
     
     const { error } = await sb.from('events').insert(eventData);
     if(error) { notify(error.message, 'error'); return; }
