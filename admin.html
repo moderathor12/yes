@@ -1139,7 +1139,7 @@
           </div>
         </div>
         <div class="article-actions">
-          <select onchange="event.stopPropagation(); updateUserStatus('${u.id}', this.value)" style="margin:0; padding:0.4rem; font-size:0.8rem; border-radius:8px; border:1px solid #ccc;">
+          <select onclick="event.stopPropagation()" onchange="event.stopPropagation(); updateUserStatus('${u.id}', this.value)" style="margin:0; padding:0.4rem; font-size:0.8rem; border-radius:8px; border:1px solid #ccc;">
             <option value="Namizəd" ${u.status === 'Namizəd' ? 'selected' : ''}>Namizəd</option>
             <option value="Aktiv könüllü" ${u.status === 'Aktiv könüllü' ? 'selected' : ''}>Aktiv könüllü</option>
             <option value="Alumni" ${u.status === 'Alumni' ? 'selected' : ''}>Alumni</option>
