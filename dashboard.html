@@ -274,9 +274,9 @@
           </div>
           <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
             ${ev.registration_link ? `<a href="${ev.registration_link}" target="_blank" class="btn-green" style="text-decoration:none; background:#1a2e1a; font-size:0.9rem;">🔗 Qeydiyyat Formu</a>` : ''}
-            ${isRegistered 
+            ${!ev.registration_link ? (isRegistered 
               ? `<button class="btn-disabled" disabled>Qeydiyyatdan Keçilib</button>` 
-              : (ev.is_active ? `<button class="btn-green" onclick="registerEvent('${ev.id}')">Saytdan Qeydiyyat</button>` : `<button class="btn-disabled" disabled>Bağlanıb</button>`)}
+              : (ev.is_active ? `<button class="btn-green" onclick="registerEvent('${ev.id}')">Saytdan Qeydiyyat</button>` : `<button class="btn-disabled" disabled>Bağlanıb</button>`)) : ''}
           </div>
         `;
         if (ev.is_active) {
