@@ -1444,6 +1444,41 @@
         font-size: 1rem;
       }
     }
+
+    /* AUTH STYLES */
+    .nav-auth-btn {
+      background: var(--green); color: white; border: none; padding: 0.6rem 1.2rem;
+      border-radius: 12px; font-weight: 700; font-family: 'Space Grotesk', sans-serif;
+      cursor: pointer; transition: all 0.2s; font-size: 0.9rem;
+    }
+    .nav-auth-btn:hover { background: var(--dark); transform: translateY(-2px); }
+    .auth-modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 10000;
+      display: none; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .auth-modal.show { display: flex; }
+    .auth-box {
+      background: white; border-radius: 24px; padding: 3rem 2rem;
+      width: 100%; max-width: 400px; position: relative; text-align: center;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+    }
+    .auth-close {
+      position: absolute; top: 1rem; right: 1.5rem; background: none; border: none;
+      font-size: 1.5rem; cursor: pointer; opacity: 0.5;
+    }
+    .auth-close:hover { opacity: 1; }
+    .auth-box h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .auth-box p { opacity: 0.6; font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .auth-form input {
+      width: 100%; padding: 0.9rem 1rem; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 12px;
+      margin-bottom: 1rem; font-family: inherit; font-size: 0.95rem; outline: none; transition: 0.2s;
+    }
+    .auth-form input:focus { border-color: var(--green); box-shadow: 0 0 0 4px rgba(45,106,79,0.1); }
+    .auth-form .btn-primary { width: 100%; margin-top: 0.5rem; }
+    .auth-switch { margin-top: 1.5rem; font-size: 0.9rem; opacity: 0.8; }
+    .auth-switch span { color: var(--green); font-weight: 700; cursor: pointer; text-decoration: underline; }
+    #auth-error { color: #e74c3c; font-size: 0.85rem; margin-top: 1rem; display: none; }
   </style>
 </head>
 
@@ -1475,6 +1510,7 @@
           <button onclick="setLang('az')" id="opt-az">AZ</button>
         </div>
       </div>
+      <button class="nav-auth-btn" id="nav-auth-btn" onclick="handleAuthClick()" style="display:none;">Daxil ol</button>
       <button class="menu-btn" onclick="toggleMenu()" aria-label="Toggle Menu">
         <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
           <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
@@ -2555,14 +2591,142 @@
       </div>
     </div>
   </div>
+
+  <!-- AUTH MODAL -->
+  <div id="auth-modal" class="auth-modal">
+    <div class="auth-box">
+      <button class="auth-close" onclick="closeAuthModal()">✕</button>
+      <h2 id="auth-title" data-i18n="auth_login_title">Daxil ol</h2>
+      <p id="auth-subtitle" data-i18n="auth_login_sub">YES Şəxsi Kabinetinizə xoş gəlmisiniz.</p>
+      <div class="auth-form">
+        <input type="text" id="auth-fname" placeholder="Adınız" style="display:none;">
+        <input type="text" id="auth-lname" placeholder="Soyadınız" style="display:none;">
+        <input type="email" id="auth-email" placeholder="E-poçt ünvanı">
+        <input type="password" id="auth-pass" placeholder="Şifrə">
+        <button class="btn-primary" id="auth-submit-btn" onclick="submitAuth()">Daxil ol</button>
+        <p id="auth-error"></p>
+      </div>
+      <div class="auth-switch">
+        <span id="auth-switch-text">Hesabınız yoxdur? Qeydiyyatdan keçin.</span>
+      </div>
+    </div>
+  </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
-    // ── Supabase (Gallery) ──────────────────────────────────
+    // ── Supabase (Gallery & Auth) ──────────────────────────────────
     const SUPABASE_URL = 'https://wqcugmhjfuvnwxhspytw.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxY3VnbWhqZnV2bnd4aHNweXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMzY2NzcsImV4cCI6MjA5MTYxMjY3N30.A2rZNI2hOpDNC_JLeQNO9Is50HswX-jB5he9wNOpYLo';
     const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     // ────────────────────────────────────────────────────────
+
+    // ── AUTH LOGIC ──────────────────────────────────────────
+    let currentUser = null;
+    let authMode = 'login'; // 'login' | 'register'
+
+    sbClient.auth.onAuthStateChange((event, session) => {
+      currentUser = session ? session.user : null;
+      updateNavAuthButton();
+    });
+
+    async function checkUser() {
+      const { data: { session } } = await sbClient.auth.getSession();
+      currentUser = session ? session.user : null;
+      updateNavAuthButton();
+    }
+
+    function updateNavAuthButton() {
+      const btn = document.getElementById('nav-auth-btn');
+      btn.style.display = 'block';
+      const lang = localStorage.getItem('yes_lang') || 'en';
+      if (currentUser) {
+        btn.innerText = lang === 'az' ? 'Şəxsi Kabinet' : 'Dashboard';
+      } else {
+        btn.innerText = lang === 'az' ? 'Daxil ol' : 'Sign In';
+      }
+    }
+
+    function handleAuthClick() {
+      if (currentUser) {
+        window.location.href = 'dashboard.html';
+      } else {
+        openAuthModal();
+      }
+    }
+
+    function openAuthModal() {
+      document.getElementById('auth-modal').classList.add('show');
+      setAuthMode('login');
+      document.getElementById('auth-error').style.display = 'none';
+    }
+
+    function closeAuthModal() {
+      document.getElementById('auth-modal').classList.remove('show');
+    }
+
+    function setAuthMode(mode) {
+      authMode = mode;
+      const lang = localStorage.getItem('yes_lang') || 'en';
+      const isAz = lang === 'az';
+      const title = document.getElementById('auth-title');
+      const sub = document.getElementById('auth-subtitle');
+      const btn = document.getElementById('auth-submit-btn');
+      const switchText = document.getElementById('auth-switch-text');
+      const fName = document.getElementById('auth-fname');
+      const lName = document.getElementById('auth-lname');
+      
+      document.getElementById('auth-error').style.display = 'none';
+
+      if (mode === 'login') {
+        title.innerText = isAz ? 'Daxil ol' : 'Sign In';
+        sub.innerText = isAz ? 'YES Şəxsi Kabinetinizə xoş gəldiniz.' : 'Welcome to YES Dashboard.';
+        btn.innerText = isAz ? 'Daxil ol' : 'Sign In';
+        switchText.innerHTML = isAz ? 'Hesabınız yoxdur? <span onclick="setAuthMode(\'register\')">Qeydiyyatdan keçin.</span>' : 'Don\'t have an account? <span onclick="setAuthMode(\'register\')">Sign Up.</span>';
+        fName.style.display = 'none'; lName.style.display = 'none';
+      } else {
+        title.innerText = isAz ? 'Qeydiyyat' : 'Sign Up';
+        sub.innerText = isAz ? 'Yeni hesab yaradın və bizə qoşulun!' : 'Create a new account and join us!';
+        btn.innerText = isAz ? 'Qeydiyyatı Tamamla' : 'Sign Up';
+        switchText.innerHTML = isAz ? 'Artıq hesabınız var? <span onclick="setAuthMode(\'login\')">Daxil olun.</span>' : 'Already have an account? <span onclick="setAuthMode(\'login\')">Sign In.</span>';
+        fName.style.display = 'block'; lName.style.display = 'block';
+      }
+    }
+
+    async function submitAuth() {
+      const email = document.getElementById('auth-email').value.trim();
+      const pass = document.getElementById('auth-pass').value;
+      const fName = document.getElementById('auth-fname').value.trim();
+      const lName = document.getElementById('auth-lname').value.trim();
+      const err = document.getElementById('auth-error');
+      const btn = document.getElementById('auth-submit-btn');
+
+      if (!email || !pass) { err.innerText = 'Zəhmət olmasa e-poçt və şifrəni daxil edin.'; err.style.display = 'block'; return; }
+      
+      btn.disabled = true;
+      btn.innerText = 'Gözləyin...';
+      err.style.display = 'none';
+
+      if (authMode === 'login') {
+        const { error } = await sbClient.auth.signInWithPassword({ email, password: pass });
+        if (error) { err.innerText = error.message; err.style.display = 'block'; btn.disabled = false; btn.innerText = 'Daxil ol'; return; }
+        closeAuthModal();
+        window.location.href = 'dashboard.html';
+      } else {
+        if (!fName || !lName) { err.innerText = 'Ad və Soyadı daxil edin.'; err.style.display = 'block'; btn.disabled = false; btn.innerText = 'Qeydiyyatı Tamamla'; return; }
+        const { data, error } = await sbClient.auth.signUp({ email, password: pass });
+        if (error) { err.innerText = error.message; err.style.display = 'block'; btn.disabled = false; btn.innerText = 'Qeydiyyatı Tamamla'; return; }
+        
+        if (data.user) {
+          // Create profile
+          await sbClient.from('profiles').insert({ id: data.user.id, first_name: fName, last_name: lName, status: 'Namizəd' });
+          closeAuthModal();
+          window.location.href = 'dashboard.html';
+        }
+      }
+    }
+
+    // Call checkUser on load
+    window.addEventListener('DOMContentLoaded', checkUser);
 
     var allEvents = []; // Supabase-den yuklenir (en son meqale)
 
