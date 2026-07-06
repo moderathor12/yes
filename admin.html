@@ -1097,7 +1097,7 @@
   // ── USERS ──
   async function loadUsers() {
     const q = document.getElementById('usr-search').value.toLowerCase();
-    const { data, error } = await sbClient.from('profiles').select('*').order('created_at', { ascending: false });
+    const { data, error } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
     const list = document.getElementById('users-list');
     if (!data) { list.innerHTML = '<p>Məlumat tapılmadı.</p>'; return; }
     
@@ -1131,13 +1131,13 @@
     if(filtered.length === 0) list.innerHTML = '<p style="padding:1rem; opacity:0.5;">İstifadəçi tapılmadı.</p>';
   }
   async function updateUserStatus(id, status) {
-    await sbClient.from('profiles').update({ status }).eq('id', id);
+    await sb.from('profiles').update({ status }).eq('id', id);
     notify('İstifadəçi statusu yeniləndi', 'success');
   }
 
   // ── EVENTS ──
   async function loadEventsAdmin() {
-    const { data } = await sbClient.from('events').select('*').order('created_at', { ascending: false });
+    const { data } = await sb.from('events').select('*').order('created_at', { ascending: false });
     const list = document.getElementById('events-list');
     if (!data) return;
     list.innerHTML = data.map(ev => `
@@ -1155,13 +1155,13 @@
     if(data.length === 0) list.innerHTML = '<p style="padding:1rem; opacity:0.5;">Tədbir yoxdur.</p>';
   }
   async function toggleEventStatus(id, isActive) {
-    await sbClient.from('events').update({ is_active: isActive }).eq('id', id);
+    await sb.from('events').update({ is_active: isActive }).eq('id', id);
     loadEventsAdmin();
     notify(isActive ? 'Tədbir qeydiyyata açıldı' : 'Tədbir bağlandı', 'success');
   }
   async function deleteEvent(id) {
     if(confirm('Tədbiri silmək istədiyinizə əminsiniz?')) {
-      await sbClient.from('events').delete().eq('id', id);
+      await sb.from('events').delete().eq('id', id);
       loadEventsAdmin();
       notify('Tədbir silindi', 'success');
     }
@@ -1173,7 +1173,7 @@
     const ten = document.getElementById('ev-title-en').value;
     const date = document.getElementById('ev-date').value;
     if(!taz && !ten) { notify('Zəhmət olmasa başlıq yazın', 'error'); return; }
-    const { error } = await sbClient.from('events').insert({ title_az: taz, title_en: ten, event_date: date || null });
+    const { error } = await sb.from('events').insert({ title_az: taz, title_en: ten, event_date: date || null });
     if(error) { notify(error.message, 'error'); return; }
     closeEventModal();
     notify('Yeni tədbir yaradıldı', 'success');
@@ -1185,7 +1185,7 @@
 
   // ── RESOURCES & CERTS ──
   async function loadResourcesAdmin() {
-    const { data } = await sbClient.from('resources').select('*').order('created_at', { ascending: false });
+    const { data } = await sb.from('resources').select('*').order('created_at', { ascending: false });
     const list = document.getElementById('resources-list');
     if (!data) return;
     list.innerHTML = data.map(r => `
@@ -1198,7 +1198,7 @@
   }
   async function deleteResource(id) {
     if(confirm('Resursu silmək istədiyinizə əminsiniz?')){
-      await sbClient.from('resources').delete().eq('id', id);
+      await sb.from('resources').delete().eq('id', id);
       loadResourcesAdmin();
     }
   }
@@ -1209,7 +1209,7 @@
     const desc = document.getElementById('res-desc').value;
     const url = document.getElementById('res-url').value;
     if(!title || !url) { notify('Başlıq və Link mütləqdir', 'error'); return; }
-    const { error } = await sbClient.from('resources').insert({ title, description: desc, file_url: url });
+    const { error } = await sb.from('resources').insert({ title, description: desc, file_url: url });
     if(error) { notify(error.message, 'error'); return; }
     closeResourceModal();
     notify('Resurs əlavə edildi', 'success');
@@ -1223,7 +1223,7 @@
     const title = document.getElementById('cert-title').value;
     const url = document.getElementById('cert-url').value;
     if(!uid || !title || !url) { notify('Bütün xanaları doldurun', 'error'); return; }
-    const { error } = await sbClient.from('documents').insert({ user_id: uid, title, file_url: url });
+    const { error } = await sb.from('documents').insert({ user_id: uid, title, file_url: url });
     if(error) { notify(error.message, 'error'); return; }
     notify('Sertifikat təyin edildi!', 'success');
     document.getElementById('cert-title').value = '';
