@@ -2663,8 +2663,12 @@
         if (e.target.closest('.card-share-btn') || e.target.closest('a')) return;
         window.location.href = 'articles.html#article-' + ev.id;
       };
+      var catBadge = ev.category ? `<span style="position:absolute;top:1rem;left:1rem;background:rgba(116,198,157,0.85);color:#1a2e1a;padding:0.2rem 0.6rem;border-radius:20px;font-size:0.72rem;font-weight:700;">${ev.category}</span>` : '';
       card.innerHTML = `
-        <img class="event-img" src="${ev.image || 'https://via.placeholder.com/400x300?text=YES+Event'}" alt="Event" width="400" height="220" loading="lazy">
+        <div style="position:relative;">
+          <img class="event-img" src="${ev.image || 'https://via.placeholder.com/400x300?text=YES+Event'}" alt="Event" width="400" height="220" loading="lazy">
+          ${catBadge}
+        </div>
         <div class="event-info">
           <h3>${lang === 'az' ? ev.title_az : ev.title_en}</h3>
           <p>${linkify(lang === 'az' ? ev.desc_az : ev.desc_en)}</p>
