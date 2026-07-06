@@ -608,6 +608,24 @@
   </div>
 </div>
 
+<!-- ── USER DETAIL MODAL ── -->
+<div class="modal-overlay" id="user-detail-modal">
+  <div class="modal-box" style="max-width:560px;">
+    <div class="modal-header">
+      <h2 id="udm-name">İstifadəçi</h2>
+      <button class="modal-close" onclick="closeUserModal()">✕</button>
+    </div>
+    <p id="udm-id" style="font-size:0.78rem;opacity:0.45;margin-bottom:1.2rem;"></p>
+    <h4 style="margin-bottom:0.8rem;font-size:0.9rem;opacity:0.7;">📄 Sertifikatlar / Sənədlər</h4>
+    <div id="udm-certs" style="display:flex;flex-direction:column;gap:0.6rem;min-height:60px;">
+      <p style="opacity:0.45;font-size:0.9rem;">Yüklənir...</p>
+    </div>
+    <div class="modal-footer" style="margin-top:1.5rem;">
+      <button class="btn" style="background:#eee;color:#333;" onclick="closeUserModal()">Bağla</button>
+    </div>
+  </div>
+</div>
+
 <script>
   // ── SUPABASE ─────────────────────────────────────────
   const SUPABASE_URL = 'https://wqcugmhjfuvnwxhspytw.supabase.co';
@@ -1110,17 +1128,17 @@
     }
 
     list.innerHTML = filtered.map(u => `
-      <div class="article-item" style="border-left-color:var(--lime);">
+      <div class="article-item" style="border-left-color:var(--lime); cursor:pointer;" onclick="openUserModal('${u.id}', '${u.first_name} ${u.last_name}')">
         <div class="article-meta">
           <h3>${u.first_name} ${u.last_name}</h3>
-          <p>${u.id}</p>
+          <p style="font-size:0.78rem;opacity:0.5;">${u.id}</p>
           <div class="article-meta-row" style="margin-top:0.3rem;">
             <span class="badge badge-published">${u.status || 'Namizəd'}</span>
             <span class="badge badge-cat">${new Date(u.created_at).toLocaleDateString('az-AZ')}</span>
           </div>
         </div>
         <div class="article-actions">
-          <select onchange="updateUserStatus('${u.id}', this.value)" style="margin:0; padding:0.4rem; font-size:0.8rem; border-radius:8px; border:1px solid #ccc;">
+          <select onchange="event.stopPropagation(); updateUserStatus('${u.id}', this.value)" style="margin:0; padding:0.4rem; font-size:0.8rem; border-radius:8px; border:1px solid #ccc;">
             <option value="Namizəd" ${u.status === 'Namizəd' ? 'selected' : ''}>Namizəd</option>
             <option value="Aktiv könüllü" ${u.status === 'Aktiv könüllü' ? 'selected' : ''}>Aktiv könüllü</option>
             <option value="Alumni" ${u.status === 'Alumni' ? 'selected' : ''}>Alumni</option>
@@ -1133,6 +1151,42 @@
   async function updateUserStatus(id, status) {
     await sb.from('profiles').update({ status }).eq('id', id);
     notify('İstifadəçi statusu yeniləndi', 'success');
+  }
+
+  // ── USER DETAIL MODAL ──
+  async function openUserModal(userId, userName) {
+    document.getElementById('udm-name').innerText = userName;
+    document.getElementById('udm-id').innerText = 'ID: ' + userId;
+    document.getElementById('udm-certs').innerHTML = '<p style="opacity:0.45;font-size:0.9rem;">Yüklənir...</p>';
+    document.getElementById('user-detail-modal').classList.add('open');
+
+    const { data, error } = await sb.from('documents').select('*').eq('user_id', userId).order('created_at', { ascending: false });
+    const box = document.getElementById('udm-certs');
+    if (!data || data.length === 0) {
+      box.innerHTML = '<p style="opacity:0.45;font-size:0.9rem;">Heç bir sənəd tapılmadı.</p>';
+      return;
+    }
+    box.innerHTML = data.map(doc => `
+      <div style="display:flex;align-items:center;justify-content:space-between;background:#f8fcf9;border:1px solid #e0efe6;border-radius:12px;padding:0.8rem 1rem;">
+        <div>
+          <p style="font-weight:600;font-size:0.9rem;margin-bottom:0.2rem;">${doc.title}</p>
+          <a href="${doc.file_url}" target="_blank" style="font-size:0.78rem;color:#2d6a4f;text-decoration:underline;">Linkə bax</a>
+        </div>
+        <button onclick="deleteCert('${doc.id}', '${userId}', '${userName}')" title="Sil" style="background:rgba(231,76,60,0.1);color:#e74c3c;border:none;border-radius:8px;padding:0.5rem 0.8rem;cursor:pointer;font-size:0.85rem;">🗑</button>
+      </div>
+    `).join('');
+  }
+
+  function closeUserModal() {
+    document.getElementById('user-detail-modal').classList.remove('open');
+  }
+
+  async function deleteCert(docId, userId, userName) {
+    if (!confirm('Bu sənədi silmək istədiyinizə əminsiniz?')) return;
+    const { error } = await sb.from('documents').delete().eq('id', docId);
+    if (error) { notify('Xəta: ' + error.message, 'error'); return; }
+    notify('Sənəd silindi', 'success');
+    openUserModal(userId, userName);
   }
 
   // ── EVENTS ──
