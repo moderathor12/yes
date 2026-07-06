@@ -2857,7 +2857,7 @@
         </div>
         <div class="event-info">
           <h3>${lang === 'az' ? ev.title_az : ev.title_en}</h3>
-          <p>${(lang === 'az' ? ev.desc_az : ev.desc_en).replace(/[*#_~`>]/g, '')}</p>
+          <p>${(lang === 'az' ? (ev.desc_az || '') : (ev.desc_en || '')).replace(/[*#_~>]/g, '')}</p>
           <button class="card-share-btn" onclick="copyShareLinkById('${ev.id}', event)" title="Share">🔗</button>
         </div>
       `;
