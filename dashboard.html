@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Şəxsi Kabinet — YES Community</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --green: #2d6a4f;
+      --lime: #74c69d;
+      --bright: #b7e4c7;
+      --bg: #f8fcf9;
+      --dark: #1a2e1a;
+      --sidebar-w: 260px;
+      --header-h: 70px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--dark); display: none; } /* body hidden until auth check */
+
+    /* ── LAYOUT ── */
+    .sidebar {
+      position: fixed; top: 0; left: 0; height: 100vh; width: var(--sidebar-w);
+      background: var(--dark); color: white; z-index: 50;
+      display: flex; flex-direction: column; padding: 0;
+    }
+    .sidebar-logo {
+      display: flex; align-items: center; gap: 0.8rem;
+      padding: 1.5rem 1.4rem; border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.1rem; color: white;
+      text-decoration: none;
+    }
+    .sidebar-logo-badge {
+      background: var(--green); border-radius: 8px; width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800;
+    }
+    .sidebar-nav { flex: 1; padding: 1.5rem 0; overflow-y: auto; }
+    .nav-item {
+      display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem 1.4rem;
+      cursor: pointer; transition: all 0.2s; color: rgba(255,255,255,0.6); font-size: 0.95rem; border: none;
+      background: none; width: 100%; text-align: left; border-left: 3px solid transparent; font-weight: 500;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.04); color: white; }
+    .nav-item.active { background: rgba(116,198,157,0.1); color: var(--lime); border-left-color: var(--lime); }
+    
+    .sidebar-footer { padding: 1.5rem 1.4rem; border-top: 1px solid rgba(255,255,255,0.08); }
+    .btn-logout { 
+      background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: none; padding: 0.8rem;
+      border-radius: 12px; width: 100%; cursor: pointer; font-weight: 600; font-family: inherit; transition: 0.2s;
+    }
+    .btn-logout:hover { background: #e74c3c; color: white; }
+
+    .main-content {
+      margin-left: var(--sidebar-w); min-height: 100vh; padding: 2.5rem 3rem;
+    }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; }
+    .header h1 { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; }
+    .user-badge {
+      background: white; padding: 0.5rem 1rem; border-radius: 20px; box-shadow: var(--shadow);
+      display: flex; align-items: center; gap: 0.8rem; font-weight: 600; font-size: 0.9rem;
+    }
+    .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--bright); color: var(--green); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+
+    /* ── PANELS ── */
+    .panel { display: none; animation: fadeIn 0.3s ease; }
+    .panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .card { background: white; border-radius: 20px; padding: 2rem; box-shadow: var(--shadow); margin-bottom: 1.5rem; }
+    .card-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--green); }
+    
+    .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+    .stat-box { background: var(--bg); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(0,0,0,0.04); }
+    .stat-label { font-size: 0.85rem; color: rgba(0,0,0,0.5); margin-bottom: 0.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .stat-val { font-size: 1.2rem; font-weight: 700; color: var(--dark); font-family: 'Space Grotesk', sans-serif; }
+    .status-badge { display: inline-block; padding: 0.3rem 0.8rem; background: var(--bright); color: var(--green); border-radius: 20px; font-size: 0.85rem; font-weight: 700; }
+
+    .event-list { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    .event-card {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(0,0,0,0.06); transition: 0.2s; background: white;
+    }
+    .event-card:hover { border-color: var(--green); box-shadow: 0 5px 15px rgba(45,106,79,0.08); }
+    .event-info h3 { font-size: 1.1rem; margin-bottom: 0.3rem; }
+    .event-info p { font-size: 0.9rem; color: rgba(0,0,0,0.6); }
+    .btn-green { background: var(--green); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; cursor: pointer; font-weight: 600; font-family: inherit; transition: 0.2s; }
+    .btn-green:hover { background: var(--dark); }
+    .btn-disabled { background: #e0e0e0; color: #888; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; font-weight: 600; font-family: inherit; cursor: not-allowed; }
+
+    .doc-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+    .doc-card { padding: 1.5rem; border-radius: 16px; background: #fff; border: 1px solid rgba(0,0,0,0.06); text-align: center; }
+    .doc-card svg { width: 40px; height: 40px; color: var(--lime); margin-bottom: 1rem; }
+    .doc-card h3 { font-size: 1rem; margin-bottom: 1rem; }
+    .doc-card a { display: inline-block; text-decoration: none; background: var(--bg); color: var(--dark); padding: 0.5rem 1.2rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; transition: 0.2s; }
+    .doc-card a:hover { background: var(--green); color: white; }
+
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <a href="index.html" class="sidebar-logo">
+      <div class="sidebar-logo-badge">YES</div>
+      Şəxsi Kabinet
+    </a>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" onclick="switchTab('profile', event)">Profilim</button>
+      <button class="nav-item" onclick="switchTab('events', event)">Tədbirlər</button>
+      <button class="nav-item" onclick="switchTab('documents', event)">Sənədlərim</button>
+      <button class="nav-item" onclick="switchTab('resources', event)">Resurslar</button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="logout()">Çıxış Et</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <header class="header">
+      <h1 id="page-title">Profilim</h1>
+      <div class="user-badge">
+        <div class="user-avatar" id="nav-avatar">Y</div>
+        <span id="nav-name">Yüklənir...</span>
+      </div>
+    </header>
+
+    <!-- PROFIL -->
+    <section id="tab-profile" class="panel active">
+      <div class="card">
+        <h2 class="card-title">Şəxsi Məlumatlar</h2>
+        <div class="profile-grid">
+          <div class="stat-box">
+            <div class="stat-label">Ad və Soyad</div>
+            <div class="stat-val" id="prof-name">...</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Könüllü Statusu</div>
+            <div class="stat-val"><span class="status-badge" id="prof-status">...</span></div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Qeydiyyat Tarixi</div>
+            <div class="stat-val" id="prof-date">...</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">İstifadəçi ID</div>
+            <div class="stat-val" style="font-size: 0.9rem; word-break: break-all;" id="prof-id">...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TƏDBİRLƏR -->
+    <section id="tab-events" class="panel">
+      <div class="card">
+        <h2 class="card-title">Aktiv Tədbirlər</h2>
+        <div class="event-list" id="active-events-list">
+          <p style="color:gray;">Yüklənir...</p>
+        </div>
+      </div>
+      <div class="card">
+        <h2 class="card-title">İştirak Etdiyim Tədbirlər (Keçmiş)</h2>
+        <div class="event-list" id="past-events-list">
+          <p style="color:gray;">Yüklənir...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SƏNƏDLƏR -->
+    <section id="tab-documents" class="panel">
+      <div class="card">
+        <h2 class="card-title">Mənim Sertifikat və Sənədlərim</h2>
+        <div class="doc-list" id="documents-list">
+          <p style="color:gray;">Sənəd tapılmadı.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESURSLAR -->
+    <section id="tab-resources" class="panel">
+      <div class="card">
+        <h2 class="card-title">Ümumi Resurslar</h2>
+        <div class="doc-list" id="resources-list">
+          <p style="color:gray;">Resurs tapılmadı.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // ── SUPABASE SETUP ──
+    const SUPABASE_URL = 'https://wqcugmhjfuvnwxhspytw.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxY3VnbWhqZnV2bnd4aHNweXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMzY2NzcsImV4cCI6MjA5MTYxMjY3N30.A2rZNI2hOpDNC_JLeQNO9Is50HswX-jB5he9wNOpYLo';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentUser = null;
+    let profileData = null;
+
+    async function init() {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) {
+        window.location.href = 'index.html';
+        return;
+      }
+      currentUser = session.user;
+      document.body.style.display = 'block';
+      await loadProfile();
+      await loadEvents();
+      await loadDocuments();
+      await loadResources();
+    }
+
+    async function loadProfile() {
+      const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+      if (data) {
+        profileData = data;
+        const fullName = `${data.first_name} ${data.last_name}`;
+        document.getElementById('nav-name').innerText = fullName;
+        document.getElementById('nav-avatar').innerText = data.first_name.charAt(0);
+        
+        document.getElementById('prof-name').innerText = fullName;
+        document.getElementById('prof-status').innerText = data.status || 'Namizəd';
+        document.getElementById('prof-id').innerText = data.id;
+        document.getElementById('prof-date').innerText = new Date(data.created_at).toLocaleDateString('az-AZ');
+      } else {
+        // If profile doesn't exist, try to read from metadata if they signed up recently
+        const fName = currentUser.user_metadata?.first_name || 'İstifadəçi';
+        document.getElementById('prof-name').innerText = fName;
+      }
+    }
+
+    async function loadEvents() {
+      // Fetch all events
+      const { data: events } = await sb.from('events').select('*').order('created_at', { ascending: false });
+      // Fetch registrations for current user
+      const { data: regs } = await sb.from('event_registrations').select('event_id').eq('user_id', currentUser.id);
+      
+      const regIds = regs ? regs.map(r => r.event_id) : [];
+      
+      const activeList = document.getElementById('active-events-list');
+      const pastList = document.getElementById('past-events-list');
+      activeList.innerHTML = ''; pastList.innerHTML = '';
+
+      if (!events || events.length === 0) {
+        activeList.innerHTML = '<p style="color:gray;">Heç bir tədbir yoxdur.</p>';
+        pastList.innerHTML = '<p style="color:gray;">Heç bir tədbir yoxdur.</p>';
+        return;
+      }
+
+      events.forEach(ev => {
+        const isRegistered = regIds.includes(ev.id);
+        const card = document.createElement('div');
+        card.className = 'event-card';
+        card.innerHTML = `
+          <div class="event-info">
+            <h3>${ev.title_az || ev.title_en}</h3>
+            <p>🗓️ ${ev.event_date ? new Date(ev.event_date).toLocaleDateString('az-AZ') : 'Tarix yoxdur'}</p>
+          </div>
+          <div>
+            ${isRegistered 
+              ? `<button class="btn-disabled" disabled>Qeydiyyatdan Keçilib</button>` 
+              : (ev.is_active ? `<button class="btn-green" onclick="registerEvent('${ev.id}')">Qeydiyyatdan Keç</button>` : `<button class="btn-disabled" disabled>Bağlanıb</button>`)}
+          </div>
+        `;
+        if (ev.is_active) {
+          activeList.appendChild(card);
+        } else if (isRegistered) {
+          pastList.appendChild(card);
+        }
+      });
+
+      if(activeList.innerHTML === '') activeList.innerHTML = '<p style="color:gray;">Aktiv tədbir yoxdur.</p>';
+      if(pastList.innerHTML === '') pastList.innerHTML = '<p style="color:gray;">Keçmiş tədbiriniz yoxdur.</p>';
+    }
+
+    async function registerEvent(eventId) {
+      const { error } = await sb.from('event_registrations').insert({ event_id: eventId, user_id: currentUser.id });
+      if (error) { alert('Xəta: ' + error.message); }
+      else { alert('Uğurla qeydiyyatdan keçdiniz!'); loadEvents(); }
+    }
+
+    async function loadDocuments() {
+      const { data } = await sb.from('documents').select('*').eq('user_id', currentUser.id);
+      const list = document.getElementById('documents-list');
+      if (!data || data.length === 0) { list.innerHTML = '<p style="color:gray;">Sənəd tapılmadı.</p>'; return; }
+      
+      list.innerHTML = data.map(d => `
+        <div class="doc-card">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+          <h3>${d.title}</h3>
+          <a href="${d.file_url}" target="_blank">Bax / Yüklə</a>
+        </div>
+      `).join('');
+    }
+
+    async function loadResources() {
+      const { data } = await sb.from('resources').select('*');
+      const list = document.getElementById('resources-list');
+      if (!data || data.length === 0) { list.innerHTML = '<p style="color:gray;">Resurs tapılmadı.</p>'; return; }
+      
+      list.innerHTML = data.map(d => `
+        <div class="doc-card">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          <h3>${d.title}</h3>
+          <p style="font-size:0.85rem; color:gray; margin-bottom:1rem;">${d.description || ''}</p>
+          <a href="${d.file_url}" target="_blank">Aç</a>
+        </div>
+      `).join('');
+    }
+
+    function switchTab(tabId, ev) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + tabId).classList.add('active');
+      if (ev) ev.currentTarget.classList.add('active');
+
+      const titles = { 'profile': 'Profilim', 'events': 'Tədbirlər', 'documents': 'Sənədlərim', 'resources': 'Resurslar' };
+      document.getElementById('page-title').innerText = titles[tabId];
+    }
+
+    async function logout() {
+      await sb.auth.signOut();
+      window.location.href = 'index.html';
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
