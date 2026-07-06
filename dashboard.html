@@ -272,10 +272,11 @@
             <h3>${ev.title_az || ev.title_en}</h3>
             <p>🗓️ ${ev.event_date ? new Date(ev.event_date).toLocaleDateString('az-AZ') : 'Tarix yoxdur'}</p>
           </div>
-          <div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+            ${ev.registration_link ? `<a href="${ev.registration_link}" target="_blank" class="btn-green" style="text-decoration:none; background:#1a2e1a; font-size:0.9rem;">🔗 Qeydiyyat Formu</a>` : ''}
             ${isRegistered 
               ? `<button class="btn-disabled" disabled>Qeydiyyatdan Keçilib</button>` 
-              : (ev.is_active ? `<button class="btn-green" onclick="registerEvent('${ev.id}')">Qeydiyyatdan Keç</button>` : `<button class="btn-disabled" disabled>Bağlanıb</button>`)}
+              : (ev.is_active ? `<button class="btn-green" onclick="registerEvent('${ev.id}')">Saytdan Qeydiyyat</button>` : `<button class="btn-disabled" disabled>Bağlanıb</button>`)}
           </div>
         `;
         if (ev.is_active) {

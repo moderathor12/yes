@@ -590,6 +590,7 @@
     <div class="form-group"><label>Bağlıq (AZ)</label><input type="text" id="ev-title-az"></div>
     <div class="form-group"><label>Bağlıq (EN)</label><input type="text" id="ev-title-en"></div>
     <div class="form-group"><label>Tarix</label><input type="date" id="ev-date"></div>
+    <div class="form-group"><label>Qeydiyyat Linki</label><input type="text" id="ev-link" placeholder="Məs: https://forms.gle/..."></div>
     <div class="modal-footer"><button class="btn btn-green" onclick="saveEvent()">Yadda saxla</button></div>
   </div>
 </div>
@@ -1226,14 +1227,21 @@
     const taz = document.getElementById('ev-title-az').value;
     const ten = document.getElementById('ev-title-en').value;
     const date = document.getElementById('ev-date').value;
+    const link = document.getElementById('ev-link').value;
     if(!taz && !ten) { notify('Zəhmət olmasa başlıq yazın', 'error'); return; }
-    const { error } = await sb.from('events').insert({ title_az: taz, title_en: ten, event_date: date || null });
+    
+    // Check if link was provided
+    const eventData = { title_az: taz, title_en: ten, event_date: date || null };
+    if (link) eventData.registration_link = link;
+    
+    const { error } = await sb.from('events').insert(eventData);
     if(error) { notify(error.message, 'error'); return; }
     closeEventModal();
     notify('Yeni tədbir yaradıldı', 'success');
     document.getElementById('ev-title-az').value = '';
     document.getElementById('ev-title-en').value = '';
     document.getElementById('ev-date').value = '';
+    document.getElementById('ev-link').value = '';
     loadEventsAdmin();
   }
 
