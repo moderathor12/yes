@@ -1404,6 +1404,7 @@
             <option value="Aktiv könüllü" ${u.status === 'Aktiv könüllü' ? 'selected' : ''}>Aktiv könüllü</option>
             <option value="Alumni" ${u.status === 'Alumni' ? 'selected' : ''}>Alumni</option>
           </select>
+          <button onclick="event.stopPropagation(); deleteUser('${u.id}', '${u.first_name} ${u.last_name}')" class="btn btn-red btn-sm" style="padding:0.4rem 0.8rem; font-size:0.85rem; border-radius:8px; border:none; margin:0;">🗑 Sil</button>
         </div>
       </div>
     `).join('');
@@ -1412,6 +1413,16 @@
   async function updateUserStatus(id, status) {
     await sb.from('profiles').update({ status }).eq('id', id);
     notify('İstifadəçi statusu yeniləndi', 'success');
+  }
+  async function deleteUser(id, name) {
+    if (!confirm(`${name} adlı istifadəçini tamamilə silmək istədiyinizə əminsiniz?`)) return;
+    const { error } = await sb.from('profiles').delete().eq('id', id);
+    if (error) {
+      notify('Profil silinərkən xəta: ' + error.message, 'error');
+    } else {
+      notify('İstifadəçi uğurla silindi', 'success');
+      loadUsers();
+    }
   }
 
   // ── USER DETAIL MODAL ──
