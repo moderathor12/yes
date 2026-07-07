@@ -419,6 +419,13 @@
       window.location.href = 'index.html';
     }
 
+    function linkify(text) {
+      if (!text) return '';
+      const escaped = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return escaped.replace(/(https?:\/\/[^\s<>"]+)/g,
+        '<a href="$1" target="_blank" rel="noopener" style="color:#3498db;text-decoration:underline;word-break:break-all;">$1</a>');
+    }
+
     async function loadNotifications() {
       const list = document.getElementById('notifications-list');
       const { data } = await sb.from('notifications')
@@ -441,7 +448,7 @@
             <h3 style="font-size:1rem; font-weight:700; color:var(--dark);">${n.title}</h3>
             <span style="font-size:0.75rem; opacity:0.45;">${new Date(n.created_at).toLocaleString('az-AZ')}</span>
           </div>
-          <p style="font-size:0.9rem; color:rgba(0,0,0,0.65); line-height:1.5;">${n.message}</p>
+          <p style="font-size:0.9rem; color:rgba(0,0,0,0.65); line-height:1.6; word-break:break-word;">${linkify(n.message)}</p>
         </div>
       `).join('');
     }
