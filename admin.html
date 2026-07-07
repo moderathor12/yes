@@ -891,23 +891,28 @@
   }
 
   async function loadSentNotifs() {
-    const { data } = await sb.from('notifications')
-      .select('*, profiles(first_name, last_name)')
+    const { data, error } = await sb.from('notifications')
+      .select('*')
       .order('created_at', { ascending: false })
       .limit(30);
     const list = document.getElementById('sent-notif-list');
+    if (error) { list.innerHTML = `<p style="color:red;font-size:0.85rem;">Xəta: ${error.message}</p>`; return; }
     if (!data || data.length === 0) {
       list.innerHTML = '<p style="opacity:0.5;font-size:0.85rem;">Hələ bildiriş göndərilməyib.</p>';
       return;
     }
+    // Build a name map from already-loaded users
+    const nameMap = {};
+    allUsersForNotif.forEach(u => { nameMap[u.id] = `${u.first_name} ${u.last_name}`; });
+
     list.innerHTML = data.map(n => `
       <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:0.8rem;border-radius:10px;border:1px solid rgba(0,0,0,0.07);margin-bottom:0.6rem;background:white;">
         <div>
           <div style="font-weight:600;font-size:0.9rem;">${n.title}</div>
           <div style="font-size:0.8rem;opacity:0.6;margin:0.2rem 0;">${n.message}</div>
-          <div style="font-size:0.75rem;opacity:0.45;">→ ${n.profiles ? n.profiles.first_name+' '+n.profiles.last_name : '—'} &nbsp;|&nbsp; ${new Date(n.created_at).toLocaleString('az-AZ')}</div>
+          <div style="font-size:0.75rem;opacity:0.45;">→ ${nameMap[n.user_id] || n.user_id.slice(0,8)+'...'} &nbsp;|&nbsp; ${new Date(n.created_at).toLocaleString('az-AZ')} &nbsp;|&nbsp; ${n.is_read ? '✅ Oxundu' : '🔵 Oxunmayıb'}</div>
         </div>
-        <button onclick="deleteNotif('${n.id}')" style="background:none;border:none;color:#e74c3c;cursor:pointer;font-size:1.1rem;padding:0 0.3rem;" title="Sil">🗑</button>
+        <button onclick="deleteNotif('${n.id}')" style="background:none;border:none;color:#e74c3c;cursor:pointer;font-size:1.1rem;padding:0 0.3rem;flex-shrink:0;" title="Sil">🗑</button>
       </div>`).join('');
   }
 
