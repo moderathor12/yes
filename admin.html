@@ -324,6 +324,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         Sənədlər / Resurs
       </button>
+      <button class="nav-item" onclick="showPage('notifications')" id="nav-notifications" style="position:relative;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Bildirişlər
+      </button>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-ghost btn-sm" onclick="logout()" style="width:100%; justify-content:center;">
@@ -527,6 +531,79 @@
         </div>
       </div>
     </div>
+
+    <!-- ── NOTIFICATIONS PAGE ── -->
+    <div class="page" id="page-notifications">
+      <div class="list-header">
+        <h2>Bildirişlər</h2>
+      </div>
+
+      <!-- Tab switcher -->
+      <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem;">
+        <button class="filter-btn active" id="notif-tab-single" onclick="switchNotifTab('single')">👤 Fərdi Bildiriş</button>
+        <button class="filter-btn" id="notif-tab-bulk" onclick="switchNotifTab('bulk')">📢 Toplu Bildiriş</button>
+      </div>
+
+      <!-- SINGLE NOTIFICATION -->
+      <div id="notif-single-panel">
+        <div class="cat-card" style="max-width:600px;">
+          <h3 style="margin-bottom:1.2rem;">Fərdi Bildiriş Göndər</h3>
+          <div class="form-group">
+            <label>İstifadəçi seçin</label>
+            <select id="notif-single-user" style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #ccc; font-family:inherit;"><option value="">Yüklənir...</option></select>
+          </div>
+          <div class="form-group">
+            <label>Başlıq</label>
+            <input type="text" id="notif-single-title" placeholder="Bildiriş başlığı...">
+          </div>
+          <div class="form-group">
+            <label>Mesaj</label>
+            <textarea id="notif-single-msg" rows="4" placeholder="Mesajınızı daxil edin..." style="resize:vertical;"></textarea>
+          </div>
+          <button class="btn btn-green" onclick="sendSingleNotif()">📤 Göndər</button>
+        </div>
+      </div>
+
+      <!-- BULK NOTIFICATION -->
+      <div id="notif-bulk-panel" style="display:none;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+          <div class="cat-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+              <h3>İstifadəçiləri seçin</h3>
+              <div style="display:flex; gap:0.5rem;">
+                <button class="btn btn-sm" style="background:#f0f0f0; color:#333; font-size:0.78rem;" onclick="selectAllNotifUsers(true)">Hamısını seç</button>
+                <button class="btn btn-sm" style="background:#f0f0f0; color:#333; font-size:0.78rem;" onclick="selectAllNotifUsers(false)">Ləğv et</button>
+              </div>
+            </div>
+            <div id="notif-bulk-users" style="display:flex; flex-direction:column; gap:0.5rem; max-height:380px; overflow-y:auto;">
+              <p style="opacity:0.5; font-size:0.85rem;">Yüklənir...</p>
+            </div>
+          </div>
+          <div class="cat-card">
+            <h3 style="margin-bottom:1.2rem;">Bildiriş Məzmunu</h3>
+            <div class="form-group">
+              <label>Başlıq</label>
+              <input type="text" id="notif-bulk-title" placeholder="Bildiriş başlığı...">
+            </div>
+            <div class="form-group">
+              <label>Mesaj</label>
+              <textarea id="notif-bulk-msg" rows="5" placeholder="Mesajınızı daxil edin..." style="resize:vertical;"></textarea>
+            </div>
+            <div id="notif-selected-count" style="font-size:0.85rem; opacity:0.6; margin-bottom:1rem;">0 istifadəçi seçilib</div>
+            <button class="btn btn-green" onclick="sendBulkNotif()">📢 Seçilənlərə Göndər</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sent notifications history -->
+      <div class="cat-card" style="margin-top:2rem;">
+        <h3 style="margin-bottom:1rem;">📋 Son Göndərilmiş Bildirişlər</h3>
+        <div id="sent-notif-list">
+          <p style="opacity:0.5; font-size:0.85rem;">Yüklənir...</p>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -728,20 +805,115 @@
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('page-' + name).classList.add('active');
     document.getElementById('nav-' + name).classList.add('active');
-    const titles = { 
-      stats: 'Statistika', 
-      articles: 'Məqalələr', 
+    const titles = {
+      stats: 'Statistika',
+      articles: 'Məqalələr',
       categories: 'Kateqoriya & Teqlər',
       users: 'İstifadəçilər',
       events: 'Tədbirlər',
-      resources: 'Resurslar və Sənədlər'
+      resources: 'Resurslar və Sənədlər',
+      notifications: 'Bildirişlər'
     };
     document.getElementById('page-title').innerText = titles[name] || name;
-    
+
     if (name === 'categories') { renderCategoryUI(); renderTagsCloud(); }
     if (name === 'users') loadUsers();
     if (name === 'events') loadEventsAdmin();
     if (name === 'resources') { loadResourcesAdmin(); loadUsers(); }
+    if (name === 'notifications') loadNotificationsPage();
+  }
+
+  // ── NOTIFICATIONS ─────────────────────────────────────
+  let allUsersForNotif = [];
+
+  async function loadNotificationsPage() {
+    const { data } = await sb.from('profiles').select('id, first_name, last_name').order('first_name');
+    allUsersForNotif = data || [];
+    const sel = document.getElementById('notif-single-user');
+    sel.innerHTML = '<option value="">İstifadəçi seçin</option>' +
+      allUsersForNotif.map(u => `<option value="${u.id}">${u.first_name} ${u.last_name}</option>`).join('');
+    const bulkList = document.getElementById('notif-bulk-users');
+    bulkList.innerHTML = allUsersForNotif.map(u => `
+      <label style="display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.7rem;border-radius:8px;border:1px solid rgba(0,0,0,0.06);cursor:pointer;background:white;">
+        <input type="checkbox" class="notif-user-check" value="${u.id}" onchange="updateSelectedCount()" style="width:16px;height:16px;accent-color:var(--green);cursor:pointer;margin:0;flex-shrink:0;">
+        <span style="font-size:0.875rem;font-weight:500;">${u.first_name} ${u.last_name}</span>
+      </label>`).join('');
+    loadSentNotifs();
+  }
+
+  function switchNotifTab(tab) {
+    document.getElementById('notif-single-panel').style.display = tab === 'single' ? 'block' : 'none';
+    document.getElementById('notif-bulk-panel').style.display   = tab === 'bulk'   ? 'block' : 'none';
+    document.getElementById('notif-tab-single').className = 'filter-btn' + (tab === 'single' ? ' active' : '');
+    document.getElementById('notif-tab-bulk').className   = 'filter-btn' + (tab === 'bulk'   ? ' active' : '');
+  }
+
+  function selectAllNotifUsers(val) {
+    document.querySelectorAll('.notif-user-check').forEach(cb => cb.checked = val);
+    updateSelectedCount();
+  }
+
+  function updateSelectedCount() {
+    const count = document.querySelectorAll('.notif-user-check:checked').length;
+    document.getElementById('notif-selected-count').innerText = count + ' istifadəçi seçilib';
+  }
+
+  async function sendSingleNotif() {
+    const userId = document.getElementById('notif-single-user').value;
+    const title  = document.getElementById('notif-single-title').value.trim();
+    const msg    = document.getElementById('notif-single-msg').value.trim();
+    if (!userId) { notify('İstifadəçi seçin', 'error'); return; }
+    if (!title)  { notify('Başlıq daxil edin', 'error'); return; }
+    if (!msg)    { notify('Mesaj daxil edin', 'error'); return; }
+    const { error } = await sb.from('notifications').insert({ user_id: userId, title, message: msg });
+    if (error) { notify(error.message, 'error'); return; }
+    notify('Bildiriş göndərildi ✓', 'success');
+    document.getElementById('notif-single-title').value = '';
+    document.getElementById('notif-single-msg').value = '';
+    loadSentNotifs();
+  }
+
+  async function sendBulkNotif() {
+    const title   = document.getElementById('notif-bulk-title').value.trim();
+    const msg     = document.getElementById('notif-bulk-msg').value.trim();
+    const checked = [...document.querySelectorAll('.notif-user-check:checked')].map(cb => cb.value);
+    if (checked.length === 0) { notify('Ən azı bir istifadəçi seçin', 'error'); return; }
+    if (!title) { notify('Başlıq daxil edin', 'error'); return; }
+    if (!msg)   { notify('Mesaj daxil edin', 'error'); return; }
+    const rows = checked.map(uid => ({ user_id: uid, title, message: msg }));
+    const { error } = await sb.from('notifications').insert(rows);
+    if (error) { notify(error.message, 'error'); return; }
+    notify(`${checked.length} istifadəçiyə bildiriş göndərildi ✓`, 'success');
+    document.getElementById('notif-bulk-title').value = '';
+    document.getElementById('notif-bulk-msg').value = '';
+    selectAllNotifUsers(false);
+    loadSentNotifs();
+  }
+
+  async function loadSentNotifs() {
+    const { data } = await sb.from('notifications')
+      .select('*, profiles(first_name, last_name)')
+      .order('created_at', { ascending: false })
+      .limit(30);
+    const list = document.getElementById('sent-notif-list');
+    if (!data || data.length === 0) {
+      list.innerHTML = '<p style="opacity:0.5;font-size:0.85rem;">Hələ bildiriş göndərilməyib.</p>';
+      return;
+    }
+    list.innerHTML = data.map(n => `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:0.8rem;border-radius:10px;border:1px solid rgba(0,0,0,0.07);margin-bottom:0.6rem;background:white;">
+        <div>
+          <div style="font-weight:600;font-size:0.9rem;">${n.title}</div>
+          <div style="font-size:0.8rem;opacity:0.6;margin:0.2rem 0;">${n.message}</div>
+          <div style="font-size:0.75rem;opacity:0.45;">→ ${n.profiles ? n.profiles.first_name+' '+n.profiles.last_name : '—'} &nbsp;|&nbsp; ${new Date(n.created_at).toLocaleString('az-AZ')}</div>
+        </div>
+        <button onclick="deleteNotif('${n.id}')" style="background:none;border:none;color:#e74c3c;cursor:pointer;font-size:1.1rem;padding:0 0.3rem;" title="Sil">🗑</button>
+      </div>`).join('');
+  }
+
+  async function deleteNotif(id) {
+    await sb.from('notifications').delete().eq('id', id);
+    loadSentNotifs();
   }
 
   // ── LOAD ARTICLES ─────────────────────────────────────

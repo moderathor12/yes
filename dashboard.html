@@ -153,6 +153,10 @@
       <button class="nav-item" onclick="switchTab('events', event)">Tədbirlər</button>
       <button class="nav-item" onclick="switchTab('documents', event)">Sənədlərim</button>
       <button class="nav-item" onclick="switchTab('resources', event)">Resurslar</button>
+      <button class="nav-item" id="notif-nav-btn" onclick="switchTab('notifications', event)" style="position:relative;">
+        Bildirişlər
+        <span id="notif-badge" style="display:none; position:absolute; top:6px; right:10px; background:#e74c3c; color:white; font-size:0.6rem; font-weight:800; border-radius:50%; width:18px; height:18px; line-height:18px; text-align:center;">0</span>
+      </button>
     </nav>
     <div class="sidebar-footer">
       <button class="btn-logout" style="background: rgba(255,255,255,0.1); color: white; margin-bottom: 0.8rem;" onclick="window.location.href='index.html'">🏠 Əsas Səhifə</button>
@@ -225,6 +229,16 @@
       </div>
     </section>
 
+    <!-- BİLDİRİŞLƏR -->
+    <section id="tab-notifications" class="panel">
+      <div class="card">
+        <h2 class="card-title">Bildirişlər</h2>
+        <div id="notifications-list">
+          <p style="color:gray;">Yüklənir...</p>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- MOBILE BOTTOM NAV -->
@@ -245,6 +259,11 @@
       <button class="mobile-nav-btn" id="mob-resources" onclick="switchTab('resources', event); setMobileActive('mob-resources')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         Resurslar
+      </button>
+      <button class="mobile-nav-btn" id="mob-notifications" onclick="switchTab('notifications', event); setMobileActive('mob-notifications')" style="position:relative;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Bildirişlər
+        <span id="mob-notif-badge" style="display:none; position:absolute; top:4px; right:8px; background:#e74c3c; color:white; font-size:0.55rem; font-weight:800; border-radius:50%; width:16px; height:16px; line-height:16px; text-align:center;">0</span>
       </button>
       <button class="mobile-nav-btn" id="mob-logout" onclick="logout()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -274,6 +293,7 @@
       await loadEvents();
       await loadDocuments();
       await loadResources();
+      checkUnreadNotifs();
     }
 
     async function loadProfile() {
@@ -382,8 +402,10 @@
       document.getElementById('tab-' + tabId).classList.add('active');
       if (ev && ev.currentTarget.classList.contains('nav-item')) ev.currentTarget.classList.add('active');
 
-      const titles = { 'profile': 'Profilim', 'events': 'Tədbirlər', 'documents': 'Sənədlərim', 'resources': 'Resurslar' };
-      document.getElementById('page-title').innerText = titles[tabId];
+      const titles = { 'profile': 'Profilim', 'events': 'Tədbirlər', 'documents': 'Sənədlərim', 'resources': 'Resurslar', 'notifications': 'Bildirişlər' };
+      document.getElementById('page-title').innerText = titles[tabId] || tabId;
+
+      if (tabId === 'notifications') loadNotifications();
     }
 
     function setMobileActive(btnId) {
@@ -395,6 +417,54 @@
     async function logout() {
       await sb.auth.signOut();
       window.location.href = 'index.html';
+    }
+
+    async function loadNotifications() {
+      const list = document.getElementById('notifications-list');
+      const { data } = await sb.from('notifications')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false });
+
+      if (!data || data.length === 0) {
+        list.innerHTML = '<p style="color:gray;">Bildiriş yoxdur.</p>';
+        return;
+      }
+
+      // Mark all as read
+      await sb.from('notifications').update({ is_read: true }).eq('user_id', currentUser.id).eq('is_read', false);
+      updateNotifBadge(0);
+
+      list.innerHTML = data.map(n => `
+        <div style="padding:1rem 1.2rem; border-radius:14px; border:1px solid rgba(0,0,0,0.07); margin-bottom:0.8rem; background:${n.is_read ? 'white' : 'rgba(116,198,157,0.08)'}; border-left:3px solid ${n.is_read ? 'transparent' : 'var(--lime)'}; transition:0.2s;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
+            <h3 style="font-size:1rem; font-weight:700; color:var(--dark);">${n.title}</h3>
+            <span style="font-size:0.75rem; opacity:0.45;">${new Date(n.created_at).toLocaleString('az-AZ')}</span>
+          </div>
+          <p style="font-size:0.9rem; color:rgba(0,0,0,0.65); line-height:1.5;">${n.message}</p>
+        </div>
+      `).join('');
+    }
+
+    async function checkUnreadNotifs() {
+      if (!currentUser) return;
+      const { count } = await sb.from('notifications')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', currentUser.id)
+        .eq('is_read', false);
+      updateNotifBadge(count || 0);
+    }
+
+    function updateNotifBadge(count) {
+      const badge = document.getElementById('notif-badge');
+      const mobBadge = document.getElementById('mob-notif-badge');
+      if (count > 0) {
+        if (badge) { badge.style.display = 'block'; badge.innerText = count; }
+        if (mobBadge) { mobBadge.style.display = 'block'; mobBadge.innerText = count; }
+      } else {
+        if (badge) badge.style.display = 'none';
+        if (mobBadge) mobBadge.style.display = 'none';
+      }
     }
 
     window.addEventListener('DOMContentLoaded', init);
