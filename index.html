@@ -1510,7 +1510,7 @@
           <button onclick="setLang('az')" id="opt-az">AZ</button>
         </div>
       </div>
-      <button class="nav-auth-btn" id="nav-auth-btn" onclick="handleAuthClick()" style="display:none; padding: 0.5rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Profil">
+      <button class="nav-auth-btn" id="nav-auth-btn" onclick="handleAuthClick()" style="padding: 0.5rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Profil">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
           <circle cx="12" cy="7" r="4"></circle>
@@ -2642,7 +2642,7 @@
 
     function updateNavAuthButton() {
       const btn = document.getElementById('nav-auth-btn');
-      btn.style.display = 'none'; // Temporarily hidden, change to 'flex' to show
+      btn.style.display = 'flex';
       const lang = localStorage.getItem('yes_lang') || 'en';
       if (currentUser) {
         btn.title = lang === 'az' ? 'Şəxsi Kabinet' : 'Dashboard';

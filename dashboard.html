@@ -212,21 +212,30 @@
       const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
       if (data) {
         profileData = data;
+        // Generate member_id for existing profiles if missing
+        if (!data.member_id) {
+          const random3 = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+          data.member_id = '226' + random3;
+          await sb.from('profiles').update({ member_id: data.member_id }).eq('id', currentUser.id);
+        }
+        
         const fullName = `${data.first_name} ${data.last_name}`;
         document.getElementById('nav-name').innerText = fullName;
         document.getElementById('nav-avatar').innerText = data.first_name.charAt(0);
         
         document.getElementById('prof-name').innerText = fullName;
         document.getElementById('prof-status').innerText = data.status || 'Namizəd';
-        document.getElementById('prof-id').innerText = data.id;
+        document.getElementById('prof-id').innerText = data.member_id;
         document.getElementById('prof-date').innerText = new Date(data.created_at).toLocaleDateString('az-AZ');
       } else {
         // If profile doesn't exist (because of email confirmation step), create it now from metadata
         const fName = currentUser.user_metadata?.first_name || 'İstifadəçi';
         const lName = currentUser.user_metadata?.last_name || '';
+        const random3 = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+        const newMemberId = '226' + random3;
         
         // Insert new profile
-        await sb.from('profiles').insert({ id: currentUser.id, first_name: fName, last_name: lName, status: 'Namizəd' });
+        await sb.from('profiles').insert({ id: currentUser.id, first_name: fName, last_name: lName, status: 'Namizəd', member_id: newMemberId });
         
         const fullName = `${fName} ${lName}`.trim();
         document.getElementById('nav-name').innerText = fullName;
@@ -234,7 +243,7 @@
         
         document.getElementById('prof-name').innerText = fullName;
         document.getElementById('prof-status').innerText = 'Namizəd';
-        document.getElementById('prof-id').innerText = currentUser.id;
+        document.getElementById('prof-id').innerText = newMemberId;
         document.getElementById('prof-date').innerText = new Date().toLocaleDateString('az-AZ');
       }
     }

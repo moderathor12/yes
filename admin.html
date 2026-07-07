@@ -1132,7 +1132,7 @@
       <div class="article-item" style="border-left-color:var(--lime); cursor:pointer;" onclick="openUserModal('${u.id}', '${u.first_name} ${u.last_name}')">
         <div class="article-meta">
           <h3>${u.first_name} ${u.last_name}</h3>
-          <p style="font-size:0.78rem;opacity:0.5;">${u.id}</p>
+          <p style="font-size:0.78rem;opacity:0.5;">ID: ${u.member_id || '—'}</p>
           <div class="article-meta-row" style="margin-top:0.3rem;">
             <span class="badge badge-published">${u.status || 'Namizəd'}</span>
             <span class="badge badge-cat">${new Date(u.created_at).toLocaleDateString('az-AZ')}</span>
