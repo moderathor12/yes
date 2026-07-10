@@ -99,19 +99,20 @@
     /* ── MOBILE BOTTOM NAV ── */
     .mobile-nav {
       display: none; position: fixed; bottom: 0; left: 0; right: 0;
-      background: var(--dark); z-index: 100; padding: 0.5rem 0;
-      border-top: 1px solid rgba(255,255,255,0.08);
+      background: white; z-index: 100; padding: 0.5rem 0;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.04);
     }
     .mobile-nav-inner {
       display: flex; justify-content: space-around; align-items: center;
     }
     .mobile-nav-btn {
       display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
-      background: none; border: none; color: rgba(255,255,255,0.5);
+      background: none; border: none; color: rgba(0,0,0,0.4);
       font-size: 0.65rem; font-weight: 600; cursor: pointer; padding: 0.4rem 0.8rem;
       font-family: inherit; transition: 0.2s; border-radius: 10px;
     }
-    .mobile-nav-btn.active { color: var(--lime); }
+    .mobile-nav-btn.active { color: var(--green); }
     .mobile-nav-btn svg { width: 22px; height: 22px; }
 
     /* ── RESPONSIVE ── */
@@ -120,22 +121,25 @@
       .sidebar { display: none; }
       .mobile-nav { display: block; }
       .main-content {
-        margin-left: 0; padding: 1.2rem 1rem 6rem 1rem;
+        margin-left: 0; padding: 1.5rem 1.2rem 6.5rem 1.2rem;
       }
-      .header h1 { font-size: 1.4rem; }
-      .user-badge { font-size: 0.8rem; padding: 0.4rem 0.7rem; }
-      .card { padding: 1.2rem; border-radius: 14px; }
-      .profile-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-      .stat-box { padding: 1rem; }
-      .stat-val { font-size: 1rem; }
-      .event-card { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
-      .doc-list { grid-template-columns: 1fr 1fr; }
+      .header h1 { font-size: 1.5rem; }
+      .user-badge { font-size: 0.85rem; padding: 0.4rem 0.8rem; }
+      .card { padding: 1.5rem 1.2rem; border-radius: 16px; }
+      .profile-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .stat-box { padding: 1.2rem 1rem; }
+      .stat-val { font-size: 1.1rem; }
+      .event-card { flex-direction: column; align-items: stretch; gap: 1rem; }
+      .event-card .btn-green { width: 100%; text-align: center; justify-content: center; }
+      .event-card div[style*="display:flex"] { width: 100%; }
+      .doc-list { grid-template-columns: 1fr 1fr; gap: 1rem; }
     }
 
-    @media (max-width: 420px) {
+    @media (max-width: 540px) {
       .profile-grid { grid-template-columns: 1fr; }
       .doc-list { grid-template-columns: 1fr; }
-      .header { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+      .header { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+      .user-badge { width: 100%; justify-content: flex-start; }
     }
 
   </style>
