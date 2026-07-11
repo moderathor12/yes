@@ -2687,6 +2687,8 @@
       const lName = document.getElementById('auth-lname');
       
       document.getElementById('auth-error').style.display = 'none';
+      btn.style.display = 'block';
+      btn.disabled = false;
 
       if (mode === 'login') {
         title.innerText = isAz ? 'Daxil ol' : 'Sign In';
