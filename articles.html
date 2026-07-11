@@ -125,6 +125,46 @@
     .toast-icon { font-size: 1.2rem; }
     .toast-text { font-weight: 500; font-size: 0.95rem; }
 
+    /* Lang-switch glow banner */
+    .lang-toast {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(26, 46, 26, 0.92);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid rgba(116,198,157,0.3);
+      box-shadow: 0 -4px 40px rgba(45,106,79,0.55), 0 0 0 1px rgba(116,198,157,0.12);
+      transform: translateY(100%);
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-family: 'DM Sans', sans-serif;
+      gap: 1rem;
+    }
+    .lang-toast.show { transform: translateY(0); }
+    .lang-toast-left { display: flex; align-items: center; gap: 0.9rem; }
+    .lang-toast-icon {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, #2d6a4f, #74c69d);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+      box-shadow: 0 0 16px rgba(116,198,157,0.5);
+    }
+    .lang-toast-msg { color: rgba(255,255,255,0.9); font-size: 0.95rem; font-weight: 500; }
+    .lang-toast-msg strong { color: #74c69d; }
+    .lang-toast-btn {
+      background: linear-gradient(135deg, #2d6a4f, #52b788);
+      color: white; border: none; padding: 0.55rem 1.4rem;
+      border-radius: 50px; font-weight: 700; font-size: 0.88rem;
+      cursor: pointer; font-family: inherit; transition: all 0.2s;
+      white-space: nowrap; flex-shrink: 0;
+      box-shadow: 0 0 12px rgba(82,183,136,0.4);
+    }
+    .lang-toast-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(82,183,136,0.6); }
+    .lang-toast-close {
+      background: none; border: none; color: rgba(255,255,255,0.4);
+      font-size: 1.3rem; cursor: pointer; padding: 0 0.3rem; transition: color 0.2s; flex-shrink: 0;
+    }
+    .lang-toast-close:hover { color: white; }
+
     .articles-hero {
       padding: 10rem 5% 4rem;
       background: radial-gradient(ellipse at 70% 40%, #d8f3dc 0%, transparent 60%),
@@ -243,7 +283,22 @@
     };
 
     function toggleMenu() { document.querySelector('.nav-links').classList.toggle('active'); }
-    function setLang(lang) { localStorage.setItem('yes_lang', lang); applyLanguage(lang); }
+    var currentArticleIndex = null;
+
+    function setLang(lang) {
+      localStorage.setItem('yes_lang', lang);
+      applyLanguage(lang);
+      // If user is reading an article, update its content and show glow toast
+      if (currentArticleIndex !== null) {
+        var ev = allEvents[currentArticleIndex];
+        if (ev) {
+          document.getElementById('sa-title').innerText = lang === 'az' ? ev.title_az : ev.title_en;
+          document.getElementById('sa-desc').innerHTML = marked.parse(lang === 'az' ? (ev.desc_az || '') : (ev.desc_en || ''));
+        }
+        showLangToast(lang);
+      }
+    }
+
     function applyLanguage(lang) {
       document.querySelectorAll('[data-i18n]').forEach(el => {
         var key = el.getAttribute('data-i18n');
@@ -254,6 +309,31 @@
       document.getElementById('opt-' + lang).classList.add('active');
       document.documentElement.lang = lang;
       renderGallery();
+    }
+
+    var _langToastEl = null;
+    function showLangToast(lang) {
+      if (_langToastEl) { _langToastEl.remove(); _langToastEl = null; }
+      var isAz = lang === 'az';
+      var msg = isAz
+        ? 'Məqalə <strong>Azərbaycan dilinə</strong> çevrildi'
+        : 'Article switched to <strong>English</strong>';
+      var toast = document.createElement('div');
+      toast.className = 'lang-toast';
+      toast.innerHTML = `
+        <div class="lang-toast-left">
+          <div class="lang-toast-icon">🌐</div>
+          <div class="lang-toast-msg">${msg}</div>
+        </div>
+        <button class="lang-toast-close" onclick="this.closest('.lang-toast').remove()">✕</button>
+      `;
+      document.body.appendChild(toast);
+      _langToastEl = toast;
+      setTimeout(() => toast.classList.add('show'), 50);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => { if (toast.parentNode) toast.remove(); if (_langToastEl === toast) _langToastEl = null; }, 500);
+      }, 4000);
     }
 
     var currentCatFilter = 'all';
@@ -358,6 +438,7 @@
       var lang = localStorage.getItem('yes_lang') || 'en';
       var ev = allEvents[index];
       if (!ev) return;
+      currentArticleIndex = index;
       document.getElementById('sa-img').src = ev.image || '';
       document.getElementById('sa-title').innerText = lang === 'az' ? ev.title_az : ev.title_en;
       document.getElementById('sa-desc').innerHTML = marked.parse(lang === 'az' ? (ev.desc_az || '') : (ev.desc_en || ''));
@@ -370,6 +451,8 @@
     }
 
     function closeArticle() {
+      currentArticleIndex = null;
+      if (_langToastEl) { _langToastEl.classList.remove('show'); setTimeout(() => { if (_langToastEl) { _langToastEl.remove(); _langToastEl = null; } }, 400); }
       document.getElementById('single-article').style.display = 'none';
       document.getElementById('gallery').style.display = 'block';
       document.querySelector('.articles-hero').style.display = 'block';
