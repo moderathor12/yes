@@ -8,6 +8,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
   <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
@@ -145,8 +146,9 @@
       width: 40px; height: 40px; border-radius: 50%;
       background: linear-gradient(135deg, #2d6a4f, #74c69d);
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem; flex-shrink: 0;
+      font-size: 1.2rem; flex-shrink: 0;
       box-shadow: 0 0 16px rgba(116,198,157,0.5);
+      color: white;
     }
     .lang-toast-msg { color: rgba(255,255,255,0.9); font-size: 0.95rem; font-weight: 500; }
     .lang-toast-msg strong { color: #74c69d; }
@@ -322,7 +324,7 @@
       toast.className = 'lang-toast';
       toast.innerHTML = `
         <div class="lang-toast-left">
-          <div class="lang-toast-icon">🌐</div>
+          <div class="lang-toast-icon"><i class="ph ph-globe-hemisphere-west"></i></div>
           <div class="lang-toast-msg">${msg}</div>
         </div>
         <button class="lang-toast-close" onclick="this.closest('.lang-toast').remove()">✕</button>
