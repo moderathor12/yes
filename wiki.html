@@ -479,6 +479,7 @@
     .tag.done { background: rgba(116, 198, 157, 0.2); border-color: var(--lime); }
     .tag.ongoing { background: rgba(244, 211, 94, 0.2); border-color: var(--yellow); color: #9c7f1a; }
     .tag.planned { background: rgba(224, 122, 95, 0.1); border-color: var(--pink); color: var(--pink); }
+    .tag.closed { background: rgba(231, 76, 60, 0.1); border-color: #e74c3c; color: #c0392b; }
 
     /* Team Grid */
     .team-grid {
@@ -535,6 +536,14 @@
 
     @media (max-width: 768px) {
       .mobile-toggle { display: block; }
+
+      body {
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
       
       /* Sidebar slides in from left */
       aside {
@@ -706,7 +715,6 @@
       </button>
       <div class="sub-nav" id="nav-docs">
         <a href="#" onclick="showPage('docs', 'reports')" data-i18n="nav_docs_reports">İllik Hesabatlar</a>
-        <a href="#" onclick="showPage('docs', 'charter')" data-i18n="nav_docs_charter">Nizamnamə</a>
       </div>
     </div>
 
@@ -851,7 +859,7 @@
           <h1 class="page-title">Our Impact & Projects</h1>
           <h2 class="section-title" id="active"><i class="ph ph-play-circle"></i> Active Initiatives</h2>
           <ul class="wiki-list">
-            <li><span class="tag ongoing">Active</span> <strong>Volunteer Program</strong> — Our volunteer program is currently active. Deadline to apply: <strong>July 7</strong>. Check the main site for details.</li>
+            <li><span class="tag closed">Closed</span> <strong>Volunteer Program</strong> — The registration for our volunteer program is now closed.</li>
           </ul>
           <h2 class="section-title" id="completed"><i class="ph ph-check-circle"></i> Past Successes</h2>
           <p class="body-text">We are just getting started! Stay tuned for our future achievements.</p>
@@ -1003,7 +1011,7 @@
           <h1 class="page-title">Fəaliyyətimiz və Layihələr</h1>
           <h2 class="section-title" id="active"><i class="ph ph-play-circle"></i> Aktiv Təşəbbüslər</h2>
           <ul class="wiki-list">
-            <li><span class="tag ongoing">Aktiv</span> <strong>Könüllülük Proqramı</strong> — Könüllülük proqramımız hal-hazırda aktivdir. Son müraciət: <strong>7 İyul</strong>. Ətraflı məlumat üçün əsas sayta daxil olun.</li>
+            <li><span class="tag closed">Bağlı</span> <strong>Könüllülük Proqramı</strong> — Könüllülük proqramına qeydiyyat başa çatmışdır.</li>
           </ul>
           <h2 class="section-title" id="completed"><i class="ph ph-check-circle"></i> Keçmiş Uğurlarımız</h2>
           <p class="body-text">Biz hələ yeni başlayırıq! Gələcək uğurlarımız üçün bizi izləməyə davam edin.</p>
