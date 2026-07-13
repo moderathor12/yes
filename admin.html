@@ -396,11 +396,7 @@
           <div class="stat-number" id="st-users-aktiv">—</div>
           <div class="stat-sub">Fəal üzvlər</div>
         </div>
-        <div class="stat-card blue">
-          <div class="stat-label">Alumni</div>
-          <div class="stat-number" id="st-users-alumni">—</div>
-          <div class="stat-sub">Keçmiş üzvlər</div>
-        </div>
+       
       </div>
 
       <!-- Category breakdown -->
@@ -970,21 +966,29 @@
     const total   = data.length;
     const namizad = data.filter(u => !u.status || u.status === 'Namizəd').length;
     const aktiv   = data.filter(u => u.status === 'Aktiv könüllü').length;
-    const alumni  = data.filter(u => u.status === 'Alumni').length;
-
-    document.getElementById('st-users-total').innerText   = total;
+    
+    document.getElementById('st-users-total').innerText = total;
     document.getElementById('st-users-namizad').innerText = namizad;
-    document.getElementById('st-users-aktiv').innerText   = aktiv;
-    document.getElementById('st-users-alumni').innerText  = alumni;
+    document.getElementById('st-users-aktiv').innerText = aktiv;
 
-    // Status breakdown bar chart
+    //Status breakdown bar chart
     const breakdown = document.getElementById('user-status-breakdown');
     if (!breakdown) return;
-    const statuses = [
-      { label: 'Namizəd',       count: namizad, color: '#74c69d' },
-      { label: 'Aktiv könüllü', count: aktiv,   color: '#f39c12' },
-      { label: 'Alumni',        count: alumni,  color: '#3498db' },
-    ];
+
+    const statusCounts = {};
+    data.forEach(u => {
+      const s = u.status || 'Namizəd';
+      statusCounts[s] = (statusCounts[s] || 0) + 1;
+    });
+
+    const palette = ['#3498db', '#9b59b6', '#e74c3c', '#1abc9c', '#34495e'];
+    let cIdx = 0;
+    const statuses = Object.keys(statusCounts).map(key => ({
+      label: key,
+      count: statusCounts[key],
+      color: key === 'Namizəd' ? '#74c69d' : (key === 'Aktiv könüllü' ? '#f39c12' : palette[(cIdx++) % palette.length])
+    })).sort((a,b) => b.count - a.count);
+    
     breakdown.innerHTML = statuses.map(s => {
       const pct = total > 0 ? Math.round((s.count / total) * 100) : 0;
       return `<div class="recent-row">
@@ -1399,10 +1403,11 @@
           </div>
         </div>
         <div class="article-actions">
-          <select onclick="event.stopPropagation()" onchange="event.stopPropagation(); updateUserStatus('${u.id}', this.value)" style="margin:0; padding:0.4rem; font-size:0.8rem; border-radius:8px; border:1px solid #ccc;">
-            <option value="Namizəd" ${u.status === 'Namizəd' ? 'selected' : ''}>Namizəd</option>
+          <select onclick="event.stopPropagation()" onchange="event.stopPropagation(); if(this.value==='_new'){ const n=prompt('Yeni rolun adı:'); if(n) updateUserStatus('${u.id}', n); else this.value='${u.status||'Namizəd'}'; } else { updateUserStatus('${u.id}', this.value); }" style="margin:0; padding:0.4rem; font-size:0.8rem; border-radius:8px; border:1px solid #ccc;">
+            <option value="Namizəd" ${(!u.status || u.status === 'Namizəd') ? 'selected' : ''}>Namizəd</option>
             <option value="Aktiv könüllü" ${u.status === 'Aktiv könüllü' ? 'selected' : ''}>Aktiv könüllü</option>
-            <option value="Alumni" ${u.status === 'Alumni' ? 'selected' : ''}>Alumni</option>
+            ${(u.status && u.status !== 'Namizəd' && u.status !== 'Aktiv könüllü') ? `<option value="${u.status}" selected>${u.status}</option>` : ''}
+            <option value="_new" style="font-weight:bold; color:var(--green);">+ Yeni rol yarat</option>
           </select>
           <button onclick="event.stopPropagation(); deleteUser('${u.id}', '${u.first_name} ${u.last_name}')" class="btn btn-red btn-sm" style="padding:0.4rem 0.8rem; font-size:0.85rem; border-radius:8px; border:none; margin:0;">🗑 Sil</button>
         </div>
