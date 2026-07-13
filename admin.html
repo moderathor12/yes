@@ -1386,13 +1386,23 @@
     
     const filtered = data.filter(u => (u.first_name + ' ' + u.last_name).toLowerCase().includes(q));
     
+    // Bütün sistemdəki fərqli statusları toplayırıq
+    const allStatuses = new Set(['Namizəd', 'Aktiv könüllü']);
+    data.forEach(u => { if (u.status) allStatuses.add(u.status); });
+    
     const select = document.getElementById('cert-user-select');
     if (select) {
       select.innerHTML = '<option value="">İstifadəçi seçin</option>' + 
         data.map(u => `<option value="${u.id}">${u.first_name} ${u.last_name}</option>`).join('');
     }
 
-    list.innerHTML = filtered.map(u => `
+    list.innerHTML = filtered.map(u => {
+      // Hər bir user üçün select option-ları
+      const userOptions = Array.from(allStatuses).map(s => 
+        `<option value="${s}" ${u.status === s ? 'selected' : (!u.status && s === 'Namizəd' ? 'selected' : '')}>${s}</option>`
+      ).join('');
+
+      return `
       <div class="article-item" style="border-left-color:var(--lime); cursor:pointer;" onclick="openUserModal('${u.id}', '${u.first_name} ${u.last_name}')">
         <div class="article-meta">
           <h3>${u.first_name} ${u.last_name}</h3>
@@ -1404,20 +1414,20 @@
         </div>
         <div class="article-actions">
           <select onclick="event.stopPropagation()" onchange="event.stopPropagation(); if(this.value==='_new'){ const n=prompt('Yeni rolun adı:'); if(n) updateUserStatus('${u.id}', n); else this.value='${u.status||'Namizəd'}'; } else { updateUserStatus('${u.id}', this.value); }" style="margin:0; padding:0.4rem; font-size:0.8rem; border-radius:8px; border:1px solid #ccc;">
-            <option value="Namizəd" ${(!u.status || u.status === 'Namizəd') ? 'selected' : ''}>Namizəd</option>
-            <option value="Aktiv könüllü" ${u.status === 'Aktiv könüllü' ? 'selected' : ''}>Aktiv könüllü</option>
-            ${(u.status && u.status !== 'Namizəd' && u.status !== 'Aktiv könüllü') ? `<option value="${u.status}" selected>${u.status}</option>` : ''}
+            ${userOptions}
             <option value="_new" style="font-weight:bold; color:var(--green);">+ Yeni rol yarat</option>
           </select>
           <button onclick="event.stopPropagation(); deleteUser('${u.id}', '${u.first_name} ${u.last_name}')" class="btn btn-red btn-sm" style="padding:0.4rem 0.8rem; font-size:0.85rem; border-radius:8px; border:none; margin:0;">🗑 Sil</button>
         </div>
       </div>
-    `).join('');
+    `}).join('');
     if(filtered.length === 0) list.innerHTML = '<p style="padding:1rem; opacity:0.5;">İstifadəçi tapılmadı.</p>';
   }
   async function updateUserStatus(id, status) {
     await sb.from('profiles').update({ status }).eq('id', id);
     notify('İstifadəçi statusu yeniləndi', 'success');
+    loadUsers();
+    loadUserStats();
   }
   async function deleteUser(id, name) {
     if (!confirm(`${name} adlı istifadəçini tamamilə silmək istədiyinizə əminsiniz?`)) return;
