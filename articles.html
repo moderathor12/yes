@@ -44,7 +44,7 @@
     .nav-links a { font-size: 0.95rem; color: var(--dark); text-decoration: none; font-weight: 500; transition: color 0.2s; }
     .nav-links a:hover { color: var(--green); }
     .nav-right { display: flex; align-items: center; gap: 2rem; }
-    .menu-btn { display: none; background: none; border: none; color: var(--dark); cursor: pointer; z-index: 1001; padding: 0.5rem; }
+    .menu-btn { display: none; background: none; border: none; color: var(--dark); cursor: pointer; z-index: 1002; padding: 0.5rem; }
 
     /* Lang dropdown logic */
     .lang-dropdown { position: relative; display: inline-block; z-index: 1000; }
@@ -107,7 +107,7 @@
     @media (max-width: 768px) {
       nav { padding: 1rem 4%; gap: 0.5rem; }
       .nav-right { gap: 0.8rem; }
-      .nav-links { display: flex; flex-direction: column; position: fixed; top: 0; right: -100%; width: 250px; height: 100vh; background: var(--bg); box-shadow: -5px 0 15px rgba(0,0,0,0.1); padding: 6rem 2rem 2rem; transition: right 0.3s ease; z-index: 999; }
+      .nav-links { display: flex; flex-direction: column; position: fixed; top: 0; right: -100%; width: 250px; height: 100vh; background: var(--bg); box-shadow: -5px 0 15px rgba(0,0,0,0.1); padding: 6rem 2rem 2rem; transition: right 0.3s ease; z-index: 1001; }
       .nav-links.active { right: 0; }
       .nav-links li { width: 100%; }
       .nav-links a { display: block; padding: 1rem 0; font-size: 1.1rem; border-bottom: 1px solid rgba(0,0,0,0.05); }
