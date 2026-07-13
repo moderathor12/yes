@@ -3352,7 +3352,7 @@
       const statsSection = document.querySelector('.stats');
       const memberCounter = document.querySelector('.stat:nth-child(1) .stat-number');
 
-      if (statsSection && memberCounter && memberCounter.innerText.includes('170')) {
+      if (statsSection && memberCounter && memberCounter.innerText.includes('180')) {
         let started = false;
         // Start from 0
         memberCounter.innerText = '0+';
@@ -3360,7 +3360,7 @@
         const observer = new IntersectionObserver((entries) => {
           if (entries[0].isIntersecting && !started) {
             started = true;
-            const target = 170;
+            const target = 180;
             const duration = 3000; // 3 seconds
             const startTime = performance.now();
 
