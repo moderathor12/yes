@@ -1424,10 +1424,14 @@
     if(filtered.length === 0) list.innerHTML = '<p style="padding:1rem; opacity:0.5;">İstifadəçi tapılmadı.</p>';
   }
   async function updateUserStatus(id, status) {
-    const { error } = await sb.from('profiles').update({ status }).eq('id', id);
+    const { data, error } = await sb.from('profiles').update({ status }).eq('id', id).select();
     if (error) {
       console.error(error);
       alert('Supabase xətası (yadda saxlanmadı): ' + error.message);
+      return;
+    }
+    if (!data || data.length === 0) {
+      alert('Supabase icazə (RLS) problemi: Yeniləmə uğurlu kimi göründü, amma bazada heç nə dəyişmədi. Zəhmət olmasa Supabase-də "profiles" cədvəlinin RLS (Row Level Security) Update icazələrini yoxlayın.');
       return;
     }
     notify('İstifadəçi statusu yeniləndi', 'success');
