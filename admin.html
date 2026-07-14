@@ -1243,6 +1243,10 @@
     selectStatus('published');
     populateCategorySelect();
     document.getElementById('article-modal').classList.add('open');
+    setTimeout(() => {
+      if (mdeEN) mdeEN.codemirror.refresh();
+      if (mdeAZ) mdeAZ.codemirror.refresh();
+    }, 10);
   }
 
   function showEditModal(idx) {
@@ -1258,6 +1262,10 @@
     selectStatus(art.status || 'published');
     populateCategorySelect(art.category);
     document.getElementById('article-modal').classList.add('open');
+    setTimeout(() => {
+      if (mdeEN) mdeEN.codemirror.refresh();
+      if (mdeAZ) mdeAZ.codemirror.refresh();
+    }, 10);
   }
 
   function closeModal() {
