@@ -387,7 +387,7 @@
     </button>
     <h2 id="page-title">Statistika</h2>
     <div class="header-actions">
-      <button class="btn btn-green btn-sm" onclick="showPage('articles'); setTimeout(showAddModal, 100)">
+      <button id="global-add-btn" class="btn btn-green btn-sm" onclick="showPage('articles'); setTimeout(showAddModal, 100)">
         <i class="ph ph-plus"></i>
         Yeni Məqalə
       </button>
@@ -869,6 +869,20 @@
     if (name === 'events') loadEventsAdmin();
     if (name === 'resources') { loadResourcesAdmin(); loadUsers(); }
     if (name === 'notifications') loadNotificationsPage();
+
+    // Toggle global add button visibility
+    const addBtn = document.getElementById('global-add-btn');
+    if (addBtn) {
+      addBtn.style.display = name === 'articles' ? 'inline-flex' : 'none';
+    }
+
+    // Close sidebar on mobile after clicking
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (sidebar && overlay) {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    }
   }
 
   // ── NOTIFICATIONS ─────────────────────────────────────
