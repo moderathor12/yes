@@ -264,12 +264,50 @@
     .confirm-box .confirm-actions { display: flex; gap: 0.8rem; }
     .confirm-box .confirm-actions .btn { flex: 1; justify-content: center; }
 
+    /* ── Phosphor icon size in nav ─────────────────────── */
+    .nav-item i { font-size: 1.1rem; flex-shrink: 0; }
+
+    /* ── MOBILE ─────────────────────────────────────────── */
+    .hamburger-btn {
+      display: none; background: none; border: none; cursor: pointer;
+      color: var(--dark); padding: 0.4rem; border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .hamburger-btn:hover { background: rgba(0,0,0,0.06); }
+    .hamburger-btn i { font-size: 1.4rem; }
+
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45); z-index: 49;
+      backdrop-filter: blur(2px);
+    }
+    .sidebar-overlay.open { display: block; }
+
     @media (max-width: 768px) {
-      .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+      .hamburger-btn { display: flex; align-items: center; }
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+        z-index: 50;
+      }
       .sidebar.open { transform: translateX(0); }
-      .app-header, .app-main { left: 0; margin-left: 0; }
+      .app-header { left: 0; margin-left: 0; padding: 0 1rem; }
+      .app-main { margin-left: 0; padding: 1.2rem 1rem; }
       .form-row { grid-template-columns: 1fr; }
       .categories-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .article-item { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+      .article-item img { width: 100%; height: 160px; border-radius: 10px; }
+      .article-actions { width: 100%; justify-content: flex-end; }
+      .list-header { flex-wrap: wrap; gap: 0.6rem; }
+      .search-box input { width: 120px; }
+      .modal-overlay { padding: 1rem; }
+      .modal-box { padding: 1.2rem; }
+      .cat-card { padding: 1rem; }
+      .notif { right: 1rem; bottom: 1rem; }
+    }
+    @media (max-width: 400px) {
+      .stats-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -291,8 +329,11 @@
 <!-- ── APP SHELL ───────────────────────────────────────── -->
 <div id="app">
 
+  <!-- Sidebar overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
   <!-- Sidebar -->
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-badge">YES</div>
       Admin Panel
@@ -340,6 +381,9 @@
 
   <!-- Top Header -->
   <header class="app-header">
+    <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="Menyu">
+      <i class="ph ph-list"></i>
+    </button>
     <h2 id="page-title">Statistika</h2>
     <div class="header-actions">
       <button class="btn btn-green btn-sm" onclick="showPage('articles'); setTimeout(showAddModal, 100)">
@@ -794,6 +838,12 @@
     initMDE();
     loadArticles();
     renderCategoryUI();
+  }
+
+  // ── MOBILE LAYOUT ─────────────────────────────────────
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebar-overlay').classList.toggle('open');
   }
 
   // ── PAGES ─────────────────────────────────────────────
