@@ -174,6 +174,15 @@
 <body>
 
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <!-- CARD PREVIEW MODAL -->
+  <div id="card-preview-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; flex-direction:column; padding:1rem; cursor:pointer;" onclick="closeCardPreview()">
+    <div id="card-preview-container" style="box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: scale(1.1); transition: transform 0.3s;" onclick="event.stopPropagation()">
+      <!-- Cloned card will go here -->
+    </div>
+    <p style="color:white; margin-top: 3rem; opacity:0.8; font-size:1rem; font-family:'Space Grotesk',sans-serif;">Bağlamaq üçün kənara klikləyin</p>
+  </div>
+
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <a href="index.html" class="sidebar-logo">
@@ -241,16 +250,16 @@
         <p class="barcode-hint" style="text-align:left; margin-top:0.3rem;">Bu sizin rəsmi virtual üzv kartınızdır. İstədiyiniz formatı yükləyə bilərsiniz.</p>
       </div>
 
-      <div style="display: flex; flex-wrap: wrap; gap: 2rem; width: 100%; justify-content: center; align-items: flex-start; margin-top: 1rem;">
+      <div style="display: flex; flex-wrap: wrap; gap: 3rem; width: 100%; justify-content: center; align-items: flex-start; margin-top: 1rem;">
         
         <!-- YATAY KART -->
         <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; width: 100%; max-width: 480px;">
           <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-            <strong style="color: var(--green);">Yatay (Eninə)</strong>
+            <strong style="color: var(--green);">Üfüqi (Horizontal)</strong>
             <button onclick="downloadIDCard('virtual-id-card-horizontal')" style="background:var(--green);color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;">Yüklə (PNG)</button>
           </div>
           <div style="width: 100%; overflow-x: auto; padding-bottom: 10px; display: flex; justify-content: center;">
-            <div id="virtual-id-card-horizontal" style="width: 480px; height: 280px; min-width: 480px; background: linear-gradient(135deg, #1a2e1a, #2d6a4f); border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; color: white;">
+            <div id="virtual-id-card-horizontal" onclick="previewCard('virtual-id-card-horizontal')" style="width: 480px; height: 280px; min-width: 480px; background: linear-gradient(135deg, #1a2e1a, #2d6a4f); border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; color: white; cursor: pointer; transition: 0.2s;">
               <!-- Header -->
               <div style="width: 100%; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2);">
                 <div style="font-size: 0.85rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.9;">Youth Environment Society</div>
@@ -278,10 +287,10 @@
         <!-- ŞAQULİ KART -->
         <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; width: 100%; max-width: 320px;">
           <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-            <strong style="color: var(--green);">Şaquli (Boyuna)</strong>
+            <strong style="color: var(--green);">Şaquli (Vertical)</strong>
             <button onclick="downloadIDCard('virtual-id-card-vertical')" style="background:var(--green);color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;">Yüklə (PNG)</button>
           </div>
-          <div id="virtual-id-card-vertical" style="width: 320px; height: 500px; background: linear-gradient(135deg, #1a2e1a, #2d6a4f); border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center; color: white;">
+          <div id="virtual-id-card-vertical" onclick="previewCard('virtual-id-card-vertical')" style="width: 320px; height: 500px; background: linear-gradient(135deg, #1a2e1a, #2d6a4f); border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center; color: white; cursor: pointer; transition: 0.2s;">
             <!-- Header with Lanyard Hole -->
             <div style="width: 100%; padding: 2rem 1rem 1rem; text-align: center; background: rgba(0,0,0,0.2); position: relative;">
               <!-- Lanyard Hole -->
@@ -498,6 +507,30 @@
       }
       btn.innerText = oldText;
       btn.disabled = false;
+    }
+
+    function previewCard(cardId) {
+      const modal = document.getElementById('card-preview-modal');
+      const container = document.getElementById('card-preview-container');
+      container.innerHTML = ''; // Clear previous
+      
+      const originalCard = document.getElementById(cardId);
+      const clone = originalCard.cloneNode(true);
+      clone.style.margin = '0';
+      clone.style.cursor = 'default';
+      clone.id = cardId + '-preview';
+      
+      container.appendChild(clone);
+      modal.style.display = 'flex';
+      
+      // Need to re-render barcode in the clone because cloneNode copies the DOM but sometimes SVG doesn't scale correctly if IDs are duplicated.
+      // But actually, cloneNode copies the <svg> and its <rect> children perfectly.
+      // Let's just remove the onclick from the clone to prevent recursive clicks
+      clone.onclick = null;
+    }
+
+    function closeCardPreview() {
+      document.getElementById('card-preview-modal').style.display = 'none';
     }
 
     async function loadEvents() {
