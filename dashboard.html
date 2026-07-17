@@ -234,41 +234,79 @@
     </div>
 
     <!-- ID CARD -->
+    <!-- ID CARDS -->
     <div class="barcode-card">
-      <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom: 1.5rem;">
-        <div class="barcode-card-title" style="margin:0;">Virtual Üzv Kartı</div>
-        <button onclick="downloadIDCard()" style="background:var(--green);color:white;border:none;padding:0.6rem 1.2rem;border-radius:10px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.9rem;transition:0.2s;">Yüklə (PNG)</button>
+      <div style="width:100%; text-align:left; margin-bottom: 0.5rem;">
+        <h3 class="barcode-card-title" style="margin:0;">Virtual Üzv Kartları</h3>
+        <p class="barcode-hint" style="text-align:left; margin-top:0.3rem;">Bu sizin rəsmi virtual üzv kartınızdır. İstədiyiniz formatı yükləyə bilərsiniz.</p>
       </div>
 
-      <div style="width: 100%; overflow-x: auto; padding-bottom: 10px; display: flex; justify-content: center;">
-        <div id="virtual-id-card" style="width: 480px; height: 280px; min-width: 480px; background: linear-gradient(135deg, #1a2e1a, #2d6a4f); border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; color: white;">
-          
-          <!-- Header -->
-          <div style="width: 100%; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2);">
-            <div style="font-size: 0.85rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.9;">Youth Environment Society</div>
-            <div style="background: var(--lime); color: var(--dark); display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-weight: 800; font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; letter-spacing: 1px;">YES</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 2rem; width: 100%; justify-content: center; align-items: flex-start; margin-top: 1rem;">
+        
+        <!-- YATAY KART -->
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; width: 100%; max-width: 480px;">
+          <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+            <strong style="color: var(--green);">Yatay (Eninə)</strong>
+            <button onclick="downloadIDCard('virtual-id-card-horizontal')" style="background:var(--green);color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;">Yüklə (PNG)</button>
           </div>
-
-          <!-- Main Content -->
-          <div style="display: flex; flex: 1; align-items: center; padding: 0 1.8rem; gap: 1.5rem;">
-            <div style="width: 95px; height: 95px; border-radius: 50%; background: var(--bright); display: flex; justify-content: center; align-items: center; border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); flex-shrink: 0;">
-              <span id="card-avatar" style="font-size: 2.8rem; font-weight: 700; color: var(--green);">?</span>
+          <div style="width: 100%; overflow-x: auto; padding-bottom: 10px; display: flex; justify-content: center;">
+            <div id="virtual-id-card-horizontal" style="width: 480px; height: 280px; min-width: 480px; background: linear-gradient(135deg, #1a2e1a, #2d6a4f); border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; color: white;">
+              <!-- Header -->
+              <div style="width: 100%; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2);">
+                <div style="font-size: 0.85rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.9;">Youth Environment Society</div>
+                <div style="background: var(--lime); color: var(--dark); display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-weight: 800; font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; letter-spacing: 1px;">YES</div>
+              </div>
+              <!-- Main Content -->
+              <div style="display: flex; flex: 1; align-items: center; padding: 0 1.8rem; gap: 1.5rem;">
+                <div style="width: 95px; height: 95px; border-radius: 50%; background: var(--bright); display: flex; justify-content: center; align-items: center; border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); flex-shrink: 0;">
+                  <span id="card-avatar-h" style="font-size: 2.8rem; font-weight: 700; color: var(--green);">?</span>
+                </div>
+                <div>
+                  <h2 id="card-name-h" style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; margin-bottom: 0.4rem; line-height: 1.2;">...</h2>
+                  <div id="card-status-h" style="font-size: 0.95rem; font-weight: 600; color: var(--lime); text-transform: uppercase; letter-spacing: 1.5px;">...</div>
+                </div>
+              </div>
+              <!-- Barcode at Bottom -->
+              <div style="background: white; width: 100%; padding: 0.8rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-top: 4px solid var(--lime);">
+                <div id="barcode-id-label-h" style="color: var(--dark); font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 800; letter-spacing: 3px;">...</div>
+                <svg id="member-barcode-h" style="height: 42px; max-width: 65%;"></svg>
+              </div>
             </div>
-            <div>
-              <h2 id="card-name" style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; margin-bottom: 0.4rem; line-height: 1.2;">...</h2>
-              <div id="card-status" style="font-size: 0.95rem; font-weight: 600; color: var(--lime); text-transform: uppercase; letter-spacing: 1.5px;">...</div>
-            </div>
-          </div>
-
-          <!-- Barcode at Bottom -->
-          <div style="background: white; width: 100%; padding: 0.8rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-top: 4px solid var(--lime);">
-            <div id="barcode-id-label" style="color: var(--dark); font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 800; letter-spacing: 3px;">...</div>
-            <svg id="member-barcode" style="height: 42px; max-width: 65%;"></svg>
           </div>
         </div>
-      </div>
 
-      <p class="barcode-hint" style="margin-top: 1.5rem;">Bu sizin rəsmi virtual üzv kartınızdır. Ekranda göstərə və ya yükləyə bilərsiniz.</p>
+        <!-- ŞAQULİ KART -->
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; width: 100%; max-width: 320px;">
+          <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+            <strong style="color: var(--green);">Şaquli (Boyuna)</strong>
+            <button onclick="downloadIDCard('virtual-id-card-vertical')" style="background:var(--green);color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;">Yüklə (PNG)</button>
+          </div>
+          <div id="virtual-id-card-vertical" style="width: 320px; height: 500px; background: linear-gradient(135deg, #1a2e1a, #2d6a4f); border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center; color: white;">
+            <!-- Header with Lanyard Hole -->
+            <div style="width: 100%; padding: 2rem 1rem 1rem; text-align: center; background: rgba(0,0,0,0.2); position: relative;">
+              <!-- Lanyard Hole -->
+              <div style="position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 50px; height: 10px; background: var(--bg); border-radius: 10px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);"></div>
+              <div style="background: var(--lime); color: var(--dark); display: inline-block; padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: 800; font-family: 'Space Grotesk', sans-serif; font-size: 1rem; letter-spacing: 1px; margin-bottom: 0.5rem; margin-top: 0.5rem;">YES</div>
+              <div style="font-size: 0.8rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; opacity: 0.9;">Youth Environment Society</div>
+            </div>
+            <!-- Avatar -->
+            <div style="margin-top: 2rem; width: 110px; height: 110px; border-radius: 50%; background: var(--bright); display: flex; justify-content: center; align-items: center; border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+              <span id="card-avatar-v" style="font-size: 3rem; font-weight: 700; color: var(--green);">?</span>
+            </div>
+            <!-- Info -->
+            <div style="margin-top: 1.5rem; text-align: center; width: 100%; padding: 0 1rem;">
+              <h2 id="card-name-v" style="font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin-bottom: 0.3rem; line-height: 1.2;">...</h2>
+              <div id="card-status-v" style="font-size: 0.9rem; font-weight: 500; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px;">...</div>
+            </div>
+            <!-- Barcode -->
+            <div style="margin-top: auto; background: white; width: 100%; padding: 1rem 0; display: flex; flex-direction: column; align-items: center; border-top: 4px solid var(--lime);">
+              <svg id="member-barcode-v" style="height: 55px; max-width: 90%;"></svg>
+              <div id="barcode-id-label-v" style="color: var(--dark); font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 700; letter-spacing: 3px; margin-top: 0.3rem;">...</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
 
   </section>
@@ -360,9 +398,14 @@
         document.getElementById('prof-id').innerText = data.member_id;
         document.getElementById('prof-date').innerText = new Date(data.created_at).toLocaleDateString('az-AZ');
         
-        document.getElementById('card-name').innerText = fullName;
-        document.getElementById('card-avatar').innerText = data.first_name.charAt(0);
-        document.getElementById('card-status').innerText = data.status || 'Namizəd';
+        document.getElementById('card-name-h').innerText = fullName;
+        document.getElementById('card-avatar-h').innerText = data.first_name.charAt(0);
+        document.getElementById('card-status-h').innerText = data.status || 'Namizəd';
+        
+        document.getElementById('card-name-v').innerText = fullName;
+        document.getElementById('card-avatar-v').innerText = data.first_name.charAt(0);
+        document.getElementById('card-status-v').innerText = data.status || 'Namizəd';
+        
         renderBarcode(data.member_id);
       } else {
         // Profile missing — check if this is a freshly email-confirmed signup
@@ -389,9 +432,14 @@
           document.getElementById('prof-id').innerText = newMemberId;
           document.getElementById('prof-date').innerText = new Date().toLocaleDateString('az-AZ');
           
-          document.getElementById('card-name').innerText = fullName;
-          document.getElementById('card-avatar').innerText = fName.charAt(0).toUpperCase();
-          document.getElementById('card-status').innerText = 'Namizəd';
+          document.getElementById('card-name-h').innerText = fullName;
+          document.getElementById('card-avatar-h').innerText = fName.charAt(0).toUpperCase();
+          document.getElementById('card-status-h').innerText = 'Namizəd';
+          
+          document.getElementById('card-name-v').innerText = fullName;
+          document.getElementById('card-avatar-v').innerText = fName.charAt(0).toUpperCase();
+          document.getElementById('card-status-v').innerText = 'Namizəd';
+          
           renderBarcode(newMemberId);
         } else {
           // No metadata — this account was deleted by admin, show error
@@ -415,23 +463,24 @@
     function renderBarcode(memberId) {
       if (!memberId) return;
       try {
-        JsBarcode('#member-barcode', String(memberId), {
+        JsBarcode('#member-barcode-h', String(memberId), {
           format: 'CODE128',
-          width: 2,
-          height: 55,
-          displayValue: false,
-          margin: 0,
-          lineColor: '#1a2e1a',
-          background: '#ffffff',
+          width: 2, height: 42, displayValue: false, margin: 0, lineColor: '#1a2e1a', background: '#ffffff'
         });
-        document.getElementById('barcode-id-label').innerText = String(memberId);
+        document.getElementById('barcode-id-label-h').innerText = String(memberId);
+        
+        JsBarcode('#member-barcode-v', String(memberId), {
+          format: 'CODE128',
+          width: 2.2, height: 55, displayValue: false, margin: 0, lineColor: '#1a2e1a', background: '#ffffff'
+        });
+        document.getElementById('barcode-id-label-v').innerText = String(memberId);
       } catch (e) {
         console.warn('Barcode render failed:', e);
       }
     }
 
-    async function downloadIDCard() {
-      const card = document.getElementById('virtual-id-card');
+    async function downloadIDCard(cardId) {
+      const card = document.getElementById(cardId);
       const btn = event.currentTarget;
       const oldText = btn.innerText;
       btn.innerText = 'Hazırlanır...';
