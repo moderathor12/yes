@@ -1522,11 +1522,11 @@
       memberId: cb.dataset.memberId || '—'
     }));
 
-    function buildBarcodeDataUrl(memberId) {
+    function buildBarcodeDataUrl(memberId, w, h) {
       try {
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         JsBarcode(svg, String(memberId), {
-          format: 'CODE128', width: 1.4, height: 28,
+          format: 'CODE128', width: w || 1.4, height: h || 28,
           displayValue: false, margin: 0, lineColor: '#1a2e1a', background: '#ffffff'
         });
         const s = new XMLSerializer().serializeToString(svg);
@@ -1534,54 +1534,50 @@
       } catch(e) { return ''; }
     }
 
-    // A4 usable: 186mm wide, 273mm tall (after 12mm margins)
-    // Horizontal CR80: 85.6mm × 54mm  → 2 per row, gap 5mm → 2×85.6+5=176.2mm ✓
-    // Vertical CR80:   54mm × 85.6mm → 3 per row, gap 5mm → 3×54+10=172mm   ✓
     const isH = orientation === 'horizontal';
+    // Horizontal: 2 per row | Vertical: 3 per row
     const cols = isH ? 2 : 3;
-    const cardW = isH ? '85.6mm' : '54mm';
     const cardH = isH ? '54mm' : '85.6mm';
 
     const cardHTML = users.map(u => {
-      const barcodeUrl = u.memberId !== '—' ? buildBarcodeDataUrl(u.memberId) : '';
       const initial = u.name.charAt(0).toUpperCase();
+      const barcodeUrl = u.memberId !== '—' ? buildBarcodeDataUrl(u.memberId, isH ? 1.4 : 1.2, isH ? 28 : 24) : '';
 
       if (isH) {
-        // Horizontal layout: avatar + info left, barcode bottom
         return `
-        <div class="id-card">
-          <div class="id-card-header">
-            <span class="id-org">Youth Environment Society</span>
-            <span class="id-badge">YES</span>
+        <div class="card-h">
+          <div class="card-h-header">
+            <span class="org-text">Youth Environment Society</span>
+            <span class="yes-badge">YES</span>
           </div>
-          <div class="id-card-body">
-            <div class="id-avatar">${initial}</div>
-            <div class="id-info">
-              <div class="id-name">${u.name}</div>
-              <div class="id-status">${u.status}</div>
+          <div class="card-h-body">
+            <div class="avatar">${initial}</div>
+            <div class="info">
+              <div class="uname">${u.name}</div>
+              <div class="ustatus">${u.status}</div>
             </div>
           </div>
-          <div class="id-card-footer">
-            <span class="id-member-id">${u.memberId}</span>
-            ${barcodeUrl ? `<img src="${barcodeUrl}" class="id-barcode" />` : ''}
+          <div class="card-footer">
+            <span class="mid">${u.memberId}</span>
+            ${barcodeUrl ? `<img src="${barcodeUrl}" class="barcode-h" />` : ''}
           </div>
         </div>`;
       } else {
-        // Vertical layout: header top, avatar center, barcode bottom
         return `
-        <div class="id-card id-card-v">
-          <div class="id-card-header-v">
-            <span class="id-badge">YES</span>
-            <span class="id-org-v">Youth Environment Society</span>
+        <div class="card-v">
+          <div class="card-v-header">
+            <div class="lanyard-hole"></div>
+            <span class="yes-badge" style="margin-top:2mm;">YES</span>
+            <span class="org-text-v">Youth Environment Society</span>
           </div>
-          <div class="id-avatar-v">${initial}</div>
-          <div class="id-info-v">
-            <div class="id-name">${u.name}</div>
-            <div class="id-status">${u.status}</div>
+          <div class="avatar-v">${initial}</div>
+          <div class="info-v">
+            <div class="uname">${u.name}</div>
+            <div class="ustatus">${u.status}</div>
           </div>
-          <div class="id-card-footer-v">
-            ${barcodeUrl ? `<img src="${barcodeUrl}" class="id-barcode-v" />` : ''}
-            <span class="id-member-id">${u.memberId}</span>
+          <div class="card-footer-v">
+            ${barcodeUrl ? `<img src="${barcodeUrl}" class="barcode-v" />` : ''}
+            <span class="mid">${u.memberId}</span>
           </div>
         </div>`;
       }
@@ -1597,7 +1593,7 @@
           @page { size: A4 portrait; margin: 12mm; }
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
-            font-family: Arial, sans-serif;
+            font-family: 'Space Grotesk', Arial, sans-serif;
             background: white;
             width: 186mm;
           }
@@ -1608,87 +1604,102 @@
             width: 186mm;
           }
 
-          /* ─ HORIZONTAL CARD ─ */
-          .id-card {
-            width: 100%;
-            height: ${cardH};
-            background: linear-gradient(135deg, #1a2e1a, #2d6a4f);
-            border-radius: 3mm;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            color: white;
-            break-inside: avoid;
-          }
-          .id-card-header {
-            padding: 2mm 3mm;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0,0,0,0.2);
-          }
-          .id-org { font-size: 4.5pt; font-weight: 600; letter-spacing: 0.4pt; text-transform: uppercase; opacity:0.9; }
-          .id-badge {
+          /* ── SHARED ── */
+          .yes-badge {
             background: #74c69d; color: #1a2e1a;
-            padding: 0.4mm 1.5mm; border-radius: 8mm;
-            font-size: 5.5pt; font-weight: 800;
+            display: inline-block;
+            padding: 0.4mm 1.8mm; border-radius: 8mm;
+            font-size: 6pt; font-weight: 800; letter-spacing: 0.5pt;
           }
-          .id-card-body {
-            display: flex; align-items: center;
-            padding: 2.5mm 3mm; gap: 2.5mm; flex: 1;
+          .org-text {
+            font-size: 4.5pt; font-weight: 600;
+            letter-spacing: 1pt; text-transform: uppercase; opacity: 0.9;
           }
-          .id-avatar {
+          .uname { font-size: 8.5pt; font-weight: 700; line-height: 1.2; margin-bottom: 1mm; }
+          .ustatus { font-size: 5pt; font-weight: 700; color: #74c69d; text-transform: uppercase; letter-spacing: 0.8pt; }
+          .mid { color: #1a2e1a; font-size: 7pt; font-weight: 800; letter-spacing: 2pt; }
+          .avatar {
             width: 13mm; height: 13mm; border-radius: 50%;
             background: #b7e4c7; color: #2d6a4f;
             display: flex; align-items: center; justify-content: center;
-            font-size: 11pt; font-weight: 800; flex-shrink: 0;
-            border: 0.5mm solid white;
+            font-size: 12pt; font-weight: 800; flex-shrink: 0;
+            border: 0.6mm solid white; box-shadow: 0 1mm 3mm rgba(0,0,0,0.2);
           }
-          .id-name { font-size: 8pt; font-weight: 700; line-height: 1.2; margin-bottom: 1mm; }
-          .id-status { font-size: 5pt; font-weight: 600; color: #74c69d; text-transform: uppercase; letter-spacing: 0.4pt; }
-          .id-card-footer {
-            background: white; padding: 1.5mm 3mm;
-            display: flex; justify-content: space-between; align-items: center;
-            border-top: 0.8mm solid #74c69d;
-          }
-          .id-member-id { color: #1a2e1a; font-size: 7pt; font-weight: 800; letter-spacing: 1.5pt; }
-          .id-barcode { height: 7mm; max-width: 45%; }
 
-          /* ─ VERTICAL CARD ─ */
-          .id-card-v {
+          /* ── HORIZONTAL CARD (dashboard style) ── */
+          .card-h {
             width: 100%;
             height: ${cardH};
             background: linear-gradient(135deg, #1a2e1a, #2d6a4f);
             border-radius: 3mm;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: white;
-            break-inside: avoid;
+            display: flex; flex-direction: column;
+            color: white; break-inside: avoid;
           }
-          .id-card-header-v {
-            width: 100%; padding: 3mm 3mm 2mm; text-align: center;
+          .card-h-header {
+            width: 100%; padding: 2mm 3mm;
+            display: flex; justify-content: space-between; align-items: center;
             background: rgba(0,0,0,0.2);
-            display: flex; flex-direction: column; align-items: center; gap: 1mm;
           }
-          .id-org-v { font-size: 4pt; letter-spacing: 0.5pt; text-transform: uppercase; opacity:0.85; }
-          .id-avatar-v {
+          .card-h-body {
+            display: flex; align-items: center;
+            padding: 2.5mm 3mm; gap: 3mm; flex: 1;
+          }
+          .info { display: flex; flex-direction: column; }
+          .card-footer {
+            background: white; padding: 2mm 3mm;
+            display: flex; justify-content: space-between; align-items: center;
+            border-top: 1mm solid #74c69d;
+          }
+          .barcode-h { height: 8mm; max-width: 50%; }
+
+          /* ── VERTICAL CARD (dashboard style) ── */
+          .card-v {
+            width: 100%;
+            height: ${cardH};
+            background: linear-gradient(135deg, #1a2e1a, #2d6a4f);
+            border-radius: 3mm;
+            overflow: hidden;
+            display: flex; flex-direction: column; align-items: center;
+            color: white; break-inside: avoid;
+          }
+          .card-v-header {
+            width: 100%; padding: 3mm 2mm 2mm;
+            text-align: center; background: rgba(0,0,0,0.2);
+            display: flex; flex-direction: column; align-items: center;
+            position: relative;
+          }
+          .lanyard-hole {
+            width: 8mm; height: 2mm;
+            background: rgba(255,255,255,0.25);
+            border-radius: 2mm;
+            margin-bottom: 1.5mm;
+            box-shadow: inset 0 0.5mm 1mm rgba(0,0,0,0.3);
+          }
+          .org-text-v {
+            font-size: 4pt; font-weight: 600;
+            letter-spacing: 1pt; text-transform: uppercase; opacity: 0.9;
+            margin-top: 1mm;
+          }
+          .avatar-v {
             margin-top: 3mm;
             width: 14mm; height: 14mm; border-radius: 50%;
             background: #b7e4c7; color: #2d6a4f;
             display: flex; align-items: center; justify-content: center;
-            font-size: 12pt; font-weight: 800;
-            border: 0.5mm solid white;
+            font-size: 13pt; font-weight: 800;
+            border: 0.6mm solid white; box-shadow: 0 1mm 3mm rgba(0,0,0,0.2);
           }
-          .id-info-v { margin-top: 2mm; text-align: center; padding: 0 2mm; }
-          .id-card-footer-v {
+          .info-v {
+            margin-top: 2mm; text-align: center; padding: 0 2mm;
+          }
+          .card-footer-v {
             margin-top: auto;
-            background: white; width: 100%; padding: 1.5mm 2mm;
-            display: flex; flex-direction: column; align-items: center; gap: 0.5mm;
-            border-top: 0.8mm solid #74c69d;
+            background: white; width: 100%;
+            padding: 2mm 2mm 1.5mm;
+            display: flex; flex-direction: column; align-items: center; gap: 0.8mm;
+            border-top: 1mm solid #74c69d;
           }
-          .id-barcode-v { height: 7mm; max-width: 85%; }
+          .barcode-v { height: 8mm; max-width: 85%; }
 
           @media print {
             body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
