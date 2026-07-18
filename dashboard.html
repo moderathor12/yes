@@ -256,7 +256,10 @@
         <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; width: 100%; max-width: 480px;">
           <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
             <strong style="color: var(--green);">Üfüqi (Horizontal)</strong>
-            <button onclick="downloadIDCard('virtual-id-card-horizontal')" style="background:var(--green);color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;">Yüklə (PNG)</button>
+            <div style="display: flex; gap: 0.5rem;">
+              <button onclick="downloadIDCard('virtual-id-card-horizontal')" style="background:var(--green);color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;">Yüklə (PNG)</button>
+              <button onclick="printIDCard('virtual-id-card-horizontal', 'horizontal')" style="background:transparent;color:var(--green);border:1.5px solid var(--green);padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;" onmouseover="this.style.background='var(--green)';this.style.color='white';" onmouseout="this.style.background='transparent';this.style.color='var(--green)';">Çap et</button>
+            </div>
           </div>
           <div style="width: 100%; overflow-x: auto; padding-bottom: 10px; display: flex; justify-content: center;">
             <div id="virtual-id-card-horizontal" onclick="previewCard('virtual-id-card-horizontal')" style="width: 480px; height: 280px; min-width: 480px; background: linear-gradient(135deg, #1a2e1a, #2d6a4f); border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; color: white; cursor: pointer; transition: 0.2s;">
@@ -288,7 +291,10 @@
         <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; width: 100%; max-width: 320px;">
           <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
             <strong style="color: var(--green);">Şaquli (Vertical)</strong>
-            <button onclick="downloadIDCard('virtual-id-card-vertical')" style="background:var(--green);color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;">Yüklə (PNG)</button>
+            <div style="display: flex; gap: 0.5rem;">
+              <button onclick="downloadIDCard('virtual-id-card-vertical')" style="background:var(--green);color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;">Yüklə (PNG)</button>
+              <button onclick="printIDCard('virtual-id-card-vertical', 'vertical')" style="background:transparent;color:var(--green);border:1.5px solid var(--green);padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;" onmouseover="this.style.background='var(--green)';this.style.color='white';" onmouseout="this.style.background='transparent';this.style.color='var(--green)';">Çap et</button>
+            </div>
           </div>
           <div id="virtual-id-card-vertical" onclick="previewCard('virtual-id-card-vertical')" style="width: 320px; height: 500px; background: linear-gradient(135deg, #1a2e1a, #2d6a4f); border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center; color: white; cursor: pointer; transition: 0.2s;">
             <!-- Header with Lanyard Hole -->
@@ -531,6 +537,55 @@
 
     function closeCardPreview() {
       document.getElementById('card-preview-modal').style.display = 'none';
+    }
+
+    async function printIDCard(cardId, orientation) {
+      const card = document.getElementById(cardId);
+      const btn = event.currentTarget;
+      const oldText = btn.innerText;
+      btn.innerText = 'Gözləyin...';
+      btn.disabled = true;
+
+      try {
+        const canvas = await html2canvas(card, { scale: 4, useCORS: true, backgroundColor: null });
+        const imgData = canvas.toDataURL('image/png');
+        
+        const printWindow = window.open('', '_blank');
+        
+        // CR80 Standard Size: Horizontal ~ 86mm x 54mm
+        const width = orientation === 'horizontal' ? '86mm' : '54mm';
+        const height = orientation === 'horizontal' ? '54mm' : '86mm';
+        
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Çap - YES Kartı</title>
+              <style>
+                @page { size: A4; margin: 15mm; }
+                body { margin: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: 15mm; }
+                .print-card {
+                  width: ${width};
+                  height: ${height};
+                  box-shadow: 0 0 0 1px #eee;
+                  display: block;
+                }
+                @media print {
+                  body { padding-top: 0; }
+                }
+              </style>
+            </head>
+            <body>
+              <img src="${imgData}" class="print-card" onload="window.print(); window.close();" />
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+      } catch(err) {
+        console.error('Print failed', err);
+        alert('Çap zamanı xəta baş verdi.');
+      }
+      btn.innerText = oldText;
+      btn.disabled = false;
     }
 
     async function loadEvents() {
