@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
   <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <style>
@@ -517,8 +518,17 @@
     <div class="page" id="page-users">
       <div class="list-header">
         <h2>İstifadəçilər</h2>
-        <div class="search-box">
-          <input type="text" id="usr-search" placeholder="İstifadəçi axtar..." oninput="loadUsers()">
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.9rem; cursor:pointer;">
+            <input type="checkbox" id="select-all-users" onchange="toggleSelectAll(this.checked)" style="width:16px;height:16px;accent-color:var(--green);">
+            Hamısını seç
+          </label>
+          <button class="btn btn-green btn-sm" onclick="printSelectedCards()" style="display:flex;align-items:center;gap:0.4rem;">
+            <i class="ph ph-printer"></i> Seçilənləri Çap Et
+          </button>
+          <div class="search-box">
+            <input type="text" id="usr-search" placeholder="İstifadəçi axtar..." oninput="loadUsers()">
+          </div>
         </div>
       </div>
       <div id="users-list" class="articles-list">
@@ -1467,8 +1477,11 @@
       ).join('');
 
       return `
-      <div class="article-item" style="border-left-color:var(--lime); cursor:pointer;" onclick="openUserModal('${u.id}', '${u.first_name} ${u.last_name}')">
-        <div class="article-meta">
+      <div class="article-item" style="border-left-color:var(--lime);" id="user-row-${u.id}">
+        <div style="display:flex; align-items:center; gap:0.8rem; flex-shrink:0;">
+          <input type="checkbox" class="user-select-cb" data-id="${u.id}" data-name="${u.first_name} ${u.last_name}" data-status="${u.status || 'Namizəd'}" data-member-id="${u.member_id || ''}" onclick="event.stopPropagation()" style="width:17px;height:17px;accent-color:var(--green);cursor:pointer;flex-shrink:0;">
+        </div>
+        <div class="article-meta" onclick="openUserModal('${u.id}', '${u.first_name} ${u.last_name}')" style="cursor:pointer; flex:1;">
           <h3>${u.first_name} ${u.last_name}</h3>
           <p style="font-size:0.78rem;opacity:0.5;">ID: ${u.member_id || '—'}</p>
           <div class="article-meta-row" style="margin-top:0.3rem;">
@@ -1487,6 +1500,185 @@
     `}).join('');
     if(filtered.length === 0) list.innerHTML = '<p style="padding:1rem; opacity:0.5;">İstifadəçi tapılmadı.</p>';
   }
+
+  // ── BULK SELECT & PRINT ──
+  function toggleSelectAll(checked) {
+    document.querySelectorAll('.user-select-cb').forEach(cb => cb.checked = checked);
+  }
+
+  function printSelectedCards() {
+    const checkboxes = document.querySelectorAll('.user-select-cb:checked');
+    if (checkboxes.length === 0) {
+      alert('Zəhmət olmasa ən azı bir istifadəçi seçin.');
+      return;
+    }
+
+    const users = Array.from(checkboxes).map(cb => ({
+      id: cb.dataset.id,
+      name: cb.dataset.name,
+      status: cb.dataset.status,
+      memberId: cb.dataset.memberId || '—'
+    }));
+
+    // Build barcode SVG inline via JsBarcode on a temp canvas element
+    function buildBarcodeDataUrl(memberId) {
+      try {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        JsBarcode(svg, String(memberId), {
+          format: 'CODE128', width: 1.6, height: 35,
+          displayValue: false, margin: 0, lineColor: '#1a2e1a', background: '#ffffff'
+        });
+        const s = new XMLSerializer().serializeToString(svg);
+        return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(s)));
+      } catch(e) { return ''; }
+    }
+
+    // CR80 card: 85.6mm × 54mm (landscape / horizontal)
+    const cardHTML = users.map(u => {
+      const barcodeUrl = u.memberId !== '—' ? buildBarcodeDataUrl(u.memberId) : '';
+      const initial = u.name.charAt(0).toUpperCase();
+      return `
+        <div class="id-card">
+          <div class="id-card-header">
+            <span class="id-org">Youth Environment Society</span>
+            <span class="id-badge">YES</span>
+          </div>
+          <div class="id-card-body">
+            <div class="id-avatar">${initial}</div>
+            <div class="id-info">
+              <div class="id-name">${u.name}</div>
+              <div class="id-status">${u.status}</div>
+            </div>
+          </div>
+          <div class="id-card-footer">
+            <span class="id-member-id">${u.memberId}</span>
+            ${barcodeUrl ? `<img src="${barcodeUrl}" class="id-barcode" />` : ''}
+          </div>
+        </div>`;
+    }).join('');
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Toplu Çap — YES Üzv Kartları</title>
+        <style>
+          @page { size: A4; margin: 12mm; }
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body {
+            font-family: 'Space Grotesk', 'DM Sans', sans-serif;
+            background: white;
+          }
+          .page-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 85.6mm);
+            grid-template-rows: auto;
+            gap: 6mm;
+            justify-content: center;
+          }
+          .id-card {
+            width: 85.6mm;
+            height: 54mm;
+            background: linear-gradient(135deg, #1a2e1a, #2d6a4f);
+            border-radius: 4mm;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            page-break-inside: avoid;
+          }
+          .id-card-header {
+            padding: 2.5mm 4mm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.2);
+          }
+          .id-org {
+            font-size: 5pt;
+            font-weight: 600;
+            letter-spacing: 0.5pt;
+            text-transform: uppercase;
+            opacity: 0.9;
+          }
+          .id-badge {
+            background: #74c69d;
+            color: #1a2e1a;
+            padding: 0.5mm 2mm;
+            border-radius: 10mm;
+            font-size: 6pt;
+            font-weight: 800;
+            letter-spacing: 0.5pt;
+          }
+          .id-card-body {
+            display: flex;
+            align-items: center;
+            padding: 3mm 4mm;
+            gap: 3mm;
+            flex: 1;
+          }
+          .id-avatar {
+            width: 16mm;
+            height: 16mm;
+            border-radius: 50%;
+            background: #b7e4c7;
+            color: #2d6a4f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14pt;
+            font-weight: 800;
+            flex-shrink: 0;
+            border: 0.7mm solid white;
+          }
+          .id-name {
+            font-size: 9pt;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.5mm;
+          }
+          .id-status {
+            font-size: 5.5pt;
+            font-weight: 600;
+            color: #74c69d;
+            text-transform: uppercase;
+            letter-spacing: 0.5pt;
+          }
+          .id-card-footer {
+            background: white;
+            padding: 2mm 4mm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1mm solid #74c69d;
+          }
+          .id-member-id {
+            color: #1a2e1a;
+            font-size: 8pt;
+            font-weight: 800;
+            letter-spacing: 2pt;
+          }
+          .id-barcode {
+            height: 9mm;
+            max-width: 50mm;
+          }
+          @media print {
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="page-grid">
+          ${cardHTML}
+        </div>
+        <script>window.onload = function(){ window.print(); }<\/script>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  }
+
   async function updateUserStatus(id, status) {
     const { data, error } = await sb.from('profiles').update({ status }).eq('id', id).select();
     if (error) {
