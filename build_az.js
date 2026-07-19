@@ -63,14 +63,14 @@ for (const file of filesToProcess) {
                     const valEscaped = val.replace(/\$/g, '$$$$');
                     // Replace inner content of tags with data-translate
                     // E.g. <span data-translate="nav_about">About Us</span>
-                    const regex1 = new RegExp(`(<[^>]+data-translate="${key}"[^>]*>)(.*?)(<\/[a-zA-Z0-9]+>)`, 'g');
+                    const regex1 = new RegExp(`(<[^>]+data-i18n="${key}"[^>]*>)(.*?)(<\/[a-zA-Z0-9]+>)`, 'g');
                     azContent = azContent.replace(regex1, `$1${valEscaped}$3`);
                     
-                    // E.g. <input placeholder="Search" data-translate="search">
-                    const regex2 = new RegExp(`(placeholder=")([^"]+)("[^>]*data-translate="${key}")`, 'g');
+                    // E.g. <input placeholder="Search" data-i18n-ph="search">
+                    const regex2 = new RegExp(`(placeholder=")([^"]+)("[^>]*data-i18n-ph="${key}")`, 'g');
                     azContent = azContent.replace(regex2, `$1${valEscaped}$3`);
                     
-                    const regex3 = new RegExp(`(data-translate="${key}"[^>]*placeholder=")([^"]+)(")`, 'g');
+                    const regex3 = new RegExp(`(data-i18n-ph="${key}"[^>]*placeholder=")([^"]+)(")`, 'g');
                     azContent = azContent.replace(regex3, `$1${valEscaped}$3`);
                 }
             }
