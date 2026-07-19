@@ -49,6 +49,9 @@ for (const file of filesToProcess) {
         azContent = azContent.replace(/<head>/, '<head>\n  <base href="../">');
     }
 
+    // 4. Update the default language in JS logic so it doesn't overwrite with English
+    azContent = azContent.replace(/var savedLang = localStorage\.getItem\('yes_lang'\) \|\| 'en';/g, "var savedLang = 'az';");
+
     // 4. Extract translations block and translate elements
     const translationMatch = azContent.match(/var translations = (\{[\s\S]*?\n    \});/);
     if (translationMatch) {
