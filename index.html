@@ -2749,7 +2749,7 @@
         if (data.session) {
           // Email confirmation NOT required, we are logged in!
           // Try to create profile directly
-          await sbClient.from('profiles').insert({ id: data.user.id, first_name: fName, last_name: lName, status: 'Namizəd', birth_date: dob, email: email });
+          await sbClient.from('profiles').upsert({ id: data.user.id, first_name: fName, last_name: lName, status: 'Namizəd', birth_date: dob, email: email });
           closeAuthModal();
           window.location.href = 'dashboard.html';
         } else {
