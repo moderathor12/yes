@@ -2615,6 +2615,7 @@
       <div class="auth-form">
         <input type="text" id="auth-fname" placeholder="Adınız" style="display:none;">
         <input type="text" id="auth-lname" placeholder="Soyadınız" style="display:none;">
+        <input type="date" id="auth-dob" style="display:none;" title="Doğum Tarixi">
         <input type="email" id="auth-email" placeholder="E-poçt ünvanı">
         <input type="password" id="auth-pass" placeholder="Şifrə">
         <button class="btn-primary" id="auth-submit-btn" onclick="submitAuth()">Daxil ol</button>
@@ -2688,6 +2689,7 @@
       const switchText = document.getElementById('auth-switch-text');
       const fName = document.getElementById('auth-fname');
       const lName = document.getElementById('auth-lname');
+      const dob = document.getElementById('auth-dob');
       
       document.getElementById('auth-error').style.display = 'none';
       btn.style.display = 'block';
@@ -2698,13 +2700,13 @@
         sub.innerText = isAz ? 'YES Şəxsi Kabinetinizə xoş gəldiniz.' : 'Welcome to YES Dashboard.';
         btn.innerText = isAz ? 'Daxil ol' : 'Sign In';
         switchText.innerHTML = isAz ? 'Hesabınız yoxdur? <span onclick="setAuthMode(\'register\')">Qeydiyyatdan keçin.</span>' : 'Don\'t have an account? <span onclick="setAuthMode(\'register\')">Sign Up.</span>';
-        fName.style.display = 'none'; lName.style.display = 'none';
+        fName.style.display = 'none'; lName.style.display = 'none'; dob.style.display = 'none';
       } else {
         title.innerText = isAz ? 'Qeydiyyat' : 'Sign Up';
         sub.innerText = isAz ? 'Yeni hesab yaradın və bizə qoşulun!' : 'Create a new account and join us!';
         btn.innerText = isAz ? 'Qeydiyyatı Tamamla' : 'Sign Up';
         switchText.innerHTML = isAz ? 'Artıq hesabınız var? <span onclick="setAuthMode(\'login\')">Daxil olun.</span>' : 'Already have an account? <span onclick="setAuthMode(\'login\')">Sign In.</span>';
-        fName.style.display = 'block'; lName.style.display = 'block';
+        fName.style.display = 'block'; lName.style.display = 'block'; dob.style.display = 'block';
       }
     }
 
@@ -2713,6 +2715,7 @@
       const pass = document.getElementById('auth-pass').value;
       const fName = document.getElementById('auth-fname').value.trim();
       const lName = document.getElementById('auth-lname').value.trim();
+      const dob = document.getElementById('auth-dob').value;
       const err = document.getElementById('auth-error');
       const btn = document.getElementById('auth-submit-btn');
 
@@ -2732,11 +2735,11 @@
         closeAuthModal();
         window.location.href = 'dashboard.html';
       } else {
-        if (!fName || !lName) { err.innerText = 'Ad və Soyadı daxil edin.'; err.style.display = 'block'; btn.disabled = false; btn.innerText = 'Qeydiyyatı Tamamla'; return; }
+        if (!fName || !lName || !dob) { err.innerText = 'Ad, Soyad və Doğum Tarixini daxil edin.'; err.style.display = 'block'; btn.disabled = false; btn.innerText = 'Qeydiyyatı Tamamla'; return; }
         const { data, error } = await sbClient.auth.signUp({ 
           email, 
           password: pass,
-          options: { data: { first_name: fName, last_name: lName } }
+          options: { data: { first_name: fName, last_name: lName, birth_date: dob } }
         });
         
         if (error) { 
@@ -2746,7 +2749,7 @@
         if (data.session) {
           // Email confirmation NOT required, we are logged in!
           // Try to create profile directly
-          await sbClient.from('profiles').insert({ id: data.user.id, first_name: fName, last_name: lName, status: 'Namizəd' });
+          await sbClient.from('profiles').insert({ id: data.user.id, first_name: fName, last_name: lName, status: 'Namizəd', birth_date: dob, email: email });
           closeAuthModal();
           window.location.href = 'dashboard.html';
         } else {

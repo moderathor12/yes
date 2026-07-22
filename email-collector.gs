@@ -477,3 +477,114 @@ function processBulkEmail(data) {
   return { sent: sentCount, errors: errorCount };
 }
 
+
+// ============================================================
+//  BIRTHDAY AUTOMATION FEATURE
+// ============================================================
+
+/**
+ * Run this function daily (e.g., between 8 AM - 9 AM) using a Time-driven Trigger.
+ */
+function checkBirthdays() {
+  // Replace these with your actual Supabase URL and ANON KEY if they change.
+  // The anon key needs read access to the profiles table.
+  var SUPABASE_URL = 'https://wqcugmhjfuvnwxhspytw.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxY3VnbWhqZnV2bnd4aHNweXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMzY2NzcsImV4cCI6MjA5MTYxMjY3N30.A2rZNI2hOpDNC_JLeQNO9Is50HswX-jB5he9wNOpYLo';
+  
+  // Replace this with the admin email where you want to receive notifications.
+  var ADMIN_NOTIFICATION_EMAIL = 'admin@youthensoc.org'; // <-- CHANGE THIS!
+  
+  try {
+    var today = new Date();
+    // Format today as MM-DD (e.g., "07-22")
+    var month = ('0' + (today.getMonth() + 1)).slice(-2);
+    var day = ('0' + today.getDate()).slice(-2);
+    var todayStr = month + '-' + day;
+    
+    var url = SUPABASE_URL + '/rest/v1/profiles?select=first_name,last_name,email,birth_date';
+    
+    var options = {
+      method: 'get',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+      },
+      muteHttpExceptions: true
+    };
+    
+    var response = UrlFetchApp.fetch(url, options);
+    var json = response.getContentText();
+    var profiles = JSON.parse(json);
+    
+    if (response.getResponseCode() !== 200) {
+      Logger.log('Error fetching profiles: ' + json);
+      return;
+    }
+    
+    var birthdayBoysAndGirls = [];
+    
+    for (var i = 0; i < profiles.length; i++) {
+      var p = profiles[i];
+      if (p.birth_date && p.email) {
+        // birth_date is usually YYYY-MM-DD
+        var bDateParts = p.birth_date.split('-');
+        if (bDateParts.length >= 3) {
+          var bMonthDay = bDateParts[1] + '-' + bDateParts[2];
+          if (bMonthDay === todayStr) {
+            birthdayBoysAndGirls.push(p);
+            // Send email to user
+            sendBirthdayEmail(p);
+          }
+        }
+      }
+    }
+    
+    // Send summary to Admin
+    if (birthdayBoysAndGirls.length > 0) {
+      var adminSubject = '🎉 Bildiriş: Bu gün ' + birthdayBoysAndGirls.length + ' könüllünün doğum günüdür!';
+      var adminHtml = '<h3>Doğum günü olan könüllülər:</h3><ul>';
+      for (var j = 0; j < birthdayBoysAndGirls.length; j++) {
+        var user = birthdayBoysAndGirls[j];
+        adminHtml += '<li><b>' + user.first_name + ' ' + user.last_name + '</b> (' + user.email + ') - ' + user.birth_date + '</li>';
+      }
+      adminHtml += '</ul><p>Onlara avtomatik təbrik mesajı göndərildi.</p>';
+      
+      MailApp.sendEmail({
+        to: ADMIN_NOTIFICATION_EMAIL,
+        subject: adminSubject,
+        htmlBody: adminHtml
+      });
+      
+      Logger.log('Sent admin notification for ' + birthdayBoysAndGirls.length + ' users.');
+    } else {
+      Logger.log('No birthdays today.');
+    }
+    
+  } catch (err) {
+    Logger.log('checkBirthdays error: ' + err.message);
+  }
+}
+
+function sendBirthdayEmail(user) {
+  var subject = '🎉 Doğum Günün Mübarək, ' + user.first_name + '!';
+  
+  var htmlBody = "<div style='font-family: sans-serif; text-align: center; color: #1a2e1a; background-color: #f0f4f0; padding: 40px 20px;'>" +
+                 "<div style='background-color: white; max-width: 500px; margin: 0 auto; border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);'>" +
+                 "<h1 style='color: #2d6a4f;'>Doğum Günün Mübarək! 🎂</h1>" +
+                 "<p style='font-size: 16px; line-height: 1.5;'>Əziz <b>" + user.first_name + "</b>,<br><br>" +
+                 "YES (Gənclər Ekoloji Cəmiyyəti) komandası olaraq səni ad günün münasibətilə ürəkdən təbrik edirik! 🌱<br><br>" +
+                 "Sənin kimi gənc və ekologiyaya can yandıran könüllülərlə birlikdə dünyanı daha yaşıl və gözəl bir yerə çevirməkdən qürur duyuruq.<br><br>" +
+                 "Sənə can sağlığı, xoşbəxtlik və fəaliyyətində bol uğurlar arzulayırıq!</p>" +
+                 "<br><br><p style='font-size: 14px; color: #555;'>Yaşıl qalın,<br><b>YES İcması Komandası</b></p>" +
+                 "</div></div>";
+
+  try {
+    MailApp.sendEmail({
+      to: user.email,
+      subject: subject,
+      htmlBody: htmlBody
+    });
+  } catch (e) {
+    Logger.log('Error sending birthday email to ' + user.email + ': ' + e.message);
+  }
+}
