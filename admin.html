@@ -825,6 +825,15 @@
     btn.disabled = true; btn.innerText = 'Daxil olunur...';
     const { error } = await sb.auth.signInWithPassword({ email, password: pass });
     if (error) {
+      err.innerText = 'E-poçt ünvanı və ya şifrə yanlışdır.';
+      err.style.display = 'block';
+      btn.disabled = false; btn.innerText = 'Daxil ol →';
+      return;
+    }
+    // Check if the logged-in user is an authorised admin
+    if (!ADMIN_EMAILS.includes(email)) {
+      await sb.auth.signOut();
+      err.innerText = 'Bu hesabın admin panelinə giriş icazəsi yoxdur.';
       err.style.display = 'block';
       btn.disabled = false; btn.innerText = 'Daxil ol →';
       return;
@@ -837,9 +846,22 @@
     location.reload();
   }
 
+  // ── ADMIN WHITELIST (add authorised admin emails here) ──
+  const ADMIN_EMAILS = [
+    'amirali.eyvazli@gmail.com',   // <-- real admin emails
+    'info@youthensoc.org',
+  ];
+
   window.addEventListener('load', async () => {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session) showApp();
+    const { data: { user }, error } = await sb.auth.getUser();
+    if (user && ADMIN_EMAILS.includes(user.email)) {
+      showApp();
+    } else if (user) {
+      // Logged in but NOT an admin — sign out and show error
+      await sb.auth.signOut();
+      document.getElementById('login-err').innerText = 'Bu hesabın admin panelinə giriş icazəsi yoxdur.';
+      document.getElementById('login-err').style.display = 'block';
+    }
   });
 
   function showApp() {
