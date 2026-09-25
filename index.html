@@ -418,12 +418,53 @@
       animation: fadeUp 0.7s 0.3s ease both;
     }
 
+    /* ── Neo-Brutalist Button ── */
+    .neo-btn-wrap {
+      --nb-color: #2d6a4f;
+      --nb-shadow: #1b4332;
+      --nb-text: #ffffff;
+      --nb-radius: 8px;
+      display: inline-block;
+      background: var(--nb-shadow);
+      border-radius: var(--nb-radius);
+      text-decoration: none;
+    }
+
+    .neo-btn-wrap .btn-primary,
+    .neo-btn-wrap.btn-primary {
+      display: block;
+      background: var(--nb-color);
+      color: var(--nb-text);
+      padding: 0.85rem 2rem;
+      border-radius: var(--nb-radius);
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      border: 2.5px solid var(--nb-shadow);
+      transform: translate(-3px, -3px);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif;
+      white-space: nowrap;
+    }
+
+    .neo-btn-wrap:hover .btn-primary,
+    .neo-btn-wrap.btn-primary:hover {
+      transform: translate(-5px, -5px);
+    }
+
+    .neo-btn-wrap:active .btn-primary,
+    .neo-btn-wrap.btn-primary:active {
+      transform: translate(0, 0);
+    }
+
+    /* Fallback bare .btn-primary (not wrapped) */
     .btn-primary {
       background: var(--green);
       color: white;
       padding: 0.85rem 2rem;
       border-radius: 10px;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 1rem;
       text-decoration: none;
       transition: transform 0.2s, box-shadow 0.2s;
@@ -738,28 +779,40 @@
       border-color: var(--green);
     }
 
+    /* Neo-Brutalist subscribe button */
+    .join-form .nb-subscribe-wrap {
+      display: inline-block;
+      background: #1b4332;
+      border-radius: 8px;
+    }
+
     .join-form button {
-      background: var(--green);
+      background: #2d6a4f;
       color: white;
       padding: 0.85rem 2rem;
-      border-radius: 10px;
-      font-weight: 600;
+      border-radius: 8px;
+      font-weight: 700;
       font-size: 1rem;
-      border: none;
+      border: 2.5px solid #1b4332;
       cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 20px rgba(45, 106, 79, 0.3);
+      font-family: 'Space Grotesk', sans-serif;
+      transform: translate(-3px, -3px);
+      transition: transform 0.12s ease;
+      display: block;
     }
 
     .join-form button:hover:not(:disabled) {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 30px rgba(45, 106, 79, 0.4);
+      transform: translate(-5px, -5px);
+    }
+
+    .join-form button:active:not(:disabled) {
+      transform: translate(0, 0);
     }
 
     .join-form button:disabled {
       opacity: 0.65;
       cursor: not-allowed;
+      transform: translate(-3px, -3px);
     }
 
     .form-msg {
@@ -1057,6 +1110,26 @@
         text-align: center;
         padding: 0.8rem 1.5rem;
         font-size: 0.95rem;
+      }
+
+      .neo-btn-wrap {
+        width: 100%;
+        max-width: 360px;
+      }
+
+      .neo-btn-wrap .btn-primary {
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .nb-subscribe-wrap {
+        width: 100%;
+        max-width: 360px;
+      }
+
+      .nb-subscribe-wrap button {
+        width: 100%;
+        box-sizing: border-box;
       }
 
 
@@ -1547,7 +1620,9 @@
         mission: to protect
         our environment and inspire the next generation of green leaders.</p>
       <div class="hero-btns">
-        <a href="#join" class="btn-primary" data-i18n="btn_join">Join the Movement</a>
+        <span class="neo-btn-wrap">
+          <a href="#join" class="btn-primary" data-i18n="btn_join">Join the Movement</a>
+        </span>
         <a href="wiki.html" class="btn-secondary" data-i18n="btn_learn">Learn More</a>
       </div>
     </div>
@@ -1603,8 +1678,9 @@
         <p data-i18n="who_p2">Through education, community organizing, and direct environmental action, we create
           meaningful change in our
           communities while building the skills and networks that will shape a greener future.</p>
-        <a href="#join" class="btn-primary" style="display:inline-block; margin-top: 1rem;" data-i18n="who_btn">Join YES
-          Today</a>
+        <span class="neo-btn-wrap" style="margin-top: 1rem;">
+          <a href="#join" class="btn-primary" data-i18n="who_btn">Join YES Today</a>
+        </span>
       </div>
     </div>
   </section>
@@ -1767,7 +1843,9 @@
     </p>
     <form id="email-form" class="join-form">
       <input id="email-input" type="email" placeholder="Your email for newsletter" data-i18n="join_placeholder" required>
-      <button id="signup-btn" type="submit" data-i18n="join_btn">Subscribe 📬</button>
+      <span class="nb-subscribe-wrap">
+        <button id="signup-btn" type="submit" data-i18n="join_btn">Subscribe 📬</button>
+      </span>
       <div id="form-msg" class="form-msg"></div>
     </form>
   </section>
