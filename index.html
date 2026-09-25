@@ -1972,6 +1972,9 @@
         surv_uni_name_err: "Please select a university",
         surv_uni_other_label: "University name",
         surv_uni_other_placeholder: "Enter university name",
+        surv_uni_other_err: "Please enter the university name",
+        surv_uni_intl_placeholder: "e.g. Harvard University, Oxford, etc.",
+        surv_uni_intl_err: "Please enter your university name",
         surv_uni_major_label: "Major / Faculty",
         surv_uni_major_placeholder: "e.g. Environmental Engineering",
         surv_uni_year_label: "Year",
@@ -2121,6 +2124,9 @@
         surv_uni_name_err: "Universitet seçin",
         surv_uni_other_label: "Universitetin adı",
         surv_uni_other_placeholder: "Universitetin adını yazın",
+        surv_uni_other_err: "Universitetin adını daxil edin",
+        surv_uni_intl_placeholder: "Məs: İstanbul Universiteti, Harvard və s.",
+        surv_uni_intl_err: "Universitetinizin adını daxil edin",
         surv_uni_major_label: "İxtisas / Fakültə",
         surv_uni_major_placeholder: "Məs: Ekoloji mühəndislik",
         surv_uni_year_label: "Kurs",
@@ -2243,8 +2249,12 @@
         var eSchoolErr = st2.querySelector('#f-sschool-name .surv-err'); if (eSchoolErr) eSchoolErr.textContent = t.surv_school_name_err || '';
         var lUniName = st2.querySelector('#f-suni-name label'); if (lUniName) lUniName.innerHTML = (t.surv_uni_name_label || '') + ' <span class="req">*</span>';
         var eUniErr = st2.querySelector('#f-suni-name .surv-err'); if (eUniErr) eUniErr.textContent = t.surv_uni_name_err || '';
-        var lUniOther = st2.querySelector('#f-suni-other-wrap label'); if (lUniOther) lUniOther.textContent = t.surv_uni_other_label || '';
+        var lUniOther = st2.querySelector('#f-suni-other-wrap label'); if (lUniOther) lUniOther.innerHTML = (t.surv_uni_other_label || '') + ' <span class="req">*</span>';
         var iUniOther = document.getElementById('s-uni-other'); if (iUniOther) iUniOther.placeholder = t.surv_uni_other_placeholder || '';
+        var eUniOtherErr = st2.querySelector('#f-suni-other-wrap .surv-err'); if (eUniOtherErr) eUniOtherErr.textContent = t.surv_uni_other_err || '';
+        var lUniIntl = st2.querySelector('#f-suni-intl label'); if (lUniIntl) lUniIntl.innerHTML = (t.surv_uni_name_label || '') + ' <span class="req">*</span>';
+        var iUniIntl = document.getElementById('s-uni-intl'); if (iUniIntl) iUniIntl.placeholder = t.surv_uni_intl_placeholder || '';
+        var eUniIntlErr = st2.querySelector('#f-suni-intl .surv-err'); if (eUniIntlErr) eUniIntlErr.textContent = t.surv_uni_intl_err || '';
         var lOtherAct = st2.querySelector('#s-other-edu-block .surv-field label'); if (lOtherAct) lOtherAct.textContent = t.surv_other_activity_label || '';
         var iOtherAct = document.getElementById('s-other-activity'); if (iOtherAct) iOtherAct.placeholder = t.surv_other_activity_placeholder || '';
         var btnBack2 = st2.querySelector('.surv-btn-back'); if (btnBack2) btnBack2.textContent = t.surv_back_btn || '';
@@ -3558,8 +3568,14 @@
             <div class="surv-err">Please select a university</div>
           </div>
           <div class="surv-field" id="f-suni-other-wrap" style="display:none;">
-            <label>University name</label>
+            <label>University name <span class="req">*</span></label>
             <input type="text" id="s-uni-other" placeholder="Enter university name">
+            <div class="surv-err">Please enter the university name</div>
+          </div>
+          <div class="surv-field" id="f-suni-intl" style="display:none;">
+            <label>University name <span class="req">*</span></label>
+            <input type="text" id="s-uni-intl" placeholder="e.g. Harvard University, Oxford, etc.">
+            <div class="surv-err">Please enter your university name</div>
           </div>
           <div class="surv-field">
             <label>Major / Faculty</label>
@@ -3669,6 +3685,38 @@
       if (otherBlock) otherBlock.classList.remove('show');
       const distBlock = document.getElementById('s-district-block');
       if (distBlock) distBlock.style.display = 'none';
+      updateUniFields();
+    }
+
+    function updateUniFields() {
+      const countryEl = document.getElementById('s-country');
+      const country = countryEl ? countryEl.value : 'AZ';
+      const isAZ = (country === 'AZ');
+      const fUniName = document.getElementById('f-suni-name');
+      const fUniOther = document.getElementById('f-suni-other-wrap');
+      const fUniIntl = document.getElementById('f-suni-intl');
+
+      if (isAZ) {
+        if (fUniName) fUniName.style.display = 'block';
+        if (fUniIntl) {
+          fUniIntl.style.display = 'none';
+          sClrErr('suni-intl');
+        }
+        if (fUniOther) {
+          const uVal = document.getElementById('s-uni-name')?.value;
+          fUniOther.style.display = (uVal === 'other') ? 'block' : 'none';
+        }
+      } else {
+        if (fUniName) {
+          fUniName.style.display = 'none';
+          sClrErr('suni-name');
+        }
+        if (fUniOther) {
+          fUniOther.style.display = 'none';
+          sClrErr('suni-other-wrap');
+        }
+        if (fUniIntl) fUniIntl.style.display = 'block';
+      }
     }
 
     function updateCityVisibility() {
@@ -3693,6 +3741,7 @@
       // Apply current language to survey
       const lang = localStorage.getItem('yes_lang') || 'en';
       applySurveyLanguage(lang);
+      updateUniFields();
     }
 
     function closeSurvey() {
@@ -3700,6 +3749,8 @@
       mod.classList.remove('show');
       setTimeout(() => { mod.style.display = 'none'; document.body.style.overflow = ''; }, 300);
       document.getElementById('email-input').value = '';
+      const uIntl = document.getElementById('s-uni-intl');
+      if (uIntl) uIntl.value = '';
     }
 
     function updateSProg(step) {
@@ -3736,6 +3787,7 @@
             if (!document.getElementById('s-city-other').value.trim()) { sSetErr('scity-other'); ok = false; }
           }
         }
+        if (ok) updateUniFields();
       }
       if (step === 2) {
         const edu = document.querySelector('input[name="s_edu_type"]:checked');
@@ -3748,8 +3800,19 @@
             if (!document.getElementById('s-school-name').value.trim()) { sSetErr('sschool-name'); ok = false; }
           }
           if (edu.value === 'university') {
-            sClrErr('suni-name');
-            if (!document.getElementById('s-uni-name').value) { sSetErr('suni-name'); ok = false; }
+            const country = document.getElementById('s-country').value;
+            if (country === 'AZ') {
+              sClrErr('suni-name');
+              sClrErr('suni-other-wrap');
+              const uVal = document.getElementById('s-uni-name').value;
+              if (!uVal) { sSetErr('suni-name'); ok = false; }
+              else if (uVal === 'other') {
+                if (!document.getElementById('s-uni-other').value.trim()) { sSetErr('suni-other-wrap'); ok = false; }
+              }
+            } else {
+              sClrErr('suni-intl');
+              if (!document.getElementById('s-uni-intl').value.trim()) { sSetErr('suni-intl'); ok = false; }
+            }
           }
         }
       }
@@ -3788,6 +3851,7 @@
       document.getElementById('s-other-edu-block').classList.toggle('show', val === 'other');
       const errEl = document.getElementById('s-edu-type-err');
       if (errEl) errEl.style.display = 'none';
+      if (val === 'university') updateUniFields();
     }
 
     function sOnUniChange() {
@@ -3810,8 +3874,13 @@
         if (cityVal === 'diger') cityVal = document.getElementById('s-city-other').value.trim();
         districtVal = document.getElementById('s-district').value;
       }
-      let uniVal = document.getElementById('s-uni-name').value;
-      if (uniVal === 'other') uniVal = document.getElementById('s-uni-other').value.trim();
+      let uniVal = '';
+      if (vCountry === 'AZ') {
+        uniVal = document.getElementById('s-uni-name').value;
+        if (uniVal === 'other') uniVal = document.getElementById('s-uni-other').value.trim();
+      } else {
+        uniVal = document.getElementById('s-uni-intl').value.trim();
+      }
 
       const interests = [...document.querySelectorAll('input[name="s_interest"]:checked')].map(c => c.value).join(', ');
 
