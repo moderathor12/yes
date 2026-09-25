@@ -65,6 +65,32 @@
     }
     .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--bright); color: var(--green); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
 
+    /* ── LANG DROPDOWN ── */
+    .lang-dropdown { position: relative; display: inline-block; z-index: 100; }
+    .lang-current {
+      background: white; color: var(--dark); border: 1px solid rgba(0,0,0,0.08);
+      padding: 0.5rem 0.9rem; border-radius: 14px; font-size: 0.85rem; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; gap: 0.4rem;
+      font-family: 'Space Grotesk', sans-serif; transition: all 0.2s ease; box-shadow: var(--shadow);
+    }
+    .lang-current:hover { background: #f0f0f0; border-color: var(--green); }
+    .lang-current svg { width: 14px; height: 14px; fill: currentColor; transition: transform 0.2s; }
+    .lang-dropdown:hover .lang-current svg { transform: rotate(180deg); }
+    .lang-options {
+      position: absolute; top: 100%; right: 0; background: white; border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 0.4rem; min-width: 80px;
+      opacity: 0; visibility: hidden; transform: translateY(8px);
+      transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1); margin-top: 0.4rem; z-index: 101;
+    }
+    .lang-dropdown:hover .lang-options { opacity: 1; visibility: visible; transform: translateY(0); }
+    .lang-options button {
+      display: block; width: 100%; padding: 0.4rem 0.8rem; border: none; background: none;
+      color: var(--dark); text-align: left; font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; border-radius: 8px; font-family: 'DM Sans', sans-serif; transition: background 0.15s;
+    }
+    .lang-options button:hover { background: var(--bg); color: var(--green); }
+    .lang-options button.active { background: rgba(45, 106, 79, 0.1); color: var(--green); font-weight: 700; }
+
     /* ── PANELS ── */
     .panel { display: none; animation: fadeIn 0.3s ease; }
     .panel.active { display: block; }
@@ -136,7 +162,8 @@
       .profile-grid { grid-template-columns: 1fr; }
       .doc-list { grid-template-columns: 1fr; }
       .header { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
-      .user-badge { width: 100%; justify-content: flex-start; }
+      .header-right { width: 100%; justify-content: space-between; }
+      .user-badge { flex: 1; justify-content: flex-start; }
     }
 
     /* ── BARCODE CARD ── */
@@ -180,28 +207,28 @@
     <div id="card-preview-container" style="box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: scale(1.1); transition: transform 0.3s;" onclick="event.stopPropagation()">
       <!-- Cloned card will go here -->
     </div>
-    <p style="color:white; margin-top: 3rem; opacity:0.8; font-size:1rem; font-family:'Space Grotesk',sans-serif;">Bağlamaq üçün kənara klikləyin</p>
+    <p style="color:white; margin-top: 3rem; opacity:0.8; font-size:1rem; font-family:'Space Grotesk',sans-serif;" data-i18n="hint_close_card">Bağlamaq üçün kənara klikləyin</p>
   </div>
 
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <a href="index.html" class="sidebar-logo">
       <div class="sidebar-logo-badge">YES</div>
-      Şəxsi Kabinet
+      <span data-i18n="sidebar_title">Şəxsi Kabinet</span>
     </a>
     <nav class="sidebar-nav">
-      <button class="nav-item active" onclick="switchTab('profile', event)">Profilim</button>
-      <button class="nav-item" onclick="switchTab('events', event)">Tədbirlər</button>
-      <button class="nav-item" onclick="switchTab('documents', event)">Sənədlərim</button>
-      <button class="nav-item" onclick="switchTab('resources', event)">Resurslar</button>
+      <button class="nav-item active" onclick="switchTab('profile', event)" data-i18n="nav_profile">Profilim</button>
+      <button class="nav-item" onclick="switchTab('events', event)" data-i18n="nav_events">Tədbirlər</button>
+      <button class="nav-item" onclick="switchTab('documents', event)" data-i18n="nav_documents">Sənədlərim</button>
+      <button class="nav-item" onclick="switchTab('resources', event)" data-i18n="nav_resources">Resurslar</button>
       <button class="nav-item" id="notif-nav-btn" onclick="switchTab('notifications', event)" style="position:relative;">
-        Bildirişlər
+        <span data-i18n="nav_notifications">Bildirişlər</span>
         <span id="notif-badge" style="display:none; position:absolute; top:6px; right:10px; background:#e74c3c; color:white; font-size:0.6rem; font-weight:800; border-radius:50%; width:18px; height:18px; line-height:18px; text-align:center;">0</span>
       </button>
     </nav>
     <div class="sidebar-footer">
-      <button class="btn-logout" style="background: rgba(255,255,255,0.1); color: white; margin-bottom: 0.8rem;" onclick="window.location.href='index.html'">Əsas Səhifə</button>
-      <button class="btn-logout" onclick="logout()">Çıxış Et</button>
+      <button class="btn-logout" style="background: rgba(255,255,255,0.1); color: white; margin-bottom: 0.8rem;" onclick="window.location.href='index.html'" data-i18n="btn_home">Əsas Səhifə</button>
+      <button class="btn-logout" onclick="logout()" data-i18n="btn_logout">Çıxış Et</button>
     </div>
   </aside>
 
@@ -210,33 +237,45 @@
     <header class="header">
       <div style="display: flex; align-items: center;">
         <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
-        <h1 id="page-title" style="margin: 0;">Profilim</h1>
+        <h1 id="page-title" style="margin: 0;" data-i18n="nav_profile">Profilim</h1>
       </div>
-      <div class="user-badge">
-        <div class="user-avatar" id="nav-avatar">Y</div>
-        <span id="nav-name">Yüklənir...</span>
+      <div class="header-right" style="display: flex; align-items: center; gap: 0.8rem;">
+        <div class="lang-dropdown">
+          <button class="lang-current" type="button" aria-label="Language selector">
+            <span id="active-lang">AZ</span>
+            <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </button>
+          <div class="lang-options">
+            <button type="button" onclick="setLang('en')" id="opt-en">EN</button>
+            <button type="button" onclick="setLang('az')" id="opt-az">AZ</button>
+          </div>
+        </div>
+        <div class="user-badge">
+          <div class="user-avatar" id="nav-avatar">Y</div>
+          <span id="nav-name" data-i18n="loading">Yüklənir...</span>
+        </div>
       </div>
     </header>
 
     <!-- PROFIL -->
     <section id="tab-profile" class="panel active">
       <div class="card">
-        <h2 class="card-title">Şəxsi Məlumatlar</h2>
+        <h2 class="card-title" data-i18n="card_personal_info">Şəxsi Məlumatlar</h2>
         <div class="profile-grid">
           <div class="stat-box">
-            <div class="stat-label">Ad və Soyad</div>
+            <div class="stat-label" data-i18n="label_fullname">Ad və Soyad</div>
             <div class="stat-val" id="prof-name">...</div>
           </div>
           <div class="stat-box">
-            <div class="stat-label">Könüllü Statusu</div>
+            <div class="stat-label" data-i18n="label_status">Könüllü Statusu</div>
             <div class="stat-val"><span class="status-badge" id="prof-status">...</span></div>
           </div>
           <div class="stat-box">
-            <div class="stat-label">Qeydiyyat Tarixi</div>
+            <div class="stat-label" data-i18n="label_reg_date">Qeydiyyat Tarixi</div>
             <div class="stat-val" id="prof-date">...</div>
           </div>
           <div class="stat-box">
-            <div class="stat-label">İstifadəçi ID</div>
+            <div class="stat-label" data-i18n="label_user_id">İstifadəçi ID</div>
             <div class="stat-val" style="font-size: 0.9rem; word-break: break-all;" id="prof-id">...</div>
           </div>
       </div>
@@ -246,8 +285,8 @@
     <!-- ID CARDS -->
     <div class="barcode-card">
       <div style="width:100%; text-align:left; margin-bottom: 0.5rem;">
-        <h3 class="barcode-card-title" style="margin:0;">Virtual Üzv Kartları</h3>
-        <p class="barcode-hint" style="text-align:left; margin-top:0.3rem;">Bu sizin rəsmi virtual üzv kartınızdır. İstədiyiniz formatı yükləyə bilərsiniz.</p>
+        <h3 class="barcode-card-title" style="margin:0;" data-i18n="card_id_cards">Virtual Üzv Kartları</h3>
+        <p class="barcode-hint" style="text-align:left; margin-top:0.3rem;" data-i18n="hint_id_cards">Bu sizin rəsmi virtual üzv kartınızdır. İstədiyiniz formatı yükləyə bilərsiniz.</p>
       </div>
 
       <div style="display: flex; flex-wrap: wrap; gap: 3rem; width: 100%; justify-content: center; align-items: flex-start; margin-top: 1rem;">
@@ -255,10 +294,10 @@
         <!-- YATAY KART -->
         <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; width: 100%; max-width: 480px;">
           <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-            <strong style="color: var(--green);">Üfüqi (Horizontal)</strong>
+            <strong style="color: var(--green);" data-i18n="label_horizontal">Üfüqi (Horizontal)</strong>
             <div style="display: flex; gap: 0.5rem;">
-              <button onclick="downloadIDCard('virtual-id-card-horizontal')" style="background:var(--green);color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;">Yüklə (PNG)</button>
-              <button onclick="printIDCard('virtual-id-card-horizontal', 'horizontal')" style="background:transparent;color:var(--green);border:1.5px solid var(--green);padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;" onmouseover="this.style.background='var(--green)';this.style.color='white';" onmouseout="this.style.background='transparent';this.style.color='var(--green)';">Çap et</button>
+              <button onclick="downloadIDCard('virtual-id-card-horizontal')" style="background:var(--green);color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;" data-i18n="btn_download_png">Yüklə (PNG)</button>
+              <button onclick="printIDCard('virtual-id-card-horizontal', 'horizontal')" style="background:transparent;color:var(--green);border:1.5px solid var(--green);padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;" onmouseover="this.style.background='var(--green)';this.style.color='white';" onmouseout="this.style.background='transparent';this.style.color='var(--green)';" data-i18n="btn_print">Çap et</button>
             </div>
           </div>
           <div style="width: 100%; overflow-x: auto; padding-bottom: 10px; display: flex; justify-content: center;">
@@ -290,10 +329,10 @@
         <!-- ŞAQULİ KART -->
         <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; width: 100%; max-width: 320px;">
           <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-            <strong style="color: var(--green);">Şaquli (Vertical)</strong>
+            <strong style="color: var(--green);" data-i18n="label_vertical">Şaquli (Vertical)</strong>
             <div style="display: flex; gap: 0.5rem;">
-              <button onclick="downloadIDCard('virtual-id-card-vertical')" style="background:var(--green);color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;">Yüklə (PNG)</button>
-              <button onclick="printIDCard('virtual-id-card-vertical', 'vertical')" style="background:transparent;color:var(--green);border:1.5px solid var(--green);padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;" onmouseover="this.style.background='var(--green)';this.style.color='white';" onmouseout="this.style.background='transparent';this.style.color='var(--green)';">Çap et</button>
+              <button onclick="downloadIDCard('virtual-id-card-vertical')" style="background:var(--green);color:white;border:none;padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;" data-i18n="btn_download_png">Yüklə (PNG)</button>
+              <button onclick="printIDCard('virtual-id-card-vertical', 'vertical')" style="background:transparent;color:var(--green);border:1.5px solid var(--green);padding:0.5rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:0.85rem;transition:0.2s;" onmouseover="this.style.background='var(--green)';this.style.color='white';" onmouseout="this.style.background='transparent';this.style.color='var(--green)';" data-i18n="btn_print">Çap et</button>
             </div>
           </div>
           <div id="virtual-id-card-vertical" onclick="previewCard('virtual-id-card-vertical')" style="width: 320px; height: 500px; background: linear-gradient(135deg, #1a2e1a, #2d6a4f); border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center; color: white; cursor: pointer; transition: 0.2s;">
@@ -329,7 +368,7 @@
     <!-- TƏDBİRLƏR -->
     <section id="tab-events" class="panel">
       <div class="card">
-        <h2 class="card-title">Aktiv Tədbirlər</h2>
+        <h2 class="card-title" data-i18n="card_active_events">Aktiv Tədbirlər</h2>
         <div class="event-list" id="active-events-list">
           <p style="color:gray;">Yüklənir...</p>
         </div>
@@ -339,7 +378,7 @@
     <!-- SƏNƏDLƏR -->
     <section id="tab-documents" class="panel">
       <div class="card">
-        <h2 class="card-title">Mənim Sertifikat və Sənədlərim</h2>
+        <h2 class="card-title" data-i18n="card_my_documents">Mənim Sertifikat və Sənədlərim</h2>
         <div class="doc-list" id="documents-list">
           <p style="color:gray;">Sənəd tapılmadı.</p>
         </div>
@@ -349,7 +388,7 @@
     <!-- RESURSLAR -->
     <section id="tab-resources" class="panel">
       <div class="card">
-        <h2 class="card-title">Ümumi Resurslar</h2>
+        <h2 class="card-title" data-i18n="card_general_resources">Ümumi Resurslar</h2>
         <div class="doc-list" id="resources-list">
           <p style="color:gray;">Resurs tapılmadı.</p>
         </div>
@@ -359,7 +398,7 @@
     <!-- BİLDİRİŞLƏR -->
     <section id="tab-notifications" class="panel">
       <div class="card">
-        <h2 class="card-title">Bildirişlər</h2>
+        <h2 class="card-title" data-i18n="card_notifications">Bildirişlər</h2>
         <div id="notifications-list">
           <p style="color:gray;">Yüklənir...</p>
         </div>
@@ -370,15 +409,217 @@
 
 
   <script>
+    // ── TRANSLATIONS ──
+    const translations = {
+      az: {
+        page_title: "Şəxsi Kabinet — YES Community",
+        sidebar_title: "Şəxsi Kabinet",
+        nav_profile: "Profilim",
+        nav_events: "Tədbirlər",
+        nav_documents: "Sənədlərim",
+        nav_resources: "Resurslar",
+        nav_notifications: "Bildirişlər",
+        btn_home: "Əsas Səhifə",
+        btn_logout: "Çıxış Et",
+        loading: "Yüklənir...",
+
+        // Profile Tab
+        card_personal_info: "Şəxsi Məlumatlar",
+        label_fullname: "Ad və Soyad",
+        label_status: "Könüllü Statusu",
+        label_reg_date: "Qeydiyyat Tarixi",
+        label_user_id: "İstifadəçi ID",
+        status_candidate: "Namizəd",
+        status_volunteer: "Könüllü",
+        status_active: "Aktiv",
+        status_member: "Üzv",
+
+        // Virtual ID cards
+        card_id_cards: "Virtual Üzv Kartları",
+        hint_id_cards: "Bu sizin rəsmi virtual üzv kartınızdır. İstədiyiniz formatı yükləyə bilərsiniz.",
+        label_horizontal: "Üfüqi (Horizontal)",
+        label_vertical: "Şaquli (Vertical)",
+        btn_download_png: "Yüklə (PNG)",
+        btn_print: "Çap et",
+        btn_preparing: "Hazırlanır...",
+        btn_waiting: "Gözləyin...",
+        hint_close_card: "Bağlamaq üçün kənara klikləyin",
+        alert_download_error: "Yükləmə zamanı xəta baş verdi.",
+        alert_print_error: "Çap zamanı xəta baş verdi.",
+        print_title: "Çap - YES Kartı",
+
+        // Events Tab
+        card_active_events: "Aktiv Tədbirlər",
+        no_events: "Heç bir tədbir yoxdur.",
+        no_active_events: "Aktiv tədbir yoxdur.",
+        no_date: "Tarix yoxdur",
+        btn_reg_form: "🔗 Qeydiyyat Formu",
+
+        // Documents Tab
+        card_my_documents: "Mənim Sertifikat və Sənədlərim",
+        no_documents: "Sənəd tapılmadı.",
+        btn_view_download: "Bax / Yüklə",
+
+        // Resources Tab
+        card_general_resources: "Ümumi Resurslar",
+        no_resources: "Resurs tapılmadı.",
+        btn_open: "Aç",
+
+        // Notifications Tab
+        card_notifications: "Bildirişlər",
+        no_notifications: "Bildiriş yoxdur.",
+
+        // Account deleted / not found
+        account_not_found_title: "Hesab tapılmadı",
+        account_not_found_desc: "Sizin hesabınız sistemdən silinib və ya mövcud deyil. Zəhmət olmasa admin ilə əlaqə saxlayın.",
+        btn_go_back: "Geri Qayıt"
+      },
+      en: {
+        page_title: "Member Dashboard — YES Community",
+        sidebar_title: "Member Dashboard",
+        nav_profile: "My Profile",
+        nav_events: "Events",
+        nav_documents: "My Documents",
+        nav_resources: "Resources",
+        nav_notifications: "Notifications",
+        btn_home: "Home",
+        btn_logout: "Log Out",
+        loading: "Loading...",
+
+        // Profile Tab
+        card_personal_info: "Personal Information",
+        label_fullname: "Full Name",
+        label_status: "Volunteer Status",
+        label_reg_date: "Registration Date",
+        label_user_id: "User ID",
+        status_candidate: "Candidate",
+        status_volunteer: "Volunteer",
+        status_active: "Active",
+        status_member: "Member",
+
+        // Virtual ID cards
+        card_id_cards: "Virtual Member Cards",
+        hint_id_cards: "This is your official virtual member card. You can download your preferred format.",
+        label_horizontal: "Horizontal",
+        label_vertical: "Vertical",
+        btn_download_png: "Download (PNG)",
+        btn_print: "Print",
+        btn_preparing: "Preparing...",
+        btn_waiting: "Please wait...",
+        hint_close_card: "Click outside to close",
+        alert_download_error: "An error occurred during download.",
+        alert_print_error: "An error occurred during printing.",
+        print_title: "Print - YES Card",
+
+        // Events Tab
+        card_active_events: "Active Events",
+        no_events: "No events found.",
+        no_active_events: "No active events.",
+        no_date: "No date",
+        btn_reg_form: "🔗 Registration Form",
+
+        // Documents Tab
+        card_my_documents: "My Certificates & Documents",
+        no_documents: "No documents found.",
+        btn_view_download: "View / Download",
+
+        // Resources Tab
+        card_general_resources: "General Resources",
+        no_resources: "No resources found.",
+        btn_open: "Open",
+
+        // Notifications Tab
+        card_notifications: "Notifications",
+        no_notifications: "No notifications.",
+
+        // Account deleted / not found
+        account_not_found_title: "Account Not Found",
+        account_not_found_desc: "Your account has been deleted or does not exist. Please contact an administrator.",
+        btn_go_back: "Go Back"
+      }
+    };
+
     // ── SUPABASE SETUP ──
     const SUPABASE_URL = 'https://wqcugmhjfuvnwxhspytw.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxY3VnbWhqZnV2bnd4aHNweXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMzY2NzcsImV4cCI6MjA5MTYxMjY3N30.A2rZNI2hOpDNC_JLeQNO9Is50HswX-jB5he9wNOpYLo';
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    let currentLang = localStorage.getItem('yes_lang') || 'az';
+    let currentTab = 'profile';
     let currentUser = null;
     let profileData = null;
+    let loadedEvents = [];
+    let loadedDocuments = [];
+    let loadedResources = [];
+    let loadedNotifications = [];
+
+    function setLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('yes_lang', lang);
+      applyLanguage(lang);
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      const t = translations[lang] || translations.az;
+      document.title = t.page_title;
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) el.innerHTML = t[key];
+      });
+
+      const activeLangEl = document.getElementById('active-lang');
+      if (activeLangEl) activeLangEl.innerText = lang.toUpperCase();
+
+      document.querySelectorAll('.lang-options button').forEach(btn => btn.classList.remove('active'));
+      const optBtn = document.getElementById('opt-' + lang);
+      if (optBtn) optBtn.classList.add('active');
+
+      const titles = {
+        'profile': t.nav_profile,
+        'events': t.nav_events,
+        'documents': t.nav_documents,
+        'resources': t.nav_resources,
+        'notifications': t.nav_notifications
+      };
+      const titleEl = document.getElementById('page-title');
+      if (titleEl) titleEl.innerText = titles[currentTab] || currentTab;
+
+      renderProfileDetails();
+      renderEventsList();
+      renderDocumentsList();
+      renderResourcesList();
+      renderNotificationsList();
+    }
+
+    function formatStatus(status, lang) {
+      if (!status) return lang === 'az' ? 'Namizəd' : 'Candidate';
+      const s = String(status).toLowerCase().trim();
+      if (s.includes('namizəd') || s.includes('candidate')) {
+        return lang === 'az' ? 'Namizəd' : 'Candidate';
+      }
+      if (s.includes('könüllü') || s.includes('volunteer')) {
+        return lang === 'az' ? 'Könüllü' : 'Volunteer';
+      }
+      if (s.includes('aktiv') || s.includes('active')) {
+        return lang === 'az' ? 'Aktiv' : 'Active';
+      }
+      if (s.includes('üzv') || s.includes('member')) {
+        return lang === 'az' ? 'Üzv' : 'Member';
+      }
+      return status;
+    }
+
+    function formatDate(dateStr, lang) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      return isNaN(d.getTime()) ? dateStr : d.toLocaleDateString(lang === 'az' ? 'az-AZ' : 'en-US');
+    }
 
     async function init() {
+      applyLanguage(currentLang);
       const { data: { user }, error } = await sb.auth.getUser();
       if (!user || error) {
         await sb.auth.signOut();
@@ -394,6 +635,41 @@
       checkUnreadNotifs();
     }
 
+    function renderProfileDetails() {
+      if (!profileData) return;
+      const fullName = `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim();
+      const statusFormatted = formatStatus(profileData.status, currentLang);
+      const dateFormatted = profileData.created_at ? formatDate(profileData.created_at, currentLang) : '...';
+
+      const navName = document.getElementById('nav-name');
+      if (navName) navName.innerText = fullName;
+      const navAvatar = document.getElementById('nav-avatar');
+      if (navAvatar) navAvatar.innerText = (profileData.first_name || 'Y').charAt(0).toUpperCase();
+
+      const profName = document.getElementById('prof-name');
+      if (profName) profName.innerText = fullName;
+      const profStatus = document.getElementById('prof-status');
+      if (profStatus) profStatus.innerText = statusFormatted;
+      const profId = document.getElementById('prof-id');
+      if (profId) profId.innerText = profileData.member_id || '...';
+      const profDate = document.getElementById('prof-date');
+      if (profDate) profDate.innerText = dateFormatted;
+
+      const cardNameH = document.getElementById('card-name-h');
+      if (cardNameH) cardNameH.innerText = fullName;
+      const cardAvatarH = document.getElementById('card-avatar-h');
+      if (cardAvatarH) cardAvatarH.innerText = (profileData.first_name || '?').charAt(0).toUpperCase();
+      const cardStatusH = document.getElementById('card-status-h');
+      if (cardStatusH) cardStatusH.innerText = statusFormatted;
+
+      const cardNameV = document.getElementById('card-name-v');
+      if (cardNameV) cardNameV.innerText = fullName;
+      const cardAvatarV = document.getElementById('card-avatar-v');
+      if (cardAvatarV) cardAvatarV.innerText = (profileData.first_name || '?').charAt(0).toUpperCase();
+      const cardStatusV = document.getElementById('card-status-v');
+      if (cardStatusV) cardStatusV.innerText = statusFormatted;
+    }
+
     async function loadProfile() {
       const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
       if (data) {
@@ -405,23 +681,7 @@
           await sb.from('profiles').update({ member_id: data.member_id }).eq('id', currentUser.id);
         }
         
-        const fullName = `${data.first_name} ${data.last_name}`;
-        document.getElementById('nav-name').innerText = fullName;
-        document.getElementById('nav-avatar').innerText = data.first_name.charAt(0);
-        
-        document.getElementById('prof-name').innerText = fullName;
-        document.getElementById('prof-status').innerText = data.status || 'Namizəd';
-        document.getElementById('prof-id').innerText = data.member_id;
-        document.getElementById('prof-date').innerText = new Date(data.created_at).toLocaleDateString('az-AZ');
-        
-        document.getElementById('card-name-h').innerText = fullName;
-        document.getElementById('card-avatar-h').innerText = data.first_name.charAt(0);
-        document.getElementById('card-status-h').innerText = data.status || 'Namizəd';
-        
-        document.getElementById('card-name-v').innerText = fullName;
-        document.getElementById('card-avatar-v').innerText = data.first_name.charAt(0);
-        document.getElementById('card-status-v').innerText = data.status || 'Namizəd';
-        
+        renderProfileDetails();
         renderBarcode(data.member_id);
       } else {
         // Profile missing — check if this is a freshly email-confirmed signup
@@ -440,34 +700,29 @@
             member_id: newMemberId
           });
 
-          const fullName = `${fName} ${lName}`.trim();
-          document.getElementById('nav-name').innerText = fullName;
-          document.getElementById('nav-avatar').innerText = fName.charAt(0).toUpperCase();
-          document.getElementById('prof-name').innerText = fullName;
-          document.getElementById('prof-status').innerText = 'Namizəd';
-          document.getElementById('prof-id').innerText = newMemberId;
-          document.getElementById('prof-date').innerText = new Date().toLocaleDateString('az-AZ');
-          
-          document.getElementById('card-name-h').innerText = fullName;
-          document.getElementById('card-avatar-h').innerText = fName.charAt(0).toUpperCase();
-          document.getElementById('card-status-h').innerText = 'Namizəd';
-          
-          document.getElementById('card-name-v').innerText = fullName;
-          document.getElementById('card-avatar-v').innerText = fName.charAt(0).toUpperCase();
-          document.getElementById('card-status-v').innerText = 'Namizəd';
-          
+          profileData = {
+            id: currentUser.id,
+            first_name: fName,
+            last_name: lName,
+            status: 'Namizəd',
+            member_id: newMemberId,
+            created_at: new Date().toISOString()
+          };
+
+          renderProfileDetails();
           renderBarcode(newMemberId);
         } else {
           // No metadata — this account was deleted by admin, show error
+          const t = translations[currentLang] || translations.az;
           document.body.innerHTML = `
             <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#f0f4f0;font-family:'DM Sans',sans-serif;">
               <div style="background:white;padding:3rem;border-radius:16px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.1);max-width:400px;width:90%;">
                 <div style="width:60px;height:60px;background:#ffebee;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;">
                   <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                 </div>
-                <h2 style="color:#e74c3c;margin-bottom:1rem;font-family:'Space Grotesk',sans-serif;">Hesab tapılmadı</h2>
-                <p style="opacity:0.7;margin-bottom:2.5rem;line-height:1.5;">Sizin hesabınız sistemdən silinib və ya mövcud deyil. Zəhmət olmasa admin ilə əlaqə saxlayın.</p>
-                <button onclick="sb.auth.signOut().then(() => window.location.href='index.html')" style="background:#2d6a4f;color:white;border:none;padding:0.9rem 2rem;border-radius:10px;cursor:pointer;font-weight:600;font-size:1rem;width:100%;transition:0.2s;">Geri Qayıt</button>
+                <h2 style="color:#e74c3c;margin-bottom:1rem;font-family:'Space Grotesk',sans-serif;">${t.account_not_found_title}</h2>
+                <p style="opacity:0.7;margin-bottom:2.5rem;line-height:1.5;">${t.account_not_found_desc}</p>
+                <button onclick="sb.auth.signOut().then(() => window.location.href='index.html')" style="background:#2d6a4f;color:white;border:none;padding:0.9rem 2rem;border-radius:10px;cursor:pointer;font-weight:600;font-size:1rem;width:100%;transition:0.2s;">${t.btn_go_back}</button>
               </div>
             </div>
           `;
@@ -483,13 +738,15 @@
           format: 'CODE128',
           width: 2, height: 42, displayValue: false, margin: 0, lineColor: '#1a2e1a', background: '#ffffff'
         });
-        document.getElementById('barcode-id-label-h').innerText = String(memberId);
+        const lblH = document.getElementById('barcode-id-label-h');
+        if (lblH) lblH.innerText = String(memberId);
         
         JsBarcode('#member-barcode-v', String(memberId), {
           format: 'CODE128',
           width: 2.2, height: 55, displayValue: false, margin: 0, lineColor: '#1a2e1a', background: '#ffffff'
         });
-        document.getElementById('barcode-id-label-v').innerText = String(memberId);
+        const lblV = document.getElementById('barcode-id-label-v');
+        if (lblV) lblV.innerText = String(memberId);
       } catch (e) {
         console.warn('Barcode render failed:', e);
       }
@@ -499,18 +756,19 @@
       const card = document.getElementById(cardId);
       const btn = event.currentTarget;
       const oldText = btn.innerText;
-      btn.innerText = 'Hazırlanır...';
+      const t = translations[currentLang] || translations.az;
+      btn.innerText = t.btn_preparing;
       btn.disabled = true;
 
       try {
         const canvas = await html2canvas(card, { scale: 3, useCORS: true, backgroundColor: null });
         const link = document.createElement('a');
-        link.download = `YES_Kart_${profileData?.member_id || 'YENI'}.png`;
+        link.download = `YES_Kart_${profileData?.member_id || 'MEMBER'}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
       } catch(err) {
         console.error('Download failed', err);
-        alert('Yükləmə zamanı xəta baş verdi.');
+        alert(t.alert_download_error);
       }
       btn.innerText = oldText;
       btn.disabled = false;
@@ -519,7 +777,7 @@
     function previewCard(cardId) {
       const modal = document.getElementById('card-preview-modal');
       const container = document.getElementById('card-preview-container');
-      container.innerHTML = ''; // Clear previous
+      container.innerHTML = '';
       
       const originalCard = document.getElementById(cardId);
       const clone = originalCard.cloneNode(true);
@@ -529,10 +787,6 @@
       
       container.appendChild(clone);
       modal.style.display = 'flex';
-      
-      // Need to re-render barcode in the clone because cloneNode copies the DOM but sometimes SVG doesn't scale correctly if IDs are duplicated.
-      // But actually, cloneNode copies the <svg> and its <rect> children perfectly.
-      // Let's just remove the onclick from the clone to prevent recursive clicks
       clone.onclick = null;
     }
 
@@ -544,7 +798,8 @@
       const card = document.getElementById(cardId);
       const btn = event.currentTarget;
       const oldText = btn.innerText;
-      btn.innerText = 'Gözləyin...';
+      const t = translations[currentLang] || translations.az;
+      btn.innerText = t.btn_waiting;
       btn.disabled = true;
 
       try {
@@ -552,15 +807,13 @@
         const imgData = canvas.toDataURL('image/png');
         
         const printWindow = window.open('', '_blank');
-        
-        // CR80 Standard Size: Horizontal ~ 86mm x 54mm
         const width = orientation === 'horizontal' ? '86mm' : '54mm';
         const height = orientation === 'horizontal' ? '54mm' : '86mm';
         
         printWindow.document.write(`
           <html>
             <head>
-              <title>Çap - YES Kartı</title>
+              <title>${t.print_title}</title>
               <style>
                 @page { size: A4; margin: 15mm; }
                 body { margin: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: 15mm; }
@@ -583,80 +836,123 @@
         printWindow.document.close();
       } catch(err) {
         console.error('Print failed', err);
-        alert('Çap zamanı xəta baş verdi.');
+        alert(t.alert_print_error);
       }
       btn.innerText = oldText;
       btn.disabled = false;
     }
 
-    async function loadEvents() {
-      // Fetch all events
-      const { data: events } = await sb.from('events').select('*').order('created_at', { ascending: false });
-      
+    function renderEventsList() {
       const activeList = document.getElementById('active-events-list');
-      activeList.innerHTML = '';
+      if (!activeList) return;
+      const t = translations[currentLang] || translations.az;
 
-      if (!events || events.length === 0) {
-        activeList.innerHTML = '<p style="color:gray;">Heç bir tədbir yoxdur.</p>';
+      if (!loadedEvents || loadedEvents.length === 0) {
+        activeList.innerHTML = `<p style="color:gray;">${t.no_events}</p>`;
         return;
       }
 
-      events.forEach(ev => {
-        if (!ev.is_active) return; // Only show active events since internal registration is removed
+      let count = 0;
+      activeList.innerHTML = '';
+      loadedEvents.forEach(ev => {
+        if (!ev.is_active) return;
+        count++;
         const card = document.createElement('div');
         card.className = 'event-card';
+        const title = currentLang === 'az' ? (ev.title_az || ev.title_en) : (ev.title_en || ev.title_az);
+        const dateStr = ev.event_date ? new Date(ev.event_date).toLocaleDateString(currentLang === 'az' ? 'az-AZ' : 'en-US') : t.no_date;
         card.innerHTML = `
           <div class="event-info">
-            <h3>${ev.title_az || ev.title_en}</h3>
-            <p>🗓️ ${ev.event_date ? new Date(ev.event_date).toLocaleDateString('az-AZ') : 'Tarix yoxdur'}</p>
+            <h3>${title}</h3>
+            <p>🗓️ ${dateStr}</p>
           </div>
           <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
-            <a href="${ev.registration_link}" target="_blank" class="btn-green" style="text-decoration:none; background:#1a2e1a; font-size:0.9rem;">🔗 Qeydiyyat Formu</a>
+            <a href="${ev.registration_link || '#'}" target="_blank" class="btn-green" style="text-decoration:none; background:#1a2e1a; font-size:0.9rem;">${t.btn_reg_form}</a>
           </div>
         `;
         activeList.appendChild(card);
       });
 
-      if(activeList.innerHTML === '') activeList.innerHTML = '<p style="color:gray;">Aktiv tədbir yoxdur.</p>';
+      if (count === 0) {
+        activeList.innerHTML = `<p style="color:gray;">${t.no_active_events}</p>`;
+      }
+    }
+
+    async function loadEvents() {
+      const { data: events } = await sb.from('events').select('*').order('created_at', { ascending: false });
+      loadedEvents = events || [];
+      renderEventsList();
+    }
+
+    function renderDocumentsList() {
+      const list = document.getElementById('documents-list');
+      if (!list) return;
+      const t = translations[currentLang] || translations.az;
+      if (!loadedDocuments || loadedDocuments.length === 0) {
+        list.innerHTML = `<p style="color:gray;">${t.no_documents}</p>`;
+        return;
+      }
+      
+      list.innerHTML = loadedDocuments.map(d => `
+        <div class="doc-card">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+          <h3>${d.title}</h3>
+          <a href="${d.file_url}" target="_blank">${t.btn_view_download}</a>
+        </div>
+      `).join('');
     }
 
     async function loadDocuments() {
       const { data } = await sb.from('documents').select('*').eq('user_id', currentUser.id);
-      const list = document.getElementById('documents-list');
-      if (!data || data.length === 0) { list.innerHTML = '<p style="color:gray;">Sənəd tapılmadı.</p>'; return; }
+      loadedDocuments = data || [];
+      renderDocumentsList();
+    }
+
+    function renderResourcesList() {
+      const list = document.getElementById('resources-list');
+      if (!list) return;
+      const t = translations[currentLang] || translations.az;
+      if (!loadedResources || loadedResources.length === 0) {
+        list.innerHTML = `<p style="color:gray;">${t.no_resources}</p>`;
+        return;
+      }
       
-      list.innerHTML = data.map(d => `
+      list.innerHTML = loadedResources.map(d => `
         <div class="doc-card">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
           <h3>${d.title}</h3>
-          <a href="${d.file_url}" target="_blank">Bax / Yüklə</a>
+          <p style="font-size:0.85rem; color:gray; margin-bottom:1rem;">${d.description || ''}</p>
+          <a href="${d.file_url}" target="_blank">${t.btn_open}</a>
         </div>
       `).join('');
     }
 
     async function loadResources() {
       const { data } = await sb.from('resources').select('*');
-      const list = document.getElementById('resources-list');
-      if (!data || data.length === 0) { list.innerHTML = '<p style="color:gray;">Resurs tapılmadı.</p>'; return; }
-      
-      list.innerHTML = data.map(d => `
-        <div class="doc-card">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-          <h3>${d.title}</h3>
-          <p style="font-size:0.85rem; color:gray; margin-bottom:1rem;">${d.description || ''}</p>
-          <a href="${d.file_url}" target="_blank">Aç</a>
-        </div>
-      `).join('');
+      loadedResources = data || [];
+      renderResourcesList();
     }
 
     function switchTab(tabId, ev) {
+      currentTab = tabId;
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-      document.getElementById('tab-' + tabId).classList.add('active');
-      if (ev && ev.currentTarget.classList.contains('nav-item')) ev.currentTarget.classList.add('active');
+      const targetTab = document.getElementById('tab-' + tabId);
+      if (targetTab) targetTab.classList.add('active');
+      if (ev && ev.currentTarget && ev.currentTarget.classList.contains('nav-item')) {
+        ev.currentTarget.classList.add('active');
+      }
 
-      const titles = { 'profile': 'Profilim', 'events': 'Tədbirlər', 'documents': 'Sənədlərim', 'resources': 'Resurslar', 'notifications': 'Bildirişlər' };
-      document.getElementById('page-title').innerText = titles[tabId] || tabId;
+      const t = translations[currentLang] || translations.az;
+      const titles = {
+        'profile': t.nav_profile,
+        'events': t.nav_events,
+        'documents': t.nav_documents,
+        'resources': t.nav_resources,
+        'notifications': t.nav_notifications
+      };
+      const titleEl = document.getElementById('page-title');
+      if (titleEl) titleEl.innerText = titles[tabId] || tabId;
 
       if (tabId === 'notifications') loadNotifications();
       closeSidebar();
@@ -688,31 +984,41 @@
         '<a href="$1" target="_blank" rel="noopener" style="color:#3498db;text-decoration:underline;word-break:break-all;">$1</a>');
     }
 
-    async function loadNotifications() {
+    function renderNotificationsList() {
       const list = document.getElementById('notifications-list');
+      if (!list) return;
+      const t = translations[currentLang] || translations.az;
+      if (!loadedNotifications || loadedNotifications.length === 0) {
+        list.innerHTML = `<p style="color:gray;">${t.no_notifications}</p>`;
+        return;
+      }
+
+      list.innerHTML = loadedNotifications.map(n => `
+        <div style="padding:1rem 1.2rem; border-radius:14px; border:1px solid rgba(0,0,0,0.07); margin-bottom:0.8rem; background:${n.is_read ? 'white' : 'rgba(116,198,157,0.08)'}; border-left:3px solid ${n.is_read ? 'transparent' : 'var(--lime)'}; transition:0.2s;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
+            <h3 style="font-size:1rem; font-weight:700; color:var(--dark);">${n.title}</h3>
+            <span style="font-size:0.75rem; opacity:0.45;">${new Date(n.created_at).toLocaleString(currentLang === 'az' ? 'az-AZ' : 'en-US')}</span>
+          </div>
+          <p style="font-size:0.9rem; color:rgba(0,0,0,0.65); line-height:1.6; word-break:break-word;">${linkify(n.message)}</p>
+        </div>
+      `).join('');
+    }
+
+    async function loadNotifications() {
       const { data } = await sb.from('notifications')
         .select('*')
         .eq('user_id', currentUser.id)
         .order('created_at', { ascending: false });
 
-      if (!data || data.length === 0) {
-        list.innerHTML = '<p style="color:gray;">Bildiriş yoxdur.</p>';
-        return;
-      }
+      loadedNotifications = data || [];
+      renderNotificationsList();
 
       // Mark all as read
-      await sb.from('notifications').update({ is_read: true }).eq('user_id', currentUser.id).eq('is_read', false);
-      updateNotifBadge(0);
-
-      list.innerHTML = data.map(n => `
-        <div style="padding:1rem 1.2rem; border-radius:14px; border:1px solid rgba(0,0,0,0.07); margin-bottom:0.8rem; background:${n.is_read ? 'white' : 'rgba(116,198,157,0.08)'}; border-left:3px solid ${n.is_read ? 'transparent' : 'var(--lime)'}; transition:0.2s;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
-            <h3 style="font-size:1rem; font-weight:700; color:var(--dark);">${n.title}</h3>
-            <span style="font-size:0.75rem; opacity:0.45;">${new Date(n.created_at).toLocaleString('az-AZ')}</span>
-          </div>
-          <p style="font-size:0.9rem; color:rgba(0,0,0,0.65); line-height:1.6; word-break:break-word;">${linkify(n.message)}</p>
-        </div>
-      `).join('');
+      if (loadedNotifications.some(n => !n.is_read)) {
+        await sb.from('notifications').update({ is_read: true }).eq('user_id', currentUser.id).eq('is_read', false);
+        loadedNotifications.forEach(n => n.is_read = true);
+        updateNotifBadge(0);
+      }
     }
 
     async function checkUnreadNotifs() {
