@@ -2264,7 +2264,7 @@
       var st3 = document.getElementById('sstep-3');
       if (st3) {
         var t3 = st3.querySelector('.surv-title'); if (t3) t3.textContent = t.surv_step3_title || '';
-        var interestLabel = st3.querySelector('.surv-field label'); if (interestLabel) interestLabel.textContent = t.surv_interest_label || '';
+        var interestLabel = st3.querySelector('#f-sinterest > label') || st3.querySelector('.surv-field > label'); if (interestLabel) interestLabel.textContent = t.surv_interest_label || '';
         var iLabels = st3.querySelectorAll('.surv-radio-grid .surv-radio .lbl');
         var icons3 = ['🌿','🌡️','🤝','📅','📚','📸'];
         var iKeys = ['surv_interest_ecology','surv_interest_climate','surv_interest_volunteer','surv_interest_events','surv_interest_education','surv_interest_media'];
@@ -2275,10 +2275,10 @@
           var srcKeys = [t.surv_source_instagram, t.surv_source_friend, t.surv_source_school, t.surv_source_event, t.surv_source_other];
           var srcOpts = sSelect.querySelectorAll('option:not([value=""])');
           srcOpts.forEach(function(op, i) { if (srcKeys[i]) op.textContent = srcKeys[i]; });
-          var srcLabel = st3.querySelectorAll('.surv-field label')[1]; if (srcLabel) srcLabel.textContent = t.surv_source_label || '';
         }
+        var srcLabel = st3.querySelector('#f-ssource > label'); if (srcLabel) srcLabel.textContent = t.surv_source_label || '';
         // Note
-        var noteLabel = st3.querySelectorAll('.surv-field label')[2]; if (noteLabel) noteLabel.textContent = t.surv_note_label || '';
+        var noteLabel = st3.querySelector('#f-snote > label'); if (noteLabel) noteLabel.textContent = t.surv_note_label || '';
         var iNote = document.getElementById('s-note'); if (iNote) iNote.placeholder = t.surv_note_placeholder || '';
         var btnBack3 = st3.querySelector('.surv-btn-back'); if (btnBack3) btnBack3.textContent = t.surv_back_btn || '';
         var btnSubmit = document.getElementById('s-submit-btn'); if (btnSubmit && !btnSubmit.disabled) btnSubmit.textContent = t.surv_submit_btn || '';
@@ -3612,7 +3612,7 @@
       <div class="surv-step" id="sstep-3">
         <div class="surv-title">Your Interests</div>
 
-        <div class="surv-field">
+        <div class="surv-field" id="f-sinterest">
           <label>Which areas of YES interest you?</label>
           <div class="surv-radio-grid">
             <label class="surv-radio"><input type="checkbox" name="s_interest" value="Ecology">
@@ -3636,7 +3636,7 @@
           </div>
         </div>
 
-        <div class="surv-field">
+        <div class="surv-field" id="f-ssource">
           <label>How did you hear about us?</label>
           <select id="s-source">
             <option value="">— Select —</option>
@@ -3648,7 +3648,7 @@
           </select>
         </div>
 
-        <div class="surv-field">
+        <div class="surv-field" id="f-snote">
           <label>Notes / Wishes (optional)</label>
           <input type="text" id="s-note" placeholder="Anything that interests you...">
         </div>
