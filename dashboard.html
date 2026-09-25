@@ -48,31 +48,8 @@
     .nav-item.active { background: rgba(116,198,157,0.1); color: var(--lime); border-left-color: var(--lime); }
     
     .sidebar-footer { padding: 1.5rem 1.4rem; border-top: 1px solid rgba(255,255,255,0.08); }
-    .btn-home {
-      background: rgba(255, 255, 255, 0.08);
-      color: rgba(255, 255, 255, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 0.75rem 1rem;
-      border-radius: 12px;
-      width: 100%;
-      cursor: pointer;
-      font-weight: 600;
-      font-family: inherit;
-      transition: all 0.2s;
-      margin-bottom: 0.9rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-    .btn-home:hover {
-      background: rgba(255, 255, 255, 0.16);
-      color: white;
-      border-color: rgba(255, 255, 255, 0.25);
-    }
-
-    /* ── UIVERSE THIN-DUCK-22 LOGOUT BUTTON ── */
-    .Btn-logout {
+    /* ── UIVERSE THIN-DUCK-22 STYLE BUTTONS (HOME & LOGOUT) ── */
+    .Btn-action {
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -83,64 +60,70 @@
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      transition-duration: .3s;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-radius 0.3s ease, background-color 0.25s ease, transform 0.15s ease;
       box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.25);
-      background-color: rgb(255, 65, 65);
       font-family: inherit;
     }
 
-    .Btn-logout .sign {
-      width: 100%;
-      transition-duration: .3s;
+    .Btn-action .sign {
+      width: 45px;
+      height: 45px;
+      transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
 
-    .Btn-logout .sign svg {
-      width: 17px;
-      height: 17px;
+    .Btn-action .sign svg {
+      width: 18px;
+      height: 18px;
     }
 
-    .Btn-logout .sign svg path {
+    .Btn-action .sign svg path {
       fill: white;
     }
 
-    .Btn-logout .text {
+    .Btn-action .text {
       position: absolute;
-      right: 0%;
-      width: 0%;
+      left: 45px;
       opacity: 0;
       color: white;
       font-size: 0.95rem;
       font-weight: 600;
-      transition-duration: .3s;
+      transition: opacity 0.25s ease;
       white-space: nowrap;
-      overflow: hidden;
+      pointer-events: none;
     }
 
+    .Btn-action:active {
+      transform: translate(2px, 2px);
+    }
+
+    /* Home Button (Eco-Green palette) */
+    .Btn-home {
+      background-color: #2d6a4f;
+    }
+    .Btn-home:hover {
+      width: 155px;
+      border-radius: 40px;
+      background-color: #388e3c;
+    }
+    .Btn-home:hover .text {
+      opacity: 1;
+    }
+
+    /* Logout Button (Vibrant Red) */
+    .Btn-logout {
+      background-color: rgb(255, 65, 65);
+    }
     .Btn-logout:hover {
       width: 135px;
       border-radius: 40px;
-      transition-duration: .3s;
+      background-color: #ff3333;
     }
-
-    .Btn-logout:hover .sign {
-      width: 32%;
-      transition-duration: .3s;
-      padding-left: 12px;
-    }
-
     .Btn-logout:hover .text {
       opacity: 1;
-      width: 68%;
-      transition-duration: .3s;
-      padding-right: 12px;
-    }
-
-    .Btn-logout:active {
-      transform: translate(2px, 2px);
     }
 
     .main-content {
@@ -315,18 +298,26 @@
         <span id="notif-badge" style="display:none; position:absolute; top:6px; right:10px; background:#e74c3c; color:white; font-size:0.6rem; font-weight:800; border-radius:50%; width:18px; height:18px; line-height:18px; text-align:center;">0</span>
       </button>
     </nav>
-    <div class="sidebar-footer">
-      <button class="btn-home" onclick="window.location.href='index.html'" data-i18n="btn_home">Əsas Səhifə</button>
-      <div style="display: flex; align-items: center; justify-content: flex-start;">
-        <button class="Btn-logout" onclick="logout()" title="Logout" aria-label="Log Out">
-          <div class="sign">
-            <svg viewBox="0 0 512 512">
-              <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path>
-            </svg>
-          </div>
-          <div class="text" data-i18n="btn_logout">Çıxış Et</div>
-        </button>
-      </div>
+    <div class="sidebar-footer" style="display: flex; flex-direction: column; gap: 0.8rem; align-items: flex-start;">
+      <!-- Home Button -->
+      <button class="Btn-action Btn-home" onclick="window.location.href='index.html'" title="Home" aria-label="Home">
+        <div class="sign">
+          <svg viewBox="0 0 24 24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+          </svg>
+        </div>
+        <div class="text" data-i18n="btn_home">Əsas Səhifə</div>
+      </button>
+
+      <!-- Logout Button -->
+      <button class="Btn-action Btn-logout" onclick="logout()" title="Logout" aria-label="Log Out">
+        <div class="sign">
+          <svg viewBox="0 0 512 512">
+            <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path>
+          </svg>
+        </div>
+        <div class="text" data-i18n="btn_logout">Çıxış Et</div>
+      </button>
     </div>
   </aside>
 
