@@ -46,10 +46,6 @@
       height: 100vh;
       overflow: hidden;
       background: var(--bg);
-      background-image: 
-        radial-gradient(ellipse at 85% 15%, rgba(216, 243, 220, 0.65) 0%, transparent 55%),
-        radial-gradient(ellipse at 15% 85%, rgba(183, 228, 199, 0.5) 0%, transparent 55%);
-      background-attachment: fixed;
       color: var(--text-main);
       -webkit-font-smoothing: antialiased;
     }
@@ -452,9 +448,9 @@
       font-style: normal;
     }
 
-    /* Hero Banner for Home (matching index.html hero gradient) */
+    /* Hero Banner for Home */
     .org-hero {
-      background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
+      background: var(--green);
       border-radius: 20px;
       padding: 2.6rem 2.8rem;
       color: white;
@@ -462,28 +458,9 @@
       display: flex;
       align-items: center;
       gap: 2rem;
-      box-shadow: 0 16px 45px rgba(27, 67, 50, 0.22);
+      box-shadow: 0 16px 45px rgba(27, 67, 50, 0.18);
       position: relative;
-      overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-
-    .org-hero::before {
-      content: '';
-      position: absolute;
-      top: -60px; right: -60px;
-      width: 240px; height: 240px;
-      background: radial-gradient(circle, rgba(116, 198, 157, 0.35) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .org-hero::after {
-      content: '';
-      position: absolute;
-      bottom: -40px; left: -40px;
-      width: 180px; height: 180px;
-      background: radial-gradient(circle, rgba(183, 228, 199, 0.2) 0%, transparent 70%);
-      pointer-events: none;
     }
 
     .org-hero-icon {
@@ -960,7 +937,6 @@
       </button>
       <div class="sub-nav" id="nav-about">
         <a href="#" onclick="showPage('about', 'mission')" data-i18n="nav_about_mission">Missiya & Vizyon</a>
-        <a href="#" onclick="showPage('about', 'history')" data-i18n="nav_about_history">Tarixçə</a>
         <a href="#" onclick="showPage('about', 'values')" data-i18n="nav_about_values">Dəyərlərimiz</a>
       </div>
     </div>
@@ -1102,7 +1078,7 @@
             <div class="member-card">
               <div class="member-avatar">SA</div>
               <div class="member-name">Sadiq Azizali</div>
-              <div class="member-role">Executive Assistant</div>
+              <div class="member-role">CO Founder</div>
             </div>
             <div class="member-card">
               <div class="member-avatar">RH</div>
@@ -1117,12 +1093,17 @@
             <div class="member-card">
               <div class="member-avatar">S</div>
               <div class="member-name">Shargiyya</div>
-              <div class="member-role">PR</div>
+              <div class="member-role">SMM</div>
             </div>
             <div class="member-card">
               <div class="member-avatar">L</div>
               <div class="member-name">Lale</div>
-              <div class="member-role">SMM</div>
+              <div class="member-role">PR</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">A</div>
+              <div class="member-name">Allahverdi</div>
+              <div class="member-role">Researcher</div>
             </div>
           </div>
         `,
@@ -1249,7 +1230,7 @@
             <div class="member-card">
               <div class="member-avatar">SA</div>
               <div class="member-name">Sadiq Azizali</div>
-              <div class="member-role">İcraçı Köməkçisi</div>
+              <div class="member-role">CO Founder</div>
             </div>
             <div class="member-card">
               <div class="member-avatar">RH</div>
@@ -1264,12 +1245,17 @@
             <div class="member-card">
               <div class="member-avatar">Ş</div>
               <div class="member-name">Şərqiyyə</div>
-              <div class="member-role">PR</div>
+              <div class="member-role">SMM</div>
             </div>
             <div class="member-card">
               <div class="member-avatar">L</div>
               <div class="member-name">Lalə</div>
-              <div class="member-role">SMM</div>
+              <div class="member-role">PR</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">A</div>
+              <div class="member-name">Allahverdi</div>
+              <div class="member-role">Researcher</div>
             </div>
           </div>
         `,
