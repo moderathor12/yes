@@ -1024,17 +1024,12 @@
 
     /* Row 1 — continuously scrolls left */
     .marquee-track-1 .marquee-inner {
-      animation: marqueeScrollLeft 32s linear infinite;
+      animation: marqueeScrollLeft 26s linear infinite !important;
     }
 
     /* Row 2 — continuously scrolls right */
     .marquee-track-2 .marquee-inner {
-      animation: marqueeScrollRight 32s linear infinite;
-    }
-
-    /* Pause only when actively hovering directly over a specific slide */
-    .marquee-track:has(.photo-slide:hover) .marquee-inner {
-      animation-play-state: paused;
+      animation: marqueeScrollRight 26s linear infinite !important;
     }
 
     @keyframes marqueeScrollLeft {
@@ -1045,10 +1040,6 @@
     @keyframes marqueeScrollRight {
       0%   { transform: translate3d(-100%, 0, 0); }
       100% { transform: translate3d(0, 0, 0); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .marquee-inner { animation: none !important; }
     }
 
     .photo-slide {
@@ -3911,6 +3902,41 @@
 
         observer.observe(statsSection);
       }
+
+      // Ensure Photo Marquee always moves (CSS check + fallback)
+      (function() {
+        setTimeout(function() {
+          var t1 = document.querySelector('.marquee-track-1 .marquee-inner');
+          var t2 = document.querySelector('.marquee-track-2 .marquee-inner');
+          if (!t1 || !t2) return;
+
+          var anims = t1.getAnimations ? t1.getAnimations() : [];
+          var running = anims.length > 0 && anims[0].playState === 'running';
+
+          if (!running) {
+            var row1 = document.querySelectorAll('.marquee-track-1 .marquee-inner');
+            var row2 = document.querySelectorAll('.marquee-track-2 .marquee-inner');
+            var p1 = 0, p2 = 0;
+            var spd = 1.2;
+
+            function animate() {
+              var w1 = row1[0].scrollWidth || row1[0].offsetWidth;
+              var w2 = row2[0].scrollWidth || row2[0].offsetWidth;
+
+              p1 -= spd;
+              if (Math.abs(p1) >= w1) p1 = 0;
+              row1.forEach(function(el) { el.style.transform = 'translate3d(' + p1 + 'px, 0, 0)'; });
+
+              p2 += spd;
+              if (p2 >= w2) p2 = 0;
+              row2.forEach(function(el) { el.style.transform = 'translate3d(' + (p2 - w2) + 'px, 0, 0)'; });
+
+              requestAnimationFrame(animate);
+            }
+            requestAnimationFrame(animate);
+          }
+        }, 500);
+      })();
     });
   </script>
 </body>
