@@ -973,6 +973,7 @@
     /* ── PHOTO CAROUSEL SECTION ── */
     .photo-carousel-section {
       background: var(--dark);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
       padding: 5rem 0 4rem;
       overflow: hidden;
     }
@@ -1963,6 +1964,60 @@
     </div>
   </div>
 
+  <!-- PHOTO CAROUSEL -->
+  <section class="photo-carousel-section">
+    <div class="carousel-header">
+      <div class="section-tag">Kadrlar</div>
+      <h2 class="section-title">
+        Tədbirlərimizdən <em style="color:var(--lime);font-style:normal">Kadrlar</em>
+      </h2>
+      <p class="carousel-sub">Eko-aksiyalar, tədbirlər və icma görüşlərimizdən ən yaddaqalan anlar.</p>
+    </div>
+
+    <div class="marquee-outer">
+      <!-- Row 1 — scrolls left -->
+      <div class="marquee-track" id="marquee1">
+        <div class="marquee-inner">
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=520&h=340&fit=crop&q=80" alt="Təbiət yürüşü" loading="lazy"><span class="slide-label">Təbiət Yürüşü</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=520&h=340&fit=crop&q=80" alt="Sahil təmizliyi" loading="lazy"><span class="slide-label">Sahil Təmizliyi</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=520&h=340&fit=crop&q=80" alt="Ağacəkmə" loading="lazy"><span class="slide-label">Ağacəkmə Aksiyası</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1464925257126-6450e871c667?w=520&h=340&fit=crop&q=80" alt="Gənclər sammiti" loading="lazy"><span class="slide-label">Gənclər Sammiti</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=520&h=340&fit=crop&q=80" alt="İcma günü" loading="lazy"><span class="slide-label">İcma Günü</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=520&h=340&fit=crop&q=80" alt="Meşə kampaniyası" loading="lazy"><span class="slide-label">Meşə Kampaniyası</span></div>
+        </div>
+        <!-- Duplicate for seamless loop -->
+        <div class="marquee-inner" aria-hidden="true">
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Təbiət Yürüşü</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Sahil Təmizliyi</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Ağacəkmə Aksiyası</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1464925257126-6450e871c667?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Gənclər Sammiti</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">İcma Günü</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Meşə Kampaniyası</span></div>
+        </div>
+      </div>
+
+      <!-- Row 2 — scrolls right (reverse) -->
+      <div class="marquee-track marquee-reverse" id="marquee2">
+        <div class="marquee-inner">
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=520&h=340&fit=crop&q=80" alt="Könüllülər" loading="lazy"><span class="slide-label">Könüllülər</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=520&h=340&fit=crop&q=80" alt="İqlim fəaliyyəti" loading="lazy"><span class="slide-label">İqlim Fəaliyyəti</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1526951521990-620dc14c214b?w=520&h=340&fit=crop&q=80" alt="Vorkşop" loading="lazy"><span class="slide-label">Eko Vorkşop</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=520&h=340&fit=crop&q=80" alt="Dağ yürüşü" loading="lazy"><span class="slide-label">Dağ Yürüşü</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=520&h=340&fit=crop&q=80" alt="Yaşıl texnologiya" loading="lazy"><span class="slide-label">Yaşıl Texnologiya</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1473773508845-188df298d2d1?w=520&h=340&fit=crop&q=80" alt="Yer günü" loading="lazy"><span class="slide-label">Yer Günü</span></div>
+        </div>
+        <div class="marquee-inner" aria-hidden="true">
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Könüllülər</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">İqlim Fəaliyyəti</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1526951521990-620dc14c214b?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Eko Vorkşop</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Dağ Yürüşü</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Yaşıl Texnologiya</span></div>
+          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1473773508845-188df298d2d1?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Yer Günü</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- WHO WE ARE -->
   <section class="section" id="about">
     <div class="who-grid">
@@ -2026,60 +2081,6 @@
         <h3 data-i18n="pillar_3_title">Real təsir</h3>
         <p data-i18n="pillar_3_desc">Running campaigns, events, and initiatives that create tangible, measurable impact
           where it matters most.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- PHOTO CAROUSEL -->
-  <section class="photo-carousel-section">
-    <div class="carousel-header">
-      <div class="section-tag">Kadrlar</div>
-      <h2 class="section-title">
-        Tədbirlərimizdən <em style="color:var(--lime);font-style:normal">Kadrlar</em>
-      </h2>
-      <p class="carousel-sub">Eko-aksiyalar, tədbirlər və icma görüşlərimizdən ən yaddaqalan anlar.</p>
-    </div>
-
-    <div class="marquee-outer">
-      <!-- Row 1 — scrolls left -->
-      <div class="marquee-track" id="marquee1">
-        <div class="marquee-inner">
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=520&h=340&fit=crop&q=80" alt="Təbiət yürüşü" loading="lazy"><span class="slide-label">Təbiət Yürüşü</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=520&h=340&fit=crop&q=80" alt="Sahil təmizliyi" loading="lazy"><span class="slide-label">Sahil Təmizliyi</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=520&h=340&fit=crop&q=80" alt="Ağacəkmə" loading="lazy"><span class="slide-label">Ağacəkmə Aksiyası</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1464925257126-6450e871c667?w=520&h=340&fit=crop&q=80" alt="Gənclər sammiti" loading="lazy"><span class="slide-label">Gənclər Sammiti</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=520&h=340&fit=crop&q=80" alt="İcma günü" loading="lazy"><span class="slide-label">İcma Günü</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=520&h=340&fit=crop&q=80" alt="Meşə kampaniyası" loading="lazy"><span class="slide-label">Meşə Kampaniyası</span></div>
-        </div>
-        <!-- Duplicate for seamless loop -->
-        <div class="marquee-inner" aria-hidden="true">
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Təbiət Yürüşü</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Sahil Təmizliyi</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Ağacəkmə Aksiyası</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1464925257126-6450e871c667?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Gənclər Sammiti</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">İcma Günü</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Meşə Kampaniyası</span></div>
-        </div>
-      </div>
-
-      <!-- Row 2 — scrolls right (reverse) -->
-      <div class="marquee-track marquee-reverse" id="marquee2">
-        <div class="marquee-inner">
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=520&h=340&fit=crop&q=80" alt="Könüllülər" loading="lazy"><span class="slide-label">Könüllülər</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=520&h=340&fit=crop&q=80" alt="İqlim fəaliyyəti" loading="lazy"><span class="slide-label">İqlim Fəaliyyəti</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1526951521990-620dc14c214b?w=520&h=340&fit=crop&q=80" alt="Vorkşop" loading="lazy"><span class="slide-label">Eko Vorkşop</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=520&h=340&fit=crop&q=80" alt="Dağ yürüşü" loading="lazy"><span class="slide-label">Dağ Yürüşü</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=520&h=340&fit=crop&q=80" alt="Yaşıl texnologiya" loading="lazy"><span class="slide-label">Yaşıl Texnologiya</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1473773508845-188df298d2d1?w=520&h=340&fit=crop&q=80" alt="Yer günü" loading="lazy"><span class="slide-label">Yer Günü</span></div>
-        </div>
-        <div class="marquee-inner" aria-hidden="true">
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Könüllülər</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">İqlim Fəaliyyəti</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1526951521990-620dc14c214b?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Eko Vorkşop</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Dağ Yürüşü</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Yaşıl Texnologiya</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1473773508845-188df298d2d1?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Yer Günü</span></div>
-        </div>
       </div>
     </div>
   </section>
