@@ -1024,12 +1024,12 @@
 
     /* Row 1 — continuously scrolls left */
     .marquee-track-1 .marquee-inner {
-      animation: marqueeScrollLeft 26s linear infinite !important;
+      animation: marqueeScrollLeft 55s linear infinite !important;
     }
 
     /* Row 2 — continuously scrolls right */
     .marquee-track-2 .marquee-inner {
-      animation: marqueeScrollRight 26s linear infinite !important;
+      animation: marqueeScrollRight 55s linear infinite !important;
     }
 
     @keyframes marqueeScrollLeft {
@@ -3917,7 +3917,7 @@
             var row1 = document.querySelectorAll('.marquee-track-1 .marquee-inner');
             var row2 = document.querySelectorAll('.marquee-track-2 .marquee-inner');
             var p1 = 0, p2 = 0;
-            var spd = 1.2;
+            var spd = 0.55;
 
             function animate() {
               var w1 = row1[0].scrollWidth || row1[0].offsetWidth;
