@@ -1007,63 +1007,73 @@
     .marquee-track {
       display: flex;
       overflow: hidden;
+      width: 100%;
+      user-select: none;
       /* Edge fade mask */
       -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
       mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-    }
-
-    .marquee-track:hover .marquee-inner {
-      animation-play-state: paused;
     }
 
     .marquee-inner {
       display: flex;
       gap: 1.2rem;
       flex-shrink: 0;
-      animation: marqueeLeft 40s linear infinite;
+      padding-right: 1.2rem;
       will-change: transform;
     }
 
-    .marquee-reverse .marquee-inner {
-      animation-name: marqueeRight;
-      animation-duration: 45s;
+    /* Row 1 — continuously scrolls left */
+    .marquee-track-1 .marquee-inner {
+      animation: marqueeScrollLeft 32s linear infinite;
     }
 
-    @keyframes marqueeLeft {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
+    /* Row 2 — continuously scrolls right */
+    .marquee-track-2 .marquee-inner {
+      animation: marqueeScrollRight 32s linear infinite;
     }
 
-    @keyframes marqueeRight {
-      0%   { transform: translateX(-100%); }
-      100% { transform: translateX(0); }
+    /* Pause only when actively hovering directly over a specific slide */
+    .marquee-track:has(.photo-slide:hover) .marquee-inner {
+      animation-play-state: paused;
+    }
+
+    @keyframes marqueeScrollLeft {
+      0%   { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
+
+    @keyframes marqueeScrollRight {
+      0%   { transform: translate3d(-100%, 0, 0); }
+      100% { transform: translate3d(0, 0, 0); }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .marquee-inner { animation: none; }
+      .marquee-inner { animation: none !important; }
     }
 
     .photo-slide {
       flex-shrink: 0;
-      width: 340px;
+      width: 320px;
       height: 220px;
       border-radius: 16px;
       overflow: hidden;
       position: relative;
       cursor: pointer;
+      background: rgba(255, 255, 255, 0.04);
     }
 
     .photo-slide img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center;
       display: block;
-      transition: transform 0.5s ease;
-      filter: brightness(0.82);
+      transition: transform 0.5s ease, filter 0.3s ease;
+      filter: brightness(0.92);
     }
 
     .photo-slide:hover img {
-      transform: scale(1.06);
+      transform: scale(1.05);
       filter: brightness(1);
     }
 
@@ -1072,16 +1082,15 @@
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 0.7rem 1rem;
-      background: linear-gradient(to top, rgba(26, 46, 26, 0.9) 0%, transparent 100%);
+      padding: 0.8rem 1rem;
+      background: linear-gradient(to top, rgba(15, 36, 21, 0.95) 0%, rgba(15, 36, 21, 0.6) 60%, transparent 100%);
       color: white;
-      font-size: 0.82rem;
+      font-size: 0.84rem;
       font-weight: 700;
       font-family: 'Space Grotesk', sans-serif;
       letter-spacing: 0.5px;
-      text-transform: uppercase;
       opacity: 0;
-      transform: translateY(6px);
+      transform: translateY(4px);
       transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
@@ -1091,8 +1100,8 @@
     }
 
     @media (max-width: 768px) {
-      .photo-slide { width: 260px; height: 170px; border-radius: 12px; }
-      .marquee-inner { gap: 0.8rem; }
+      .photo-slide { width: 250px; height: 175px; border-radius: 12px; }
+      .marquee-inner { gap: 0.8rem; padding-right: 0.8rem; }
       .photo-carousel-section { padding: 3.5rem 0 2.5rem; }
     }
 
@@ -1976,43 +1985,59 @@
 
     <div class="marquee-outer">
       <!-- Row 1 — scrolls left -->
-      <div class="marquee-track" id="marquee1">
+      <div class="marquee-track marquee-track-1" id="marquee1">
         <div class="marquee-inner">
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=520&h=340&fit=crop&q=80" alt="Təbiət yürüşü" loading="lazy"><span class="slide-label">Təbiət Yürüşü</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=520&h=340&fit=crop&q=80" alt="Sahil təmizliyi" loading="lazy"><span class="slide-label">Sahil Təmizliyi</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=520&h=340&fit=crop&q=80" alt="Ağacəkmə" loading="lazy"><span class="slide-label">Ağacəkmə Aksiyası</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1464925257126-6450e871c667?w=520&h=340&fit=crop&q=80" alt="Gənclər sammiti" loading="lazy"><span class="slide-label">Gənclər Sammiti</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=520&h=340&fit=crop&q=80" alt="İcma günü" loading="lazy"><span class="slide-label">İcma Günü</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=520&h=340&fit=crop&q=80" alt="Meşə kampaniyası" loading="lazy"><span class="slide-label">Meşə Kampaniyası</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0013.jpg" alt="YES Komandası" loading="lazy"><span class="slide-label">YES Komandası</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0011.jpg" alt="İqlim Təlimləri" loading="lazy"><span class="slide-label">İqlim Təlimləri</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0010.jpg" alt="Ekoloji Maarifləndirmə" loading="lazy"><span class="slide-label">Ekoloji Maarifləndirmə</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0014.jpg" alt="Layihə Təqdimatı" loading="lazy"><span class="slide-label">Layihə Təqdimatı</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0012.jpg" alt="İnteraktiv Sessiya" loading="lazy"><span class="slide-label">İnteraktiv Sessiya</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0013.jpg" alt="YES Komandası" loading="lazy"><span class="slide-label">YES Komandası</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0011.jpg" alt="İqlim Təlimləri" loading="lazy"><span class="slide-label">İqlim Təlimləri</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0010.jpg" alt="Ekoloji Maarifləndirmə" loading="lazy"><span class="slide-label">Ekoloji Maarifləndirmə</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0014.jpg" alt="Layihə Təqdimatı" loading="lazy"><span class="slide-label">Layihə Təqdimatı</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0012.jpg" alt="İnteraktiv Sessiya" loading="lazy"><span class="slide-label">İnteraktiv Sessiya</span></div>
         </div>
         <!-- Duplicate for seamless loop -->
         <div class="marquee-inner" aria-hidden="true">
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Təbiət Yürüşü</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Sahil Təmizliyi</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Ağacəkmə Aksiyası</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1464925257126-6450e871c667?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Gənclər Sammiti</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">İcma Günü</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Meşə Kampaniyası</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0013.jpg" alt="" loading="lazy"><span class="slide-label">YES Komandası</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0011.jpg" alt="" loading="lazy"><span class="slide-label">İqlim Təlimləri</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0010.jpg" alt="" loading="lazy"><span class="slide-label">Ekoloji Maarifləndirmə</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0014.jpg" alt="" loading="lazy"><span class="slide-label">Layihə Təqdimatı</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0012.jpg" alt="" loading="lazy"><span class="slide-label">İnteraktiv Sessiya</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0013.jpg" alt="" loading="lazy"><span class="slide-label">YES Komandası</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0011.jpg" alt="" loading="lazy"><span class="slide-label">İqlim Təlimləri</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0010.jpg" alt="" loading="lazy"><span class="slide-label">Ekoloji Maarifləndirmə</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0014.jpg" alt="" loading="lazy"><span class="slide-label">Layihə Təqdimatı</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0012.jpg" alt="" loading="lazy"><span class="slide-label">İnteraktiv Sessiya</span></div>
         </div>
       </div>
 
-      <!-- Row 2 — scrolls right (reverse) -->
-      <div class="marquee-track marquee-reverse" id="marquee2">
+      <!-- Row 2 — scrolls right (opposite direction) -->
+      <div class="marquee-track marquee-track-2" id="marquee2">
         <div class="marquee-inner">
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=520&h=340&fit=crop&q=80" alt="Könüllülər" loading="lazy"><span class="slide-label">Könüllülər</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=520&h=340&fit=crop&q=80" alt="İqlim fəaliyyəti" loading="lazy"><span class="slide-label">İqlim Fəaliyyəti</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1526951521990-620dc14c214b?w=520&h=340&fit=crop&q=80" alt="Vorkşop" loading="lazy"><span class="slide-label">Eko Vorkşop</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=520&h=340&fit=crop&q=80" alt="Dağ yürüşü" loading="lazy"><span class="slide-label">Dağ Yürüşü</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=520&h=340&fit=crop&q=80" alt="Yaşıl texnologiya" loading="lazy"><span class="slide-label">Yaşıl Texnologiya</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1473773508845-188df298d2d1?w=520&h=340&fit=crop&q=80" alt="Yer günü" loading="lazy"><span class="slide-label">Yer Günü</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0012.jpg" alt="İnteraktiv Sessiya" loading="lazy"><span class="slide-label">İnteraktiv Sessiya</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0014.jpg" alt="Layihə Təqdimatı" loading="lazy"><span class="slide-label">Layihə Təqdimatı</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0010.jpg" alt="Ekoloji Maarifləndirmə" loading="lazy"><span class="slide-label">Ekoloji Maarifləndirmə</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0011.jpg" alt="İqlim Təlimləri" loading="lazy"><span class="slide-label">İqlim Təlimləri</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0013.jpg" alt="YES Komandası" loading="lazy"><span class="slide-label">YES Komandası</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0012.jpg" alt="İnteraktiv Sessiya" loading="lazy"><span class="slide-label">İnteraktiv Sessiya</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0014.jpg" alt="Layihə Təqdimatı" loading="lazy"><span class="slide-label">Layihə Təqdimatı</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0010.jpg" alt="Ekoloji Maarifləndirmə" loading="lazy"><span class="slide-label">Ekoloji Maarifləndirmə</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0011.jpg" alt="İqlim Təlimləri" loading="lazy"><span class="slide-label">İqlim Təlimləri</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0013.jpg" alt="YES Komandası" loading="lazy"><span class="slide-label">YES Komandası</span></div>
         </div>
         <div class="marquee-inner" aria-hidden="true">
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Könüllülər</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">İqlim Fəaliyyəti</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1526951521990-620dc14c214b?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Eko Vorkşop</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Dağ Yürüşü</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Yaşıl Texnologiya</span></div>
-          <div class="photo-slide"><img src="https://images.unsplash.com/photo-1473773508845-188df298d2d1?w=520&h=340&fit=crop&q=80" alt="" loading="lazy"><span class="slide-label">Yer Günü</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0012.jpg" alt="" loading="lazy"><span class="slide-label">İnteraktiv Sessiya</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0014.jpg" alt="" loading="lazy"><span class="slide-label">Layihə Təqdimatı</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0010.jpg" alt="" loading="lazy"><span class="slide-label">Ekoloji Maarifləndirmə</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0011.jpg" alt="" loading="lazy"><span class="slide-label">İqlim Təlimləri</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0013.jpg" alt="" loading="lazy"><span class="slide-label">YES Komandası</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0012.jpg" alt="" loading="lazy"><span class="slide-label">İnteraktiv Sessiya</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0014.jpg" alt="" loading="lazy"><span class="slide-label">Layihə Təqdimatı</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0010.jpg" alt="" loading="lazy"><span class="slide-label">Ekoloji Maarifləndirmə</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0011.jpg" alt="" loading="lazy"><span class="slide-label">İqlim Təlimləri</span></div>
+          <div class="photo-slide"><img src="Moments%20from%20the%20field/IMG-20261011-WA0013.jpg" alt="" loading="lazy"><span class="slide-label">YES Komandası</span></div>
         </div>
       </div>
     </div>
