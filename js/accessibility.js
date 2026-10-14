@@ -153,7 +153,7 @@
 
   // SVG Icons
   var ICONS = {
-    access: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg>',
+    access: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="24" cy="24" r="19" stroke="#ffffff" stroke-width="2.6" fill="none" /><circle cx="24" cy="14" r="3.6" fill="#ffffff" /><path d="M12.5 19.8 C15.5 19 19.5 18.2 24 18.2 C28.5 18.2 32.5 19 35.5 19.8 C36.6 20.1 37.2 21.2 36.9 22.3 C36.6 23.4 35.5 24 34.4 23.7 C31.8 23 28.5 22.4 25.6 22.2 V26.5 L30.8 35.8 C31.4 36.8 31 38.1 30 38.7 C29 39.3 27.7 38.9 27.1 37.9 L24 32.2 L20.9 37.9 C20.3 38.9 19 39.3 18 38.7 C17 38.1 16.6 36.8 17.2 35.8 L22.4 26.5 V22.2 C19.5 22.4 16.2 23 13.6 23.7 C12.5 24 11.4 23.4 11.1 22.3 C10.8 21.2 11.4 20.1 12.5 19.8 Z" fill="#ffffff" /></svg>',
     close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>',
     textSize: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 4v3h5v12h3V7h5V4h-13zm19 5h-9v3h3v7h3v-7h3V9z"/></svg>',
     contrast: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14v12c3.31 0 6-2.69 6-6s-2.69-6-6-6z"/></svg>',
@@ -259,8 +259,9 @@
       renderWidget();
     }
     if (!elements.panel || !elements.trigger) return;
-    elements.panel.classList.add('yes-a11y-open');
     elements.panel.removeAttribute('hidden');
+    void elements.panel.offsetHeight; // trigger reflow for smooth CSS animation
+    elements.panel.classList.add('yes-a11y-open');
     elements.trigger.setAttribute('aria-expanded', 'true');
     // Focus close button
     setTimeout(function() {
@@ -271,8 +272,12 @@
   function closePanel() {
     if (!elements.panel || !elements.trigger) return;
     elements.panel.classList.remove('yes-a11y-open');
-    elements.panel.setAttribute('hidden', '');
     elements.trigger.setAttribute('aria-expanded', 'false');
+    setTimeout(function() {
+      if (elements.panel && !elements.panel.classList.contains('yes-a11y-open')) {
+        elements.panel.setAttribute('hidden', '');
+      }
+    }, 260);
     elements.trigger.focus();
   }
 
@@ -314,18 +319,18 @@
     elements.srStatus = sr;
     widgetWrap.appendChild(sr);
 
-    // Floating Button (Pill shape with icon + text)
+    // Floating Button (Circular blue button with universal access icon)
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'yes-a11y-trigger';
     btn.id = 'yes-a11y-trigger-btn';
     btn.setAttribute('aria-label', t.openBtn);
+    btn.setAttribute('title', t.btnText);
     btn.setAttribute('aria-haspopup', 'dialog');
     btn.setAttribute('aria-expanded', 'false');
     btn.setAttribute('aria-controls', 'yes-a11y-dialog');
     btn.innerHTML =
       '<span class="yes-a11y-trigger-icon">' + ICONS.access + '</span>' +
-      '<span class="yes-a11y-trigger-text">' + t.btnText + '</span>' +
       '<span class="yes-a11y-badge" aria-hidden="true"></span>';
     btn.addEventListener('click', togglePanel);
     elements.trigger = btn;
