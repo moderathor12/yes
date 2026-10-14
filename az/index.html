@@ -1932,7 +1932,7 @@
         our environment and inspire the next generation of green leaders.</p>
       <div class="hero-btns">
         <span class="neo-btn-wrap">
-          <a href="#join" class="btn-primary" data-i18n="btn_join">Hərəkata Qoşulun</a>
+          <a href="javascript:void(0)" onclick="openAuthModal()" class="btn-primary" data-i18n="btn_join">Hərəkata Qoşulun</a>
         </span>
         <a href="wiki.html" class="btn-secondary">
           <span class="circle" aria-hidden="true">
@@ -2065,7 +2065,7 @@
           meaningful change in our
           communities while building the skills and networks that will shape a greener future.</p>
         <span class="neo-btn-wrap" style="margin-top: 1rem;">
-          <a href="#join" class="btn-primary" data-i18n="who_btn">Join YES Today</a>
+          <a href="javascript:void(0)" onclick="openAuthModal()" class="btn-primary" data-i18n="who_btn">Join YES Today</a>
         </span>
       </div>
     </div>
@@ -3178,9 +3178,9 @@
       }
     }
 
-    function openAuthModal() {
+    function openAuthModal(mode) {
       document.getElementById('auth-modal').classList.add('show');
-      setAuthMode('login');
+      setAuthMode(mode || 'login');
       document.getElementById('auth-error').style.display = 'none';
     }
 
