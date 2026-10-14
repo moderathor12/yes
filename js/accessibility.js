@@ -54,6 +54,7 @@
 
   var translations = {
     en: {
+      btnText: 'Accessibility',
       openBtn: 'Open accessibility settings',
       closeBtn: 'Close accessibility settings',
       title: 'Accessibility Settings',
@@ -82,6 +83,7 @@
       resetAnnounce: 'All accessibility settings have been reset to default.'
     },
     az: {
+      btnText: 'Əlçatanlıq',
       openBtn: 'Əlçatanlıq parametrlərini aç',
       closeBtn: 'Əlçatanlıq parametrlərini bağla',
       title: 'Əlçatanlıq Parametrləri',
@@ -253,11 +255,14 @@
   }
 
   function openPanel() {
+    if (!elements.panel) {
+      renderWidget();
+    }
     if (!elements.panel || !elements.trigger) return;
     elements.panel.classList.add('yes-a11y-open');
     elements.panel.removeAttribute('hidden');
     elements.trigger.setAttribute('aria-expanded', 'true');
-    // Focus first interactive control (close button)
+    // Focus close button
     setTimeout(function() {
       if (elements.closeBtn) elements.closeBtn.focus();
     }, 60);
@@ -279,15 +284,20 @@
     }
   }
 
+  // Global toggle function
+  window.yesA11yToggle = function() {
+    togglePanel();
+  };
+
   function renderWidget() {
     if (document.getElementById('yes-a11y-widget')) return;
+    if (!document.body) return;
 
     // Check if css is linked, if not inject it safely
     var existingCss = document.querySelector('link[href*="accessibility.css"]');
     if (!existingCss) {
       var link = document.createElement('link');
       link.rel = 'stylesheet';
-      // In az/ with <base href="../">, "css/accessibility.css" correctly resolves to root
       link.href = 'css/accessibility.css';
       document.head.appendChild(link);
     }
@@ -304,7 +314,7 @@
     elements.srStatus = sr;
     widgetWrap.appendChild(sr);
 
-    // Floating Button
+    // Floating Button (Pill shape with icon + text)
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'yes-a11y-trigger';
@@ -313,7 +323,10 @@
     btn.setAttribute('aria-haspopup', 'dialog');
     btn.setAttribute('aria-expanded', 'false');
     btn.setAttribute('aria-controls', 'yes-a11y-dialog');
-    btn.innerHTML = ICONS.access + '<span class="yes-a11y-badge" aria-hidden="true"></span>';
+    btn.innerHTML =
+      '<span class="yes-a11y-trigger-icon">' + ICONS.access + '</span>' +
+      '<span class="yes-a11y-trigger-text">' + t.btnText + '</span>' +
+      '<span class="yes-a11y-badge" aria-hidden="true"></span>';
     btn.addEventListener('click', togglePanel);
     elements.trigger = btn;
     widgetWrap.appendChild(btn);
@@ -471,7 +484,10 @@
     document.addEventListener('click', function(e) {
       if (panel.classList.contains('yes-a11y-open')) {
         if (!panel.contains(e.target) && !btn.contains(e.target)) {
-          closePanel();
+          var navBtn = document.querySelector('.nav-a11y-btn');
+          if (!navBtn || !navBtn.contains(e.target)) {
+            closePanel();
+          }
         }
       }
     });
@@ -500,11 +516,21 @@
     updateUIState();
   }
 
-  // Initialize once DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderWidget);
-  } else {
+  // Initialize once DOM body is ready
+  function initWidget() {
+    if (!document.body) {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initWidget);
+      } else {
+        setTimeout(initWidget, 25);
+      }
+      return;
+    }
     renderWidget();
   }
+
+  initWidget();
+  document.addEventListener('DOMContentLoaded', initWidget);
+  window.addEventListener('load', initWidget);
 
 })();

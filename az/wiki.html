@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-  <link rel="stylesheet" href="css/accessibility.css">
+  <link rel="stylesheet" href="css/accessibility.css?v=1.2">
   
   <style>
     :root {
@@ -1070,6 +1070,10 @@
         <button onclick="setWikiLang('az')" id="opt-az">AZ</button>
       </div>
     </div>
+
+    <button class="nav-a11y-btn" id="nav-a11y-btn" onclick="window.yesA11yToggle ? window.yesA11yToggle() : null" title="Accessibility / Əlçatanlıq" aria-label="Accessibility Settings">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg>
+    </button>
   </div>
 </header>
 
@@ -1881,6 +1885,6 @@
   });
 </script>
 
-  <script src="js/accessibility.js" defer></script>
+  <script src="js/accessibility.js?v=1.2" defer></script>
 </body>
 </html>
