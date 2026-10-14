@@ -13,6 +13,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+  <link rel="stylesheet" href="css/accessibility.css">
   
   <style>
     :root {
@@ -661,7 +662,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 26px;
+      font-size: 26px; 
       margin-bottom: 1.2rem;
       transition: transform 0.3s ease;
     }
@@ -1061,7 +1062,7 @@
     <!-- Language Selector Dropdown -->
     <div class="lang-dropdown">
       <button class="lang-current" type="button" aria-label="Language selector">
-        <span id="active-lang">AZ</span>
+        <span id="active-lang">EN</span>
         <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
       </button>
       <div class="lang-options">
@@ -1472,7 +1473,7 @@
   function showPage(pageId, hashId = null) {
     // Render content
     const mainContent = document.getElementById('main-content');
-    const data = wikiData[currentLang] || wikiData.az;
+    const data = wikiData[currentLang] || wikiData.en;
     mainContent.innerHTML = '<div class="content-wrap page active">' + data.pages[pageId] + '</div>';
 
     // Update active nav main buttons
@@ -1526,7 +1527,7 @@
   }
 
   function applyLanguage() {
-    const data = wikiData[currentLang] || wikiData.az;
+    const data = wikiData[currentLang] || wikiData.en;
     document.documentElement.lang = currentLang;
     
     // Update texts with data-i18n
@@ -1880,5 +1881,6 @@
   });
 </script>
 
+  <script src="js/accessibility.js" defer></script>
 </body>
 </html>
