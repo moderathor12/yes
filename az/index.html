@@ -398,6 +398,31 @@
       font-style: normal;
     }
 
+    .hero-typewriter {
+      color: var(--green);
+      font-style: normal;
+      display: inline;
+    }
+
+    .typewriter-cursor {
+      display: inline-block;
+      color: var(--green);
+      font-weight: 300;
+      margin-left: 2px;
+      animation: typewriterBlink 0.9s steps(2, start) infinite;
+      user-select: none;
+      vertical-align: baseline;
+    }
+
+    @keyframes typewriterBlink {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+    }
+
     .hero-sub {
       font-size: 1.15rem;
       line-height: 1.7;
@@ -1927,13 +1952,9 @@
 
 
     <div class="hero-content">
-      <div class="hero-tag" data-i18n="hero_tag">
-        Youth-Led · Planet-Focused
-      </div>
-      <h1 data-i18n="hero_title">Davamlı gələcək naminə gənclərin <em>potensialını artırırıq</em>.</em> Future.</h1>
-      <p class="hero-sub" data-i18n="hero_sub">We are a community of young activists, thinkers, and doers united by one
-        mission: to protect
-        our environment and inspire the next generation of green leaders.</p>
+      <div class="hero-tag" data-i18n="hero_tag">Gənclərin rəhbərliyi ilə · Planet mərkəzli</div>
+      <h1 data-i18n="hero_title"><em class="hero-typewriter"><span id="typewriter-text">Davamlı</span><span class="typewriter-cursor" aria-hidden="true">|</span></em> gələcək naminə gənclərin potensialını artırırıq.</h1>
+      <p class="hero-sub" data-i18n="hero_sub">Biz ətraf mühiti qorumaq və gələcək nəsil yaşıl liderləri ruhlandırmaq üçün birləşmiş gənc fəallar, düşünənlər və icraçılar icmasıyıq.</p>
       <div class="hero-btns">
         <span class="neo-btn-wrap">
           <a href="javascript:void(0)" onclick="handleAuthClick()" class="btn-primary" data-i18n="btn_join">Hərəkata Qoşulun</a>
@@ -1972,9 +1993,7 @@
   <section class="photo-carousel-section">
     <div class="carousel-header">
       <div class="section-tag" data-i18n="carousel_tag">Kadrlar</div>
-      <h2 class="section-title" data-i18n="carousel_title">
-        From the <em style="color:var(--lime);font-style:normal">Field</em>
-      </h2>
+      <h2 class="section-title" data-i18n="carousel_title">Tədbirlərimizdən <em style='color:var(--lime);font-style:normal'>Kadrlar</em></h2>
       <p class="carousel-sub" data-i18n="carousel_sub">Eko-aksiyalar, tədbirlər və icma görüşlərimizdən ən yaddaqalan anlar.</p>
     </div>
 
@@ -2062,12 +2081,8 @@
       <div class="who-text">
         <div class="section-tag" data-i18n="who_tag">Biz Kimik</div>
         <h2 class="section-title" data-i18n="who_title">Gözləməyə vaxtı olmayan nəsil</h2>
-        <p data-i18n="who_p1">Youth Environment Society (YES) is a youth-led organization dedicated to empowering the
-          next generation of
-          environmental advocates. We believe the time for action is now — not tomorrow, not after graduation.</p>
-        <p data-i18n="who_p2">Through education, community organizing, and direct environmental action, we create
-          meaningful change in our
-          communities while building the skills and networks that will shape a greener future.</p>
+        <p data-i18n="who_p1">YES gələcək nəsil ətraf mühit tərəfdarlarını gücləndirməyə həsr olunmuş, gənclər tərəfindən idarə olunan bir təşkilatdır. Biz inanırıq ki, hərəkət etmək vaxtı indi gəlib - sabah yox, məzuniyyətdən sonra yox.</p>
+        <p data-i18n="who_p2">Təhsil, icma təşkili və birbaşa ekoloji fəaliyyət vasitəsilə biz icmalarımızda mənalı dəyişikliklər yaradırıq, eyni zamanda yaşıl gələcəyi formalaşdıracaq bacarıq və şəbəkələr qururuq.</p>
         <span class="neo-btn-wrap" style="margin-top: 1rem;">
           <a href="javascript:void(0)" onclick="handleAuthClick()" class="btn-primary" data-i18n="who_btn">YES-ə Bu Gün Qoşulun</a>
         </span>
@@ -2085,22 +2100,19 @@
         <div class="pillar-num">01</div>
         <div class="pillar-icon"><i class="ph ph-leaf"></i></div>
         <h3 data-i18n="pillar_1_title">Ekoloji fəaliyyət</h3>
-        <p data-i18n="pillar_1_desc">Protecting ecosystems, reducing waste, and advocating for clean air, water, and
-          land in our communities.</p>
+        <p data-i18n="pillar_1_desc">İcmalarımızda ekosistemlərin qorunması, tullantıların azaldılması və təmiz hava, su və torpaq üçün mübarizə aparmaq.</p>
       </div>
       <div class="pillar">
         <div class="pillar-num">02</div>
         <div class="pillar-icon"><i class="ph ph-brain"></i></div>
         <h3 data-i18n="pillar_2_title">Gənclik</h3>
-        <p data-i18n="pillar_2_desc">Educating, inspiring, and mobilizing young people to become confident voices for
-          our planet.</p>
+        <p data-i18n="pillar_2_desc">Gəncləri təhsil vermək, ruhlandırmaq və planetimiz üçün inamlı səslərə çevrilmək üçün hərəkətə keçirmək.</p>
       </div>
       <div class="pillar">
         <div class="pillar-num">03</div>
         <div class="pillar-icon"><i class="ph ph-rocket-launch"></i></div>
         <h3 data-i18n="pillar_3_title">Real təsir</h3>
-        <p data-i18n="pillar_3_desc">Running campaigns, events, and initiatives that create tangible, measurable impact
-          where it matters most.</p>
+        <p data-i18n="pillar_3_desc">Ən çox ehtiyac duyulan yerlərdə maddi, ölçülə bilən təsir yaradan kampaniyalar, tədbirlər və təşəbbüslər həyata keçirmək.</p>
       </div>
     </div>
   </section>
@@ -2108,8 +2120,7 @@
   <!-- GALLERY -->
   <section id="gallery" class="section pillars">
     <div class="section-tag" data-i18n="gallery_tag">Ən Son Məqalə</div>
-    <h2 class="section-title" data-i18n="gallery_title">Fəaliyyətdə <em style='color:var(--green); font-style:normal'>YES</em></em> in
-      Action</h2>
+    <h2 class="section-title" data-i18n="gallery_title">Fəaliyyətdə <em style='color:var(--green); font-style:normal'>YES</em></h2>
     <div id="events-loader" style="text-align:center; padding: 2rem; color: rgba(255,255,255,0.4)">Loading events...
     </div>
     <div id="gallery-grid" class="gallery-grid"></div>
@@ -2119,8 +2130,7 @@
   <section class="section volunteer" id="volunteer">
     <div class="volunteer-header">
       <div class="section-tag" data-i18n="vol_tag">Könüllülük Proqramı</div>
-      <h2 class="section-title" data-i18n="vol_title">Shape the Future with <em
-          style="color:var(--green);font-style:normal">Your Hands</em></h2>
+      <h2 class="section-title" data-i18n="vol_title">Gələcəyi <em style='color:var(--green);font-style:normal'>Öz əllərinizlə</em> Formalaşdırın</h2>
     </div>
 
     <div class="volunteer-cta" style="flex-direction: column; gap: 1rem; align-items: center; text-align: center; width: 100%;">
@@ -2172,9 +2182,7 @@
       <div style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); padding: 0.8rem 1.8rem; border-radius: 12px; font-weight: 700; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 0.5rem; justify-content: center;">
         <i class="ph ph-prohibit" style="font-size: 1.3rem;"></i> <span data-i18n="vol_closed_title">Müraciətlər Başa Çatdı!</span>
       </div>
-      <p style="max-width: 650px; font-size: 1.05rem; line-height: 1.6; opacity: 0.85; margin: 0.5rem auto 1rem auto; text-align: center;" data-i18n="vol_closed_desc">
-        Könüllülük proqramına qeydiyyat müddəti (7 İyul) başa çatmışdır. Müraciət edən hər bir namizədə uğurlar arzulayırıq! Növbəti könüllülük proqramı açılan zaman elanlar burada paylaşılacaq. Sosial şəbəkələrdən bizi izləyərək yeniliklərdən daha tez xəbərdar ola bilərsiniz:
-      </p>
+      <p style="max-width: 650px; font-size: 1.05rem; line-height: 1.6; opacity: 0.85; margin: 0.5rem auto 1rem auto; text-align: center;" data-i18n="vol_closed_desc">Könüllülük proqramına qeydiyyat müddəti (7 İyul) başa çatmışdır. Müraciət edən hər bir namizədə uğurlar arzulayırıq! Növbəti könüllülük proqramı açılan zaman elanlar burada paylaşılacaq. Sosial şəbəkələrdən bizi izləyərək yeniliklərdən daha tez xəbərdar ola bilərsiniz:</p>
       <div style="display: flex; gap: 1rem; justify-content: center; width: 100%;">
         <a href="https://www.instagram.com/youthensoc" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--green); color: white; padding: 0.6rem 1.2rem; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: 0.2s;">
           <i class="ph ph-instagram-logo" style="font-size: 1.2rem;"></i> Instagram
@@ -2189,26 +2197,22 @@
       <div class="vol-card">
         <span class="vol-card-icon"><i class="ph ph-handshake"></i></span>
         <h3 data-i18n="vol_card1_title">Şəbəkənizi Qurun</h3>
-        <p data-i18n="vol_card1_desc">Connect with like-minded young activists, mentors, and environmental leaders
-          across Azerbaijan and beyond.</p>
+        <p data-i18n="vol_card1_desc">Azərbaycan və dünya üzrə həmfikir gənc fəallar, mentorlar və ekoloji liderlərlə əlaqə yaradın.</p>
       </div>
       <div class="vol-card">
         <span class="vol-card-icon"><i class="ph ph-graduation-cap"></i></span>
         <h3 data-i18n="vol_card2_title">Real Təcrübə Qazanın</h3>
-        <p data-i18n="vol_card2_desc">Develop practical skills in project management, public speaking, research, and
-          environmental advocacy.</p>
+        <p data-i18n="vol_card2_desc">Layihə idarəetməsi, ictimai çıxış, tədqiqat və ekoloji müdafiə sahəsində praktiki bacarıqlar inkişaf etdirin.</p>
       </div>
       <div class="vol-card">
         <span class="vol-card-icon"><i class="ph ph-globe-hemisphere-west"></i></span>
         <h3 data-i18n="vol_card3_title">Real Təsir Yaradın</h3>
-        <p data-i18n="vol_card3_desc">Participate in campaigns, clean-ups, and educational events that leave a
-          measurable mark on your community.</p>
+        <p data-i18n="vol_card3_desc">İcmanızda ölçülə bilən iz qoyan kampaniyalarda, təmizlik aksiyalarında və təhsil tədbirlərində iştirak edin.</p>
       </div>
       <div class="vol-card">
         <span class="vol-card-icon"><i class="ph ph-shooting-star"></i></span>
         <h3 data-i18n="vol_card4_title">Lider Kimi Böyüyün</h3>
-        <p data-i18n="vol_card4_desc">Take on responsibilities, lead initiatives, and discover your potential as a young
-          champion for sustainability.</p>
+        <p data-i18n="vol_card4_desc">Məsuliyyət götürün, təşəbbüslərə rəhbərlik edin və davamlı inkişaf naminə gənc bir çempion kimi potensialınızı kəşf edin.</p>
       </div>
     </div>
   </section>
@@ -2227,9 +2231,7 @@
           <i class="ph ph-caret-down"></i>
         </button>
         <div class="faq-answer">
-          <p data-i18n="faq_a1">Youth Environment Society (YES) is a youth-led environmental organization in Azerbaijan
-            that empowers young people through education, community organizing, and direct environmental action for a
-            sustainable future.</p>
+          <p data-i18n="faq_a1">YES (Gənclərin Ekoloji Cəmiyyəti), təhsil, icma təşkilatlanması və birbaşa ekoloji fəaliyyətlər vasitəsilə davamlı gələcək üçün gəncləri gücləndirən gənclərin rəhbərlik etdiyi təşkilatdır.</p>
         </div>
       </div>
 
@@ -2239,8 +2241,7 @@
           <i class="ph ph-caret-down"></i>
         </button>
         <div class="faq-answer">
-          <p data-i18n="faq_a2">You can join YES by signing up on our website or by registering as a volunteer through
-            our volunteer program. It's free and open to all youth.</p>
+          <p data-i18n="faq_a2">Veb saytımızda qeydiyyatdan keçərək və ya Könüllülük proqramımıza müraciət edərək bizə qoşula bilərsiniz. Proqram pulsuzdur və bütün gənclər üçün açıqdır.</p>
         </div>
       </div>
 
@@ -2250,9 +2251,7 @@
           <i class="ph ph-caret-down"></i>
         </button>
         <div class="faq-answer">
-          <p data-i18n="faq_a3">YES focuses on three pillars: Environment (protecting ecosystems), Youth (educating and
-            mobilizing young people), and Action (running campaigns, events, and initiatives that create real impact).
-          </p>
+          <p data-i18n="faq_a3">YES 3 əsas sütun üzərində fəaliyyət göstərir: Ətraf mühit (ekosistemləri qorumaq), Gənclik (gəncləri maarifləndirmək) və Fəaliyyət (real təsir yaradan kampaniyalar, təmizlik aksiyaları və tədbirlər təşkil etmək).</p>
         </div>
       </div>
 
@@ -2262,8 +2261,7 @@
           <i class="ph ph-caret-down"></i>
         </button>
         <div class="faq-answer">
-          <p data-i18n="faq_a4">Yes, the YES volunteer program is completely free to join and open to all youth.
-            Registration takes only 2 minutes.</p>
+          <p data-i18n="faq_a4">Bəli, YES könüllülük proqramına qoşulmaq tamamilə pulsuzdur və bütün gənclər iştirak edə bilər. Qeydiyyat cəmi 2 dəqiqə vaxt aparır.</p>
         </div>
       </div>
     </div>
@@ -2272,10 +2270,8 @@
   <!-- NEWSLETTER -->
   <section class="join" id="join">
     <div class="section-tag" style="position:relative" data-i18n="join_tag">Xəbər Bülleteni</div>
-    <h2 class="section-title" data-i18n="join_title">Subscribe to Our <em
-        style="color:var(--green); font-style:normal">Newsletter</em></h2>
-    <p data-i18n="join_sub">Subscribe to our email newsletter to receive regular updates, green news, and community stories straight to your inbox. (Note: This is an email newsletter subscription, not member account creation.)
-    </p>
+    <h2 class="section-title" data-i18n="join_title"><em style='color:var(--green); font-style:normal'>YES</em> Xəbər Bülleteninə Abunə Olun</h2>
+    <p data-i18n="join_sub">Ən son ekoloji xəbərləri, məqalələri və layihələrimizlə bağlı yenilikləri birbaşa e-poçtunuza almaq üçün bülletenimizə abunə olun. (Qeyd: Bu bölmə yalnız xəbər bülleteni abunəliyi üçündür, şəxsi kabinet hesabı açmaq üçün deyil).</p>
     <form id="email-form" class="join-form">
       <input id="email-input" type="email" placeholder="Your email for newsletter" data-i18n="join_placeholder" required>
       <span class="nb-subscribe-wrap">
@@ -2371,7 +2367,7 @@
         nav_wiki: "Wiki",
         nav_join: "Join Us",
         hero_tag: "Youth-Led · Planet-Focused",
-        hero_title: "Empowering Youth for a <em>Sustainable</em> Future.",
+        hero_title: "Empowering Youth for a <em class=\"hero-typewriter\"><span id=\"typewriter-text\">Sustainable</span><span class=\"typewriter-cursor\" aria-hidden=\"true\">|</span></em> Future.",
         hero_sub: "We are a community of young activists, thinkers, and doers united by one mission: to protect our environment and inspire the next generation of green leaders.",
         btn_join: "Join the Movement",
         btn_learn: "Learn More",
@@ -2531,7 +2527,7 @@
         nav_wiki: "Wiki",
         nav_join: "Bizə Qoşulun",
         hero_tag: "Gənclərin rəhbərliyi ilə · Planet mərkəzli",
-        hero_title: "Davamlı gələcək naminə gənclərin <em>potensialını artırırıq</em>.",
+        hero_title: "<em class=\"hero-typewriter\"><span id=\"typewriter-text\">Davamlı</span><span class=\"typewriter-cursor\" aria-hidden=\"true\">|</span></em> gələcək naminə gənclərin potensialını artırırıq.",
         hero_sub: "Biz ətraf mühiti qorumaq və gələcək nəsil yaşıl liderləri ruhlandırmaq üçün birləşmiş gənc fəallar, düşünənlər və icraçılar icmasıyıq.",
         btn_join: "Hərəkata Qoşulun",
         btn_learn: "Daha Ətraflı",
@@ -2715,6 +2711,10 @@
       // Update survey modal texts
       applySurveyLanguage(lang);
 
+      if (window.resetHeroTypewriter) {
+        window.resetHeroTypewriter();
+      }
+
       // Update auth modal placeholders
       var authEmail = document.getElementById('auth-email');
       var authPass = document.getElementById('auth-pass');
@@ -2841,6 +2841,87 @@
     // Load saved language
     var savedLang = 'az';
     applyLanguage(savedLang);
+  </script>
+
+  <!-- Hero Word Typewriter Effect -->
+  <script>
+    (function () {
+      var wordsByLang = {
+        en: ["Sustainable", "Greener", "Cleaner", "Resilient", "Brighter"],
+        az: ["Davamlı", "Daha yaşıl", "Daha təmiz", "Parlaq", "Sağlam"]
+      };
+
+      var wordIndex = 0;
+      var charIndex = 0;
+      var isDeleting = false;
+      var timer = null;
+
+      function getLang() {
+        var docLang = (document.documentElement.lang || '').toLowerCase();
+        if (docLang.startsWith('az') || window.location.pathname.indexOf('/az/') !== -1) {
+          return 'az';
+        }
+        var saved = localStorage.getItem('yes_lang');
+        return saved === 'az' ? 'az' : 'en';
+      }
+
+      function tick() {
+        var textEl = document.getElementById('typewriter-text');
+        if (!textEl) return;
+
+        var lang = getLang();
+        var words = wordsByLang[lang] || wordsByLang.en;
+        var currentWord = words[wordIndex % words.length];
+
+        if (isDeleting) {
+          charIndex--;
+          textEl.textContent = currentWord.substring(0, charIndex);
+        } else {
+          charIndex++;
+          textEl.textContent = currentWord.substring(0, charIndex);
+        }
+
+        var speed = isDeleting ? 50 : 100;
+
+        if (!isDeleting && charIndex === currentWord.length) {
+          speed = 2200; // Pause after word is typed
+          isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+          isDeleting = false;
+          wordIndex = (wordIndex + 1) % words.length;
+          speed = 400; // Brief pause before starting next word
+        }
+
+        timer = setTimeout(tick, speed);
+      }
+
+      window.resetHeroTypewriter = function () {
+        if (timer) {
+          clearTimeout(timer);
+          timer = null;
+        }
+        var textEl = document.getElementById('typewriter-text');
+        if (!textEl) return;
+
+        var lang = getLang();
+        var words = wordsByLang[lang] || wordsByLang.en;
+        wordIndex = 0;
+        charIndex = words[0].length;
+        textEl.textContent = words[0];
+        isDeleting = false;
+
+        timer = setTimeout(function () {
+          isDeleting = true;
+          tick();
+        }, 2200);
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', window.resetHeroTypewriter);
+      } else {
+        window.resetHeroTypewriter();
+      }
+    })();
   </script>
 
   <style>

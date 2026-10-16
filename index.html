@@ -397,6 +397,31 @@
       font-style: normal;
     }
 
+    .hero-typewriter {
+      color: var(--green);
+      font-style: normal;
+      display: inline;
+    }
+
+    .typewriter-cursor {
+      display: inline-block;
+      color: var(--green);
+      font-weight: 300;
+      margin-left: 2px;
+      animation: typewriterBlink 0.9s steps(2, start) infinite;
+      user-select: none;
+      vertical-align: baseline;
+    }
+
+    @keyframes typewriterBlink {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+    }
+
     .hero-sub {
       font-size: 1.15rem;
       line-height: 1.7;
@@ -1929,7 +1954,7 @@
       <div class="hero-tag" data-i18n="hero_tag">
         Youth-Led · Planet-Focused
       </div>
-      <h1 data-i18n="hero_title">Empowering Youth for a <em>Sustainable</em> Future.</h1>
+      <h1 data-i18n="hero_title">Empowering Youth for a <em class="hero-typewriter"><span id="typewriter-text">Sustainable</span><span class="typewriter-cursor" aria-hidden="true">|</span></em> Future.</h1>
       <p class="hero-sub" data-i18n="hero_sub">We are a community of young activists, thinkers, and doers united by one
         mission: to protect
         our environment and inspire the next generation of green leaders.</p>
@@ -2370,7 +2395,7 @@
         nav_wiki: "Wiki",
         nav_join: "Join Us",
         hero_tag: "Youth-Led · Planet-Focused",
-        hero_title: "Empowering Youth for a <em>Sustainable</em> Future.",
+        hero_title: "Empowering Youth for a <em class=\"hero-typewriter\"><span id=\"typewriter-text\">Sustainable</span><span class=\"typewriter-cursor\" aria-hidden=\"true\">|</span></em> Future.",
         hero_sub: "We are a community of young activists, thinkers, and doers united by one mission: to protect our environment and inspire the next generation of green leaders.",
         btn_join: "Join the Movement",
         btn_learn: "Learn More",
@@ -2530,7 +2555,7 @@
         nav_wiki: "Wiki",
         nav_join: "Bizə Qoşulun",
         hero_tag: "Gənclərin rəhbərliyi ilə · Planet mərkəzli",
-        hero_title: "Davamlı gələcək naminə gənclərin <em>potensialını artırırıq</em>.",
+        hero_title: "<em class=\"hero-typewriter\"><span id=\"typewriter-text\">Davamlı</span><span class=\"typewriter-cursor\" aria-hidden=\"true\">|</span></em> gələcək naminə gənclərin potensialını artırırıq.",
         hero_sub: "Biz ətraf mühiti qorumaq və gələcək nəsil yaşıl liderləri ruhlandırmaq üçün birləşmiş gənc fəallar, düşünənlər və icraçılar icmasıyıq.",
         btn_join: "Hərəkata Qoşulun",
         btn_learn: "Daha Ətraflı",
@@ -2714,6 +2739,10 @@
       // Update survey modal texts
       applySurveyLanguage(lang);
 
+      if (window.resetHeroTypewriter) {
+        window.resetHeroTypewriter();
+      }
+
       // Update auth modal placeholders
       var authEmail = document.getElementById('auth-email');
       var authPass = document.getElementById('auth-pass');
@@ -2840,6 +2869,87 @@
     // Load saved language
     var savedLang = localStorage.getItem('yes_lang') || 'en';
     applyLanguage(savedLang);
+  </script>
+
+  <!-- Hero Word Typewriter Effect -->
+  <script>
+    (function () {
+      var wordsByLang = {
+        en: ["Sustainable", "Greener", "Cleaner", "Resilient", "Brighter"],
+        az: ["Davamlı", "Daha yaşıl", "Daha təmiz", "Parlaq", "Sağlam"]
+      };
+
+      var wordIndex = 0;
+      var charIndex = 0;
+      var isDeleting = false;
+      var timer = null;
+
+      function getLang() {
+        var docLang = (document.documentElement.lang || '').toLowerCase();
+        if (docLang.startsWith('az') || window.location.pathname.indexOf('/az/') !== -1) {
+          return 'az';
+        }
+        var saved = localStorage.getItem('yes_lang');
+        return saved === 'az' ? 'az' : 'en';
+      }
+
+      function tick() {
+        var textEl = document.getElementById('typewriter-text');
+        if (!textEl) return;
+
+        var lang = getLang();
+        var words = wordsByLang[lang] || wordsByLang.en;
+        var currentWord = words[wordIndex % words.length];
+
+        if (isDeleting) {
+          charIndex--;
+          textEl.textContent = currentWord.substring(0, charIndex);
+        } else {
+          charIndex++;
+          textEl.textContent = currentWord.substring(0, charIndex);
+        }
+
+        var speed = isDeleting ? 50 : 100;
+
+        if (!isDeleting && charIndex === currentWord.length) {
+          speed = 2200; // Pause after word is typed
+          isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+          isDeleting = false;
+          wordIndex = (wordIndex + 1) % words.length;
+          speed = 400; // Brief pause before starting next word
+        }
+
+        timer = setTimeout(tick, speed);
+      }
+
+      window.resetHeroTypewriter = function () {
+        if (timer) {
+          clearTimeout(timer);
+          timer = null;
+        }
+        var textEl = document.getElementById('typewriter-text');
+        if (!textEl) return;
+
+        var lang = getLang();
+        var words = wordsByLang[lang] || wordsByLang.en;
+        wordIndex = 0;
+        charIndex = words[0].length;
+        textEl.textContent = words[0];
+        isDeleting = false;
+
+        timer = setTimeout(function () {
+          isDeleting = true;
+          tick();
+        }, 2200);
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', window.resetHeroTypewriter);
+      } else {
+        window.resetHeroTypewriter();
+      }
+    })();
   </script>
 
   <style>

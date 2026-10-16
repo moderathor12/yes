@@ -64,10 +64,9 @@ for (const file of filesToProcess) {
                 for (const [key, val] of Object.entries(azDict)) {
                     // Safe string replacement
                     const valEscaped = val.replace(/\$/g, '$$$$');
-                    // Replace inner content of tags with data-translate
-                    // E.g. <span data-translate="nav_about">About Us</span>
-                    const regex1 = new RegExp(`(<[^>]+data-i18n="${key}"[^>]*>)(.*?)(<\/[a-zA-Z0-9]+>)`, 'g');
-                    azContent = azContent.replace(regex1, `$1${valEscaped}$3`);
+                    // Replace inner content of tags with data-i18n (matching opening tag to its closing tag)
+                    const regex1 = new RegExp(`(<([a-zA-Z0-9]+)[^>]*data-i18n="${key}"[^>]*>)([\\s\\S]*?)(<\\/\\2>)`, 'g');
+                    azContent = azContent.replace(regex1, `$1${valEscaped}$4`);
                     
                     // E.g. <input placeholder="Search" data-i18n-ph="search">
                     const regex2 = new RegExp(`(placeholder=")([^"]+)("[^>]*data-i18n-ph="${key}")`, 'g');
