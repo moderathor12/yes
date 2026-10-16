@@ -1899,6 +1899,7 @@
       width: var(--w-form);
       height: var(--h-form);
       max-width: 100%;
+      max-height: 90vh;
       border-radius: 20px;
       background: white;
       position: relative;
@@ -2031,7 +2032,7 @@
       cursor: pointer; z-index: 4;
       position: absolute; border: none;
       right: calc(var(--p) + (var(--input-px) / 2));
-      bottom: calc(var(--p) + var(--submit-h) + var(--space-y) + (var(--input-py) / 1) + 3px);
+      bottom: calc(var(--p) + var(--submit-h) + var(--space-y) + 1.8rem + var(--space-y) + (var(--input-py) / 1) + 3px);
       padding: 4px 0;
       width: var(--blind-w);
       border-radius: 4px;
@@ -3747,12 +3748,12 @@
         </div>
         <input spellcheck="false" class="input" type="text" name="password" id="auth-pass" placeholder="Password" />
 
+        <div class="auth-switch">
+          <span id="auth-switch-text">Don't have an account? <span onclick="setAuthMode('register')">Sign Up.</span></span>
+        </div>
+
         <button class="submit" type="button" id="auth-submit-btn" onclick="submitAuth()">Sign In</button>
         <p id="auth-error"></p>
-      </div>
-
-      <div class="auth-switch">
-        <span id="auth-switch-text">Don't have an account? <span onclick="setAuthMode('register')">Sign Up.</span></span>
       </div>
 
       <label for="blind-input" class="avatar">
