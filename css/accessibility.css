@@ -63,8 +63,8 @@ html.yes-a11y-readable-spacing h6 {
   word-spacing: 0.15em !important;
 }
 
-/* Highlight Links */
-html.yes-a11y-highlight-links a:not(.yes-a11y-no-hl):not(#yes-a11y-widget a) {
+/* Highlight Links (protect buttons and CTAs) */
+html.yes-a11y-highlight-links a:not(.yes-a11y-no-hl):not(#yes-a11y-widget a):not(.btn):not(.btn-primary):not(.btn-secondary):not(.nav-cta):not(.btn-volunteer):not(.neo-btn-wrap a):not(.neo-btn-wrap) {
   text-decoration: underline 2.5px solid currentColor !important;
   text-underline-offset: 4px !important;
   background-color: rgba(244, 211, 94, 0.35) !important;
@@ -74,13 +74,12 @@ html.yes-a11y-highlight-links a:not(.yes-a11y-no-hl):not(#yes-a11y-widget a) {
   padding: 0 2px;
 }
 
-/* Reduce Animations & Motion */
-html.yes-a11y-reduce-motion *,
-html.yes-a11y-reduce-motion *::before,
-html.yes-a11y-reduce-motion *::after {
+/* Reduce Animations & Motion (preserves interactive button micro-interactions) */
+html.yes-a11y-reduce-motion *:not(button):not(.btn):not(.btn-primary):not(.btn-secondary):not(.neo-btn-wrap):not(.circle):not(.button-text):not(.icon):not(a):not(.yes-a11y-trigger),
+html.yes-a11y-reduce-motion *:not(button):not(.btn):not(.btn-primary):not(.btn-secondary):not(.neo-btn-wrap):not(.circle):not(.button-text):not(.icon):not(a):not(.yes-a11y-trigger)::before,
+html.yes-a11y-reduce-motion *:not(button):not(.btn):not(.btn-primary):not(.btn-secondary):not(.neo-btn-wrap):not(.circle):not(.button-text):not(.icon):not(a):not(.yes-a11y-trigger)::after {
   animation-duration: 0.001ms !important;
   animation-iteration-count: 1 !important;
-  transition-duration: 0.001ms !important;
   scroll-behavior: auto !important;
 }
 

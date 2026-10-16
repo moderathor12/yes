@@ -24,6 +24,10 @@
       var raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         var parsed = JSON.parse(raw);
+        // Only keep reduceMotion if explicitly set by user in widget
+        if (!localStorage.getItem('yes_a11y_motion_user_set')) {
+          parsed.reduceMotion = false;
+        }
         return Object.assign({}, defaultSettings, parsed);
       }
     } catch (e) {
@@ -118,14 +122,6 @@
   var lang = getLang();
   var t = translations[lang] || translations.en;
 
-  // Check OS prefers-reduced-motion
-  if (!settings.reduceMotion) {
-    try {
-      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        settings.reduceMotion = true;
-      }
-    } catch (e) {}
-  }
 
   // Fast-apply classes to documentElement to avoid FOUC
   function applyClasses() {
@@ -238,6 +234,15 @@
 
   function toggleFeature(key, announceFn) {
     settings[key] = !settings[key];
+    if (key === 'reduceMotion') {
+      try {
+        if (settings[key]) {
+          localStorage.setItem('yes_a11y_motion_user_set', 'true');
+        } else {
+          localStorage.removeItem('yes_a11y_motion_user_set');
+        }
+      } catch (e) {}
+    }
     applyClasses();
     saveSettings(settings);
     updateUIState();
@@ -247,6 +252,7 @@
   }
 
   function resetAll() {
+    try { localStorage.removeItem('yes_a11y_motion_user_set'); } catch (e) {}
     settings = Object.assign({}, defaultSettings);
     applyClasses();
     saveSettings(settings);
