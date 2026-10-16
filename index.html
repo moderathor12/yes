@@ -397,10 +397,18 @@
       font-style: normal;
     }
 
+    .hero-typewriter-line {
+      display: inline-block;
+      min-height: 1em;
+      line-height: 1.0;
+    }
+
     .hero-typewriter {
       color: var(--green);
       font-style: normal;
-      display: inline;
+      display: inline-block;
+      min-height: 1em;
+      vertical-align: baseline;
     }
 
     .typewriter-cursor {
@@ -411,6 +419,10 @@
       animation: typewriterBlink 0.9s steps(2, start) infinite;
       user-select: none;
       vertical-align: baseline;
+    }
+
+    .hero-future-word {
+      display: inline-block;
     }
 
     @keyframes typewriterBlink {
@@ -1954,7 +1966,7 @@
       <div class="hero-tag" data-i18n="hero_tag">
         Youth-Led · Planet-Focused
       </div>
-      <h1 data-i18n="hero_title">Empowering Youth for a <em class="hero-typewriter"><span id="typewriter-text">Sustainable</span><span class="typewriter-cursor" aria-hidden="true">|</span></em> Future.</h1>
+      <h1 data-i18n="hero_title">Empowering<br>Youth for a<br><span class="hero-typewriter-line"><em class="hero-typewriter"><span id="typewriter-text">Sustainable</span><span class="typewriter-cursor" aria-hidden="true">|</span></em></span><br><span class="hero-future-word">Future.</span></h1>
       <p class="hero-sub" data-i18n="hero_sub">We are a community of young activists, thinkers, and doers united by one
         mission: to protect
         our environment and inspire the next generation of green leaders.</p>
@@ -2395,7 +2407,7 @@
         nav_wiki: "Wiki",
         nav_join: "Join Us",
         hero_tag: "Youth-Led · Planet-Focused",
-        hero_title: "Empowering Youth for a <em class=\"hero-typewriter\"><span id=\"typewriter-text\">Sustainable</span><span class=\"typewriter-cursor\" aria-hidden=\"true\">|</span></em> Future.",
+        hero_title: "Empowering<br>Youth for a<br><span class=\"hero-typewriter-line\"><em class=\"hero-typewriter\"><span id=\"typewriter-text\">Sustainable</span><span class=\"typewriter-cursor\" aria-hidden=\"true\">|</span></em></span><br><span class=\"hero-future-word\">Future.</span>",
         hero_sub: "We are a community of young activists, thinkers, and doers united by one mission: to protect our environment and inspire the next generation of green leaders.",
         btn_join: "Join the Movement",
         btn_learn: "Learn More",
@@ -2555,7 +2567,7 @@
         nav_wiki: "Wiki",
         nav_join: "Bizə Qoşulun",
         hero_tag: "Gənclərin rəhbərliyi ilə · Planet mərkəzli",
-        hero_title: "<em class=\"hero-typewriter\"><span id=\"typewriter-text\">Davamlı</span><span class=\"typewriter-cursor\" aria-hidden=\"true\">|</span></em> gələcək naminə gənclərin potensialını artırırıq.",
+        hero_title: "<span class=\"hero-typewriter-line\"><em class=\"hero-typewriter\"><span id=\"typewriter-text\">Davamlı</span><span class=\"typewriter-cursor\" aria-hidden=\"true\">|</span></em></span><br>gələcək naminə<br>gənclərin potensialını artırırıq.",
         hero_sub: "Biz ətraf mühiti qorumaq və gələcək nəsil yaşıl liderləri ruhlandırmaq üçün birləşmiş gənc fəallar, düşünənlər və icraçılar icmasıyıq.",
         btn_join: "Hərəkata Qoşulun",
         btn_learn: "Daha Ətraflı",
