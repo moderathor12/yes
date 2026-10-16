@@ -76,8 +76,72 @@
     .event-info { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; position: relative; }
     .event-info h3 { color: white; margin-bottom: 0.2rem; font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; }
     .event-info p { font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 3rem; }
-    .card-share-btn { position: absolute; bottom: 1.2rem; right: 1.2rem; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; font-size: 1rem; }
-    .card-share-btn:hover { background: var(--green); border-color: var(--green); transform: scale(1.1); }
+    /* ── Uiverse share button (faxriddin20 / tidy-panda-98) ── */
+    .ui-share-btn {
+      --btn-default-bg: rgba(255,255,255,0.08);
+      --btn-hover-bg: var(--green);
+      --btn-transition: .3s;
+      --btn-animation-duration: .25s;
+      position: absolute; bottom: 1.2rem; right: 1.2rem;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      background: var(--btn-default-bg);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 10px;
+      padding: 0.42rem 0.9rem;
+      cursor: pointer;
+      transition: background var(--btn-transition), border-color var(--btn-transition), transform .1s ease, box-shadow var(--btn-transition);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .ui-share-btn:active { transform: scale(0.94); }
+    .ui-share-btn:hover, .ui-share-btn:focus-visible {
+      background: var(--btn-hover-bg);
+      border-color: var(--btn-hover-bg);
+      box-shadow: 0 4px 18px rgba(45,106,79,0.35);
+    }
+    .ui-share-btn .share-icon { font-size: 0.9rem; color: rgba(255,255,255,0.85); transition: color var(--btn-transition); line-height: 1; }
+    .ui-share-btn:hover .share-icon { color: #fff; }
+    .ui-share-btn .share-label {
+      position: relative;
+      font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.85);
+      letter-spacing: 0.3px;
+      transition: color var(--btn-transition);
+    }
+    .ui-share-btn:hover .share-label { color: #fff; }
+    .ui-share-btn .share-label::before {
+      position: absolute; content: ""; left: 0; top: 0;
+      color: var(--lime); opacity: 0; font-weight: 700; pointer-events: none;
+    }
+    .ui-share-btn:hover .share-label::before,
+    .ui-share-btn:focus-visible .share-label::before {
+      opacity: 1;
+      animation: chitchat linear both var(--btn-animation-duration);
+    }
+    @keyframes chitchat {
+      0%   { content: "#"; }
+      5%   { content: "."; }
+      10%  { content: "^"; }
+      15%  { content: "-!"; }
+      20%  { content: "#$_"; }
+      25%  { content: "№:0"; }
+      30%  { content: "#{+."; }
+      35%  { content: "@}-?"; }
+      40%  { content: "?{4@%"; }
+      45%  { content: "=.,^!"; }
+      50%  { content: "?2@%"; }
+      100% { content: "Share"; }
+    }
+    /* Single-article share (larger variant) */
+    .ui-share-btn--lg {
+      position: relative; bottom: auto; right: auto;
+      padding: 0.65rem 1.4rem;
+      border-radius: 12px;
+      --btn-default-bg: var(--green);
+      border-color: var(--green);
+    }
+    .ui-share-btn--lg .share-icon { font-size: 1.05rem; color: #fff; }
+    .ui-share-btn--lg .share-label { font-size: 0.92rem; color: #fff; }
+    .ui-share-btn--lg:hover { --btn-hover-bg: #245a40; border-color: #245a40; }
 
     /* MODAL STYLES */
     .event-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
@@ -240,8 +304,9 @@
     <h1 id="sa-title" style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(2rem, 4vw, 3rem); color: var(--dark); margin-bottom: 1.5rem; line-height: 1.2;"></h1>
     <div id="sa-desc" style="font-size: 1.1rem; line-height: 1.8; color: var(--dark); opacity: 0.9;"></div>
     <div style="margin-top: 3rem; border-top: 1px solid rgba(45,106,79,0.1); padding-top: 2rem;">
-      <button class="btn-primary" style="font-size: 0.95rem; padding: 0.8rem 1.5rem; background:var(--green); color:white; border:none; border-radius:12px; cursor:pointer; font-weight: 600; font-family: inherit; transition: 0.2s;" onclick="copyShareLink()">
-        🔗 <span data-i18n="btn_share_link">Share Article</span>
+      <button class="ui-share-btn ui-share-btn--lg" id="modal-share-btn" onclick="copyShareLink()">
+        <span class="share-icon">🔗</span>
+        <span class="share-label" data-i18n="btn_share_link">Share Article</span>
       </button>
     </div>
   </section>
@@ -424,7 +489,7 @@
         var card = document.createElement('div');
         card.className = 'event-card';
         card.style.cursor = 'pointer';
-        card.onclick = (e) => { if (!e.target.closest('.card-share-btn') && !e.target.closest('a')) openArticle(index); };
+        card.onclick = (e) => { if (!e.target.closest('.ui-share-btn') && !e.target.closest('a')) openArticle(index); };
         var catBadge = ev.category ? `<span style="position:absolute;top:1rem;left:1rem;background:rgba(116,198,157,0.85);color:#1a2e1a;padding:0.2rem 0.6rem;border-radius:20px;font-size:0.72rem;font-weight:700;">${ev.category}</span>` : '';
         card.innerHTML = `
           <div style="position:relative;">
@@ -434,7 +499,7 @@
           <div class="event-info">
             <h3>${lang === 'az' ? ev.title_az : ev.title_en}</h3>
             <p>${(lang === 'az' ? (ev.desc_az || '') : (ev.desc_en || '')).replace(/[*#_~>]/g, '')}</p>
-            <button class="card-share-btn" onclick="copyShareLinkById('${ev.id}', event)">🔗</button>
+            <button class="ui-share-btn" onclick="copyShareLinkById('${ev.id}', event)"><span class="share-icon">🔗</span><span class="share-label">${lang === 'az' ? 'Paylaş' : 'Share'}</span></button>
           </div>
         `;
         container.appendChild(card);
