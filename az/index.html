@@ -2685,6 +2685,13 @@
         auth_wait: "Please wait...",
         auth_missing_reg_fields: "Please enter your First Name, Last Name and Date of Birth.",
         auth_success_confirm: "Registration successful! Please check your email (including Spam folder) and click the confirmation link.",
+        auth_forgot_title: "Reset Password",
+        auth_forgot_sub: "Enter your email and we'll send you a reset link.",
+        auth_forgot_btn: "Send Reset Link",
+        auth_forgot_link: "Forgot password?",
+        auth_forgot_success: "Password reset link sent! Check your email (including Spam folder).",
+        auth_forgot_back: "Back to Sign In",
+        auth_missing_email: "Please enter your email address.",
         surv_header_title: "Join <em>our community</em>",
         surv_header_sub: "Step forward as a young environmental leader.<br>Just a few questions — takes 1 minute.",
         surv_step1_title: "Let's get to know you",
@@ -2845,6 +2852,13 @@
         auth_wait: "Gözləyin...",
         auth_missing_reg_fields: "Ad, Soyad və Doğum Tarixini daxil edin.",
         auth_success_confirm: "Qeydiyyat uğurla tamamlandı! Zəhmət olmasa e-poçtunuza (Spam qovluğuna da baxa bilərsiniz) göndərilən təsdiq linkinə klikləyin.",
+        auth_forgot_title: "Şifrəni Sıfırla",
+        auth_forgot_sub: "E-poçtunuzu daxil edin, sizə sıfırlama linki göndərəcəyik.",
+        auth_forgot_btn: "Sıfırlama Linki Göndər",
+        auth_forgot_link: "Şifrəni unutdunuz?",
+        auth_forgot_success: "Şifrə sıfırlama linki göndərildi! E-poçtunuzu yoxlayın (Spam qovluğuna da baxın).",
+        auth_forgot_back: "Daxil olmağa qayıt",
+        auth_missing_email: "Zəhmət olmasa e-poçt ünvanınızı daxil edin.",
         surv_header_title: "İcmamıza <em>qoşul</em>",
         surv_header_sub: "Gənc ekoloji lider kimi bizimlə addımla.<br>Sadəcə bir neçə sual — 1 dəqiqə çəkir.",
         surv_step1_title: "Sizi yaxından tanıyaq",
@@ -3743,8 +3757,9 @@
         <label class="label_input" for="auth-email">Email</label>
         <input spellcheck="false" class="input" type="email" name="email" id="auth-email" placeholder="Email address" />
 
-        <div class="frg_pss">
+        <div class="frg_pss" id="auth-pass-row">
           <label class="label_input" for="auth-pass">Password</label>
+          <a href="javascript:void(0)" onclick="setAuthMode('forgot')" id="auth-forgot-link">Forgot password?</a>
         </div>
         <input spellcheck="false" class="input" type="text" name="password" id="auth-pass" placeholder="Password" />
 
@@ -3852,10 +3867,20 @@
       const fNameLabel = document.getElementById('auth-fname-label');
       const lNameLabel = document.getElementById('auth-lname-label');
       const dobLabel = document.getElementById('auth-dob-label');
+      const passRow = document.getElementById('auth-pass-row');
+      const passInput = document.getElementById('auth-pass');
+      const blindLabel = document.querySelector('.auth-card label.blind_input');
+      const forgotLink = document.getElementById('auth-forgot-link');
       
       document.getElementById('auth-error').style.display = 'none';
       btn.style.display = 'block';
       btn.disabled = false;
+
+      // Show password row & blind toggle by default
+      if (passRow) passRow.style.display = 'flex';
+      if (passInput) passInput.style.display = 'block';
+      if (blindLabel) blindLabel.style.display = 'inline-flex';
+      if (forgotLink) forgotLink.style.display = 'inline';
 
       if (mode === 'login') {
         title.innerText = t.auth_login_title || 'Sign In';
@@ -3866,6 +3891,19 @@
         if (fNameLabel) fNameLabel.style.display = 'none';
         if (lNameLabel) lNameLabel.style.display = 'none';
         if (dobLabel) dobLabel.style.display = 'none';
+      } else if (mode === 'forgot') {
+        title.innerText = t.auth_forgot_title || 'Reset Password';
+        sub.innerText = t.auth_forgot_sub || "Enter your email and we'll send you a reset link.";
+        btn.innerText = t.auth_forgot_btn || 'Send Reset Link';
+        switchText.innerHTML = '<span onclick="setAuthMode(\'login\')">' + (t.auth_forgot_back || '← Back to Sign In') + '</span>';
+        fName.style.display = 'none'; lName.style.display = 'none'; dob.style.display = 'none';
+        if (fNameLabel) fNameLabel.style.display = 'none';
+        if (lNameLabel) lNameLabel.style.display = 'none';
+        if (dobLabel) dobLabel.style.display = 'none';
+        // Hide password field, blind toggle, and forgot link
+        if (passRow) passRow.style.display = 'none';
+        if (passInput) passInput.style.display = 'none';
+        if (blindLabel) blindLabel.style.display = 'none';
       } else {
         title.innerText = t.auth_register_title || 'Sign Up';
         sub.innerText = t.auth_register_sub || 'Create a new account and join us!';
@@ -3875,15 +3913,17 @@
         if (fNameLabel) fNameLabel.style.display = 'inline';
         if (lNameLabel) lNameLabel.style.display = 'inline';
         if (dobLabel) dobLabel.style.display = 'inline';
+        if (forgotLink) forgotLink.style.display = 'none';
       }
       // Re-apply placeholder translations
       if (fName) fName.placeholder = t.auth_fname_placeholder || '';
       if (lName) lName.placeholder = t.auth_lname_placeholder || '';
       if (dob) dob.title = t.auth_dob_title || '';
       var authEmail = document.getElementById('auth-email');
-      var authPass = document.getElementById('auth-pass');
+      var authPass2 = document.getElementById('auth-pass');
       if (authEmail) authEmail.placeholder = t.auth_email_placeholder || '';
-      if (authPass) authPass.placeholder = t.auth_pass_placeholder || '';
+      if (authPass2) authPass2.placeholder = t.auth_pass_placeholder || '';
+      if (forgotLink) forgotLink.innerText = t.auth_forgot_link || 'Forgot password?';
     }
 
     async function submitAuth() {
@@ -3897,6 +3937,27 @@
 
       const lang = localStorage.getItem('yes_lang') || 'en';
       const t = translations[lang] || translations['en'];
+
+      if (authMode === 'forgot') {
+        if (!email) { err.innerText = t.auth_missing_email || 'Please enter your email address.'; err.style.display = 'block'; return; }
+        btn.disabled = true;
+        btn.innerText = t.auth_wait || 'Please wait...';
+        err.style.display = 'none';
+        const { error } = await sbClient.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + '/reset-password.html'
+        });
+        if (error) {
+          err.innerText = error.message; err.style.display = 'block'; err.style.color = '#e74c3c';
+          btn.disabled = false; btn.innerText = t.auth_forgot_btn || 'Send Reset Link';
+          return;
+        }
+        err.innerText = t.auth_forgot_success || 'Password reset link sent! Check your email.';
+        err.style.display = 'block';
+        err.style.color = 'var(--green)';
+        btn.style.display = 'none';
+        return;
+      }
+
       if (!email || !pass) { err.innerText = t.auth_missing_fields || 'Please enter your email and password.'; err.style.display = 'block'; return; }
       
       btn.disabled = true;
