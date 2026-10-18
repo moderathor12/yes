@@ -827,14 +827,23 @@
 
 <!-- ── EVENT MODAL ── -->
 <div class="modal-overlay" id="event-modal">
-  <div class="modal-box" style="max-width:500px;">
+  <div class="modal-box" style="max-width:540px;">
     <div class="modal-header">
       <h2 id="ev-modal-title" data-i18n="modal_event_new">Yeni Tədbir</h2>
       <button class="modal-close" onclick="closeEventModal()"><i class="ph ph-x"></i></button>
     </div>
-    <div class="form-group"><label data-i18n="label_ev_title_az">Başlıq (AZ)</label><input type="text" id="ev-title-az"></div>
-    <div class="form-group"><label data-i18n="label_ev_title_en">Başlıq (EN)</label><input type="text" id="ev-title-en"></div>
+    <div class="form-group"><label data-i18n="label_ev_title_az">Başlıq (AZ)</label><input type="text" id="ev-title-az" placeholder="Məs: Yaşıl Gələcək Təlimi"></div>
+    <div class="form-group"><label data-i18n="label_ev_title_en">Başlıq (EN)</label><input type="text" id="ev-title-en" placeholder="E.g.: Green Future Workshop"></div>
     <div class="form-group"><label data-i18n="label_ev_date">Tarix</label><input type="date" id="ev-date"></div>
+    <div class="form-group">
+      <label data-i18n="label_ev_image">Şəkil Linki (URL)</label>
+      <input type="text" id="ev-image" placeholder="https://..." data-i18n-ph="ev_image_ph" oninput="previewEventImage(this.value)">
+      <div id="ev-image-preview" style="display:none; margin-top:0.6rem; border-radius:10px; overflow:hidden; border:1px solid #ddd; max-height:160px; background:#f5f5f5;">
+        <img id="ev-img-preview-el" src="" alt="Preview" style="width:100%; height:160px; object-fit:cover; display:block;">
+      </div>
+    </div>
+    <div class="form-group"><label data-i18n="label_ev_desc_az">Qısa Məlumat (AZ)</label><textarea id="ev-desc-az" rows="3" placeholder="Tədbir haqqında qısa məlumat..."></textarea></div>
+    <div class="form-group"><label data-i18n="label_ev_desc_en">Qısa Məlumat (EN)</label><textarea id="ev-desc-en" rows="3" placeholder="Short description about the event..."></textarea></div>
     <div class="form-group"><label data-i18n="label_ev_link">Qeydiyyat Linki</label><input type="text" id="ev-link" placeholder="Məs: https://forms.gle/..." data-i18n-ph="ev_link_ph"></div>
     <div class="modal-footer"><button class="btn btn-green" onclick="saveEvent()" data-i18n="btn_save">Yadda saxla</button></div>
   </div>
@@ -1006,6 +1015,12 @@
       event_passive: "Passiv",
       btn_close_event: "Bağla",
       btn_open_event: "Aç",
+      label_ev_image: "Şəkil Linki (URL)",
+      ev_image_ph: "https://... şəkil linki daxil edin",
+      label_ev_desc_az: "Qısa Məlumat (AZ)",
+      label_ev_desc_en: "Qısa Məlumat (EN)",
+      modal_event_edit: "Tədbiri Redaktə Et",
+      notify_event_updated: "Tədbir yeniləndi ✅",
       
       resources_heading: "Resurslar və Sənədlər",
       btn_new_resource: "+ Yeni Resurs",
@@ -1204,6 +1219,12 @@
       event_passive: "Inactive",
       btn_close_event: "Close",
       btn_open_event: "Open",
+      label_ev_image: "Image Link (URL)",
+      ev_image_ph: "https://... enter image URL",
+      label_ev_desc_az: "Short Description (AZ)",
+      label_ev_desc_en: "Short Description (EN)",
+      modal_event_edit: "Edit Event",
+      notify_event_updated: "Event updated ✅",
       
       resources_heading: "Resources & Documents",
       btn_new_resource: "+ New Resource",
@@ -2609,30 +2630,63 @@
   }
 
   // ── EVENTS ──
+  let allAdminEvents = [];
+  let editingEventId = null;
+
+  function previewEventImage(url) {
+    const box = document.getElementById('ev-image-preview');
+    const img = document.getElementById('ev-img-preview-el');
+    if (!box || !img) return;
+    const cleanUrl = (url || '').trim();
+    if (cleanUrl && cleanUrl.startsWith('http')) {
+      img.src = cleanUrl;
+      img.onerror = () => { box.style.display = 'none'; };
+      img.onload = () => { box.style.display = 'block'; };
+    } else {
+      box.style.display = 'none';
+      img.src = '';
+    }
+  }
+
   async function loadEventsAdmin() {
     const t = translations[currentLang] || translations.az;
     const { data } = await sb.from('events').select('*').order('created_at', { ascending: false });
     const list = document.getElementById('events-list');
     if (!list) return;
     if (!data) return;
+    allAdminEvents = data;
     list.innerHTML = data.map(ev => {
       const title = currentLang === 'en' ? (ev.title_en || ev.title_az) : (ev.title_az || ev.title_en);
       const dateStr = ev.event_date ? new Date(ev.event_date).toLocaleDateString(currentLang === 'az' ? 'az-AZ' : 'en-US') : t.event_not_specified;
       const statusStr = ev.is_active ? t.event_active : t.event_passive;
       const toggleBtnText = ev.is_active ? t.btn_close_event : t.btn_open_event;
+      const imgHtml = ev.image
+        ? `<img src="${ev.image}" alt="" style="width:72px; height:52px; object-fit:cover; border-radius:8px; flex-shrink:0; border:1px solid #e0efe6;">`
+        : `<div style="width:72px; height:52px; background:#e8f5e9; border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--green); font-size:1.6rem; flex-shrink:0;"><i class="ph ph-calendar"></i></div>`;
+
       return `
-      <div class="article-item" style="border-left-color:${ev.is_active ? 'var(--lime)' : '#f39c12'}; display:flex; justify-content:space-between; align-items:center;">
-        <div class="article-meta">
-          <h3>${title}</h3>
-          <p style="margin-top:0.3rem;">${t.event_date_label} ${dateStr} &nbsp;&bull;&nbsp; ${statusStr}</p>
+      <div class="article-item" style="border-left-color:${ev.is_active ? 'var(--lime)' : '#f39c12'}; display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+        <div style="display:flex; align-items:center; gap:1rem; flex:1; min-width:0;">
+          ${imgHtml}
+          <div class="article-meta" style="flex:1; min-width:0;">
+            <h3 style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${title}</h3>
+            <p style="margin-top:0.3rem;">${t.event_date_label} ${dateStr} &nbsp;&bull;&nbsp; <span style="font-weight:600; color:${ev.is_active ? 'var(--green)' : '#e67e22'};">${statusStr}</span></p>
+            ${ev.registration_link ? `<a href="${ev.registration_link}" target="_blank" style="font-size:0.78rem; color:var(--green); text-decoration:underline; display:inline-block; margin-top:2px; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"><i class="ph ph-link"></i> ${ev.registration_link}</a>` : ''}
+          </div>
         </div>
-        <div class="article-actions">
+        <div class="article-actions" style="flex-shrink:0;">
+          <button class="btn btn-ghost btn-sm" onclick="editEventById('${ev.id}')">${t.btn_edit}</button>
           <button class="btn btn-ghost btn-sm" onclick="toggleEventStatus('${ev.id}', ${!ev.is_active})">${toggleBtnText}</button>
           <button class="btn btn-red btn-sm" onclick="deleteEvent('${ev.id}')">${t.btn_delete}</button>
         </div>
       </div>
     `}).join('');
     if(data.length === 0) list.innerHTML = `<p style="padding:1rem; opacity:0.5;">${t.no_events_yet}</p>`;
+  }
+
+  function editEventById(id) {
+    const ev = allAdminEvents.find(e => e.id === id);
+    if (ev) showEventModal(ev);
   }
 
   async function toggleEventStatus(id, isActive) {
@@ -2651,28 +2705,61 @@
     }
   }
 
-  function showEventModal() { document.getElementById('event-modal').classList.add('open'); }
-  function closeEventModal() { document.getElementById('event-modal').classList.remove('open'); }
+  function showEventModal(ev = null) {
+    const t = translations[currentLang] || translations.az;
+    editingEventId = ev ? ev.id : null;
+    document.getElementById('ev-modal-title').innerText = ev ? (t.modal_event_edit || 'Tədbiri Redaktə Et') : (t.modal_event_new || 'Yeni Tədbir');
+    document.getElementById('ev-title-az').value = ev ? (ev.title_az || '') : '';
+    document.getElementById('ev-title-en').value = ev ? (ev.title_en || '') : '';
+    document.getElementById('ev-date').value = ev ? (ev.event_date ? ev.event_date.split('T')[0] : '') : '';
+    document.getElementById('ev-image').value = ev ? (ev.image || '') : '';
+    document.getElementById('ev-desc-az').value = ev ? (ev.desc_az || '') : '';
+    document.getElementById('ev-desc-en').value = ev ? (ev.desc_en || '') : '';
+    document.getElementById('ev-link').value = ev ? (ev.registration_link || '') : '';
+    previewEventImage(ev ? (ev.image || '') : '');
+    document.getElementById('event-modal').classList.add('open');
+  }
+
+  function closeEventModal() {
+    document.getElementById('event-modal').classList.remove('open');
+    editingEventId = null;
+    previewEventImage('');
+  }
   
   async function saveEvent() {
     const t = translations[currentLang] || translations.az;
-    const taz = document.getElementById('ev-title-az').value;
-    const ten = document.getElementById('ev-title-en').value;
+    const taz = document.getElementById('ev-title-az').value.trim();
+    const ten = document.getElementById('ev-title-en').value.trim();
     const date = document.getElementById('ev-date').value;
-    const link = document.getElementById('ev-link').value;
+    const image = document.getElementById('ev-image').value.trim();
+    const descAz = document.getElementById('ev-desc-az').value.trim();
+    const descEn = document.getElementById('ev-desc-en').value.trim();
+    const link = document.getElementById('ev-link').value.trim();
+
     if(!taz && !ten) { notify(t.notify_titles_required, 'error'); return; }
     if(!link) { notify(t.notify_fill_all_fields, 'error'); return; }
     
-    const eventData = { title_az: taz, title_en: ten, event_date: date || null, registration_link: link };
+    const eventData = {
+      title_az: taz || ten,
+      title_en: ten || taz,
+      event_date: date || null,
+      image: image || null,
+      desc_az: descAz || null,
+      desc_en: descEn || null,
+      registration_link: link
+    };
     
-    const { error } = await sb.from('events').insert(eventData);
-    if(error) { notify(error.message, 'error'); return; }
+    if (editingEventId) {
+      const { error } = await sb.from('events').update(eventData).eq('id', editingEventId);
+      if (error) { notify(error.message, 'error'); return; }
+      notify(t.notify_event_updated, 'success');
+    } else {
+      const { error } = await sb.from('events').insert(eventData);
+      if(error) { notify(error.message, 'error'); return; }
+      notify(t.notify_event_created, 'success');
+    }
+    
     closeEventModal();
-    notify(t.notify_event_created, 'success');
-    document.getElementById('ev-title-az').value = '';
-    document.getElementById('ev-title-en').value = '';
-    document.getElementById('ev-date').value = '';
-    document.getElementById('ev-link').value = '';
     loadEventsAdmin();
   }
 

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="az">
+
+<head>
+  <base href="../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YES Tədbirlər və Elanlar — Gənclər Ekoloji Cəmiyyəti</title>
+  <link rel="alternate" hreflang="az" href="https://youthensoc.org/az/events.html" />
+  <link rel="alternate" hreflang="en" href="https://youthensoc.org/events.html" />
+  <link rel="alternate" hreflang="x-default" href="https://youthensoc.org/events.html" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+  <link rel="manifest" href="favicon/site.webmanifest">
+  <link rel="shortcut icon" href="favicon/favicon.ico">
+  <link rel="stylesheet" href="css/accessibility.css?v=2.1">
+  
+  <style>
+    :root {
+      --green: #2d6a4f;
+      --lime: #74c69d;
+      --bright: #b7e4c7;
+      --yellow: #f4d35e;
+      --pink: #e07a5f;
+      --purple: #9b72cf;
+      --bg: #f0f4f0;
+      --dark: #1a2e1a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--dark); overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 5%; background: rgba(240, 244, 240, 0.85);
+      backdrop-filter: blur(12px); border-bottom: 1px solid rgba(45, 106, 79, 0.15);
+    }
+    .logo { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 1.4rem; color: var(--green); text-decoration: none; }
+    .logo-badge { background: var(--green); color: white; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 1.1rem; letter-spacing: 1px; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.95rem; color: var(--dark); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--green); font-weight: 700; }
+    .nav-right { display: flex; align-items: center; gap: 2rem; }
+    .menu-btn { display: none; background: none; border: none; color: var(--dark); cursor: pointer; z-index: 1002; padding: 0.5rem; }
+
+    /* Lang dropdown */
+    .lang-dropdown { position: relative; display: inline-block; z-index: 1000; }
+    .lang-current { background: #f0f0f0; color: var(--dark); border: 1px solid rgba(0,0,0,0.05); padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; font-family: 'Space Grotesk', sans-serif; transition: background 0.2s; }
+    .lang-current:hover { background: #e8e8e8; }
+    .lang-current svg { width: 16px; height: 16px; fill: currentColor; transition: transform 0.2s; }
+    .lang-dropdown:hover .lang-current svg { transform: rotate(180deg); }
+    .lang-options { position: absolute; top: 100%; right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 0.5rem; min-width: 80px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1); margin-top: 0.5rem; }
+    .lang-dropdown:hover .lang-options { opacity: 1; visibility: visible; transform: translateY(0); }
+    .lang-options button { display: block; width: 100%; padding: 0.5rem 1rem; border: none; background: none; color: var(--dark); text-align: left; font-size: 0.85rem; font-weight: 600; cursor: pointer; border-radius: 8px; font-family: 'DM Sans', sans-serif; }
+    .lang-options button:hover { background: var(--bg); color: var(--green); }
+    .lang-options button.active { background: rgba(45, 106, 79, 0.1); color: var(--green); }
+
+    /* HERO */
+    .events-hero { padding: 9rem 5% 3rem; text-align: center; max-width: 900px; margin: 0 auto; }
+    .section-tag { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase; color: var(--green); margin-bottom: 1rem; }
+    .section-title { font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: clamp(2.2rem, 5vw, 3.8rem); line-height: 1.15; color: var(--dark); margin-bottom: 1.2rem; }
+    .hero-sub { font-size: 1.1rem; color: rgba(26, 46, 26, 0.7); line-height: 1.6; max-width: 650px; margin: 0 auto; }
+
+    /* FILTER BAR */
+    .filter-bar { display: flex; justify-content: center; gap: 0.8rem; margin: 2rem auto 3rem; flex-wrap: wrap; }
+    .filter-btn {
+      background: white; border: 1.5px solid rgba(45,106,79,0.2);
+      color: var(--dark); padding: 0.55rem 1.3rem; border-radius: 24px;
+      font-weight: 600; font-size: 0.9rem; cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif; transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--green); color: var(--green); }
+    .filter-btn.active { background: var(--green); color: white; border-color: var(--green); }
+
+    /* EVENTS SECTION & GRID */
+    .events-section { padding: 0 5% 6rem; max-width: 1300px; margin: 0 auto; }
+    .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2rem; }
+
+    /* EVENT CARD */
+    .event-card {
+      background: white; border-radius: 20px; overflow: hidden;
+      border: 1px solid rgba(45, 106, 79, 0.12);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+      display: flex; flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+    .event-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 40px rgba(45, 106, 79, 0.12);
+    }
+    .card-img-wrap {
+      position: relative; width: 100%; height: 210px;
+      overflow: hidden; background: linear-gradient(135deg, #1a2e1a, #2d6a4f);
+    }
+    .card-img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .event-card:hover .card-img {
+      transform: scale(1.05);
+    }
+    .card-date-badge {
+      position: absolute; top: 1rem; left: 1rem;
+      background: rgba(26, 46, 26, 0.85); backdrop-filter: blur(8px);
+      color: white; padding: 0.35rem 0.8rem; border-radius: 20px;
+      font-size: 0.78rem; font-weight: 700;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .card-status-badge {
+      position: absolute; top: 1rem; right: 1rem;
+      padding: 0.35rem 0.8rem; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 700;
+    }
+    .badge-open { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .badge-closed { background: #fbe9e7; color: #d84315; border: 1px solid #ffab91; }
+
+    .card-body {
+      padding: 1.5rem; display: flex; flex-direction: column;
+      flex: 1; justify-content: space-between; gap: 1rem;
+    }
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem;
+      font-weight: 700; color: var(--dark); line-height: 1.3;
+      margin-bottom: 0.5rem;
+    }
+    .card-desc {
+      font-size: 0.92rem; color: rgba(26, 46, 26, 0.75);
+      line-height: 1.55; display: -webkit-box;
+      -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-actions {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 0.8rem; margin-top: auto; padding-top: 1rem;
+      border-top: 1px solid rgba(0,0,0,0.06);
+    }
+
+    /* REGISTER BUTTON */
+    .btn-register {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 0.4rem; background: var(--green); color: white;
+      text-decoration: none; padding: 0.55rem 1.2rem; border-radius: 12px;
+      font-weight: 700; font-size: 0.88rem; font-family: 'Space Grotesk', sans-serif;
+      transition: all 0.2s ease; border: none; cursor: pointer; flex: 1;
+    }
+    .btn-register:hover {
+      background: #1b4332; transform: translateY(-1px);
+      box-shadow: 0 6px 15px rgba(45,106,79,0.25);
+    }
+    .btn-register:disabled, .btn-register.disabled {
+      background: #ccc; cursor: not-allowed; color: #666; box-shadow: none;
+    }
+
+    /* SHARE BUTTON */
+    .btn-share {
+      background: #f0f4f0; border: 1px solid rgba(45,106,79,0.2);
+      color: var(--dark); padding: 0.55rem 0.8rem; border-radius: 12px;
+      font-size: 0.9rem; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; transition: all 0.2s;
+    }
+    .btn-share:hover { background: #e0efe6; color: var(--green); }
+
+    /* SINGLE EVENT VIEW / MODAL */
+    #single-event { display: none; padding: 7rem 5% 5rem; max-width: 900px; margin: 0 auto; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      color: var(--green); text-decoration: none; font-weight: 700;
+      font-size: 0.95rem; margin-bottom: 2rem; cursor: pointer;
+    }
+    .back-btn:hover { text-decoration: underline; }
+    .se-img {
+      width: 100%; max-height: 440px; object-fit: cover;
+      border-radius: 20px; margin-bottom: 2rem;
+      border: 1px solid rgba(45, 106, 79, 0.15);
+    }
+    .se-meta {
+      display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .se-title {
+      font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800; color: var(--dark); line-height: 1.2; margin-bottom: 1.5rem;
+    }
+    .se-desc {
+      font-size: 1.05rem; line-height: 1.8; color: rgba(26, 46, 26, 0.85);
+      margin-bottom: 2.5rem;
+    }
+    .se-actions {
+      display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+      padding: 1.5rem; background: white; border-radius: 16px;
+      border: 1px solid rgba(45, 106, 79, 0.15);
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem;
+      background: var(--dark); color: white; padding: 0.9rem 1.4rem;
+      border-radius: 12px; font-weight: 600; font-size: 0.9rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 9999;
+      opacity: 0; transform: translateY(10px); transition: all 0.3s;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* LOADING SPINNER */
+    .loader {
+      display: flex; justify-content: center; align-items: center;
+      gap: 0.5rem; padding: 4rem; grid-column: 1 / -1;
+    }
+    .loader span {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--green); animation: pulse 0.8s infinite ease-in-out alternate;
+    }
+    .loader span:nth-child(2) { animation-delay: 0.2s; }
+    .loader span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes pulse { from { transform: scale(0.6); opacity: 0.4; } to { transform: scale(1.2); opacity: 1; } }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.active {
+        display: flex; flex-direction: column; position: absolute;
+        top: 100%; left: 0; width: 100%; background: white;
+        padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      }
+      .menu-btn { display: block; }
+      .events-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="logo" href="index.html">
+      <span class="logo-badge">YES</span>
+      <span data-i18n="logo_text">Gənclərin Ekoloji Cəmiyyəti</span>
+    </a>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="index.html#about" data-i18n="nav_about">Biz Kimik</a></li>
+        <li><a href="index.html#pillars" data-i18n="nav_pillars">Fəaliyyətimiz</a></li>
+        <li><a href="articles.html" data-i18n="nav_articles">Məqalələr</a></li>
+        <li><a href="events.html" class="active" data-i18n="nav_events">Tədbirlər</a></li>
+        <li><a href="wiki.html" data-i18n="nav_wiki">Wiki</a></li>
+        <li><a href="index.html#volunteer" data-i18n="nav_volunteer">Könüllülük</a></li>
+      </ul>
+      <div class="lang-dropdown">
+        <button class="lang-current">
+          <span id="active-lang">EN</span>
+          <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" /></svg>
+        </button>
+        <div class="lang-options">
+          <button onclick="setLang('en')" id="opt-en">EN</button>
+          <button onclick="setLang('az')" id="opt-az">AZ</button>
+        </div>
+      </div>
+      <button class="menu-btn" onclick="toggleMenu()" aria-label="Toggle Menu">
+        <i class="ph ph-list" style="font-size: 1.6rem;"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- LIST VIEW -->
+  <div id="events-view">
+    <header class="events-hero">
+      <div class="section-tag" data-i18n="events_tag">Tədbirlər və Elanlar</div>
+      <h1 class="section-title" data-i18n="events_title">Tədbir və <em style='color:var(--green); font-style:normal'>Layihələrimiz</em></h1>
+      <p class="hero-sub" data-i18n="events_sub">Görüşlərimizdə, eko-təlimlərimizdə, aksiyalarımızda və layihələrimizdə iştirak edin. Birbaşa qeydiyyatdan keçin!</p>
+      
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="setFilter('all', this)" data-i18n="filter_all">Bütün Tədbirlər</button>
+        <button class="filter-btn" onclick="setFilter('active', this)" data-i18n="filter_active">Qeydiyyat Açıqdır</button>
+        <button class="filter-btn" onclick="setFilter('past', this)" data-i18n="filter_past">Keçmiş Tədbirlər</button>
+      </div>
+    </header>
+
+    <main class="events-section">
+      <div class="events-grid" id="events-grid">
+        <div class="loader"><span></span><span></span><span></span></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- SINGLE EVENT VIEW -->
+  <div id="single-event">
+    <a class="back-btn" onclick="closeSingleEvent()"><i class="ph ph-arrow-left"></i> <span data-i18n="btn_back">Tədbirlərə qayıt</span></a>
+    <img id="se-img" class="se-img" src="" alt="Event banner">
+    <div class="se-meta">
+      <span id="se-date-badge" class="card-date-badge" style="position:static;"></span>
+      <span id="se-status-badge" class="card-status-badge" style="position:static;"></span>
+    </div>
+    <h1 id="se-title" class="se-title"></h1>
+    <div id="se-desc" class="se-desc"></div>
+    <div class="se-actions">
+      <a id="se-reg-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn-register" style="flex:auto; padding:0.8rem 2rem; font-size:1rem;">
+        <i class="ph ph-check-circle" style="font-size:1.2rem;"></i> <span data-i18n="btn_register">Qeydiyyatdan keç</span> <i class="ph ph-arrow-up-right"></i>
+      </a>
+      <button class="btn-share" onclick="copyEventShareLink()" style="padding:0.8rem 1.2rem; font-size:1rem;">
+        <i class="ph ph-share-network"></i> &nbsp;<span data-i18n="btn_share">Paylaş</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Link copied to clipboard! 🌱</div>
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <script>
+    const SUPABASE_URL = 'https://wqcugmhjfuvnwxhspytw.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxY3VnbWhqZnV2bnd4aHNweXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMzY2NzcsImV4cCI6MjA5MTYxMjY3N30.A2rZNI2hOpDNC_JLeQNO9Is50HswX-jB5he9wNOpYLo';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    var translations = {
+      en: {
+        logo_text: "Youth Environment Society",
+        nav_about: "Who We Are",
+        nav_pillars: "Our Work",
+        nav_articles: "Articles",
+        nav_events: "Events",
+        nav_wiki: "Wiki",
+        nav_volunteer: "Volunteer",
+        events_tag: "Events & Announcements",
+        events_title: "Join Our <em style='color:var(--green); font-style:normal'>Events</em> & News",
+        events_sub: "Participate in our workshops, eco-initiatives, webinars and volunteer gatherings. Register directly and join us!",
+        filter_all: "All Events",
+        filter_active: "Registration Open",
+        filter_past: "Past Events",
+        status_open: "Registration Open",
+        status_closed: "Closed",
+        btn_register: "Register Now",
+        btn_closed: "Registration Closed",
+        btn_share: "Share",
+        btn_back: "Back to Events",
+        btn_details: "Details",
+        no_events: "No events found in this category.",
+        date_tba: "Date: To Be Announced",
+        copied: "Link copied to clipboard! 🌱"
+      },
+      az: {
+        logo_text: "Gənclərin Ekoloji Cəmiyyəti",
+        nav_about: "Biz Kimik",
+        nav_pillars: "Fəaliyyətimiz",
+        nav_articles: "Məqalələr",
+        nav_events: "Tədbirlər",
+        nav_wiki: "Wiki",
+        nav_volunteer: "Könüllülük",
+        events_tag: "Tədbirlər və Elanlar",
+        events_title: "Tədbir və <em style='color:var(--green); font-style:normal'>Layihələrimiz</em>",
+        events_sub: "Görüşlərimizdə, eko-təlimlərimizdə, aksiyalarımızda və layihələrimizdə iştirak edin. Birbaşa qeydiyyatdan keçin!",
+        filter_all: "Bütün Tədbirlər",
+        filter_active: "Qeydiyyat Açıqdır",
+        filter_past: "Keçmiş Tədbirlər",
+        status_open: "Qeydiyyat Açıqdır",
+        status_closed: "Bitib",
+        btn_register: "Qeydiyyatdan keç",
+        btn_closed: "Qeydiyyat bitdi",
+        btn_share: "Paylaş",
+        btn_back: "Tədbirlərə qayıt",
+        btn_details: "Ətraflı",
+        no_events: "Bu kateqoriyada hələ tədbir yoxdur.",
+        date_tba: "Tarix: Elan olunacaq",
+        copied: "Link kopyalandı! 🌱"
+      }
+    };
+
+    let allEvents = [];
+    let currentFilter = 'all';
+    let currentEventId = null;
+
+    function toggleMenu() {
+      document.querySelector('.nav-links').classList.toggle('active');
+    }
+
+    function setLang(lang) {
+      localStorage.setItem('yes_lang', lang);
+      applyLanguage(lang);
+    }
+
+    function applyLanguage(lang) {
+      document.documentElement.lang = lang;
+      const t = translations[lang] || translations.en;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (t[k]) el.innerHTML = t[k];
+      });
+      document.getElementById('active-lang').innerText = lang.toUpperCase();
+      document.querySelectorAll('.lang-options button').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('opt-' + lang);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      renderEvents();
+      if (currentEventId) openSingleEvent(currentEventId);
+    }
+
+    function setFilter(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderEvents();
+    }
+
+    async function fetchEvents() {
+      try {
+        const { data, error } = await sb
+          .from('events')
+          .select('*')
+          .order('event_date', { ascending: false });
+        allEvents = data || [];
+      } catch (err) {
+        console.error('Failed to fetch events:', err);
+        allEvents = [];
+      }
+      renderEvents();
+      handleHash();
+    }
+
+    function renderEvents() {
+      const lang = localStorage.getItem('yes_lang') || 'en';
+      const t = translations[lang] || translations.en;
+      const grid = document.getElementById('events-grid');
+      if (!grid) return;
+
+      let filtered = allEvents;
+      if (currentFilter === 'active') {
+        filtered = allEvents.filter(e => e.is_active);
+      } else if (currentFilter === 'past') {
+        filtered = allEvents.filter(e => !e.is_active);
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:3rem; color:rgba(26,46,26,0.5); font-size:1.1rem;">${t.no_events}</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(ev => {
+        const title = lang === 'az' ? (ev.title_az || ev.title_en) : (ev.title_en || ev.title_az);
+        const desc = lang === 'az' ? (ev.desc_az || ev.desc_en || '') : (ev.desc_en || ev.desc_az || '');
+        const dateStr = ev.event_date
+          ? new Date(ev.event_date).toLocaleDateString(lang === 'az' ? 'az-AZ' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+          : t.date_tba;
+
+        const isOpen = ev.is_active;
+        const statusClass = isOpen ? 'badge-open' : 'badge-closed';
+        const statusText = isOpen ? t.status_open : t.status_closed;
+        const fallbackImg = 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80';
+        const imgSrc = ev.image || fallbackImg;
+
+        return `
+          <article class="event-card">
+            <div class="card-img-wrap" onclick="openSingleEvent('${ev.id}')" style="cursor:pointer;">
+              <img class="card-img" src="${imgSrc}" alt="${title}" loading="lazy" onerror="this.src='${fallbackImg}'">
+              <span class="card-date-badge"><i class="ph ph-calendar"></i> ${dateStr}</span>
+              <span class="card-status-badge ${statusClass}">${statusText}</span>
+            </div>
+            <div class="card-body">
+              <div>
+                <h3 class="card-title" onclick="openSingleEvent('${ev.id}')" style="cursor:pointer;">${title}</h3>
+                <p class="card-desc">${desc.replace(/[*#_~>]/g, '')}</p>
+              </div>
+              <div class="card-actions">
+                ${isOpen && ev.registration_link ? `
+                  <a href="${ev.registration_link}" target="_blank" rel="noopener noreferrer" class="btn-register" onclick="event.stopPropagation()">
+                    <i class="ph ph-check-circle"></i> <span>${t.btn_register}</span> <i class="ph ph-arrow-up-right"></i>
+                  </a>
+                ` : `
+                  <button class="btn-register disabled" disabled>
+                    <span>${t.btn_closed}</span>
+                  </button>
+                `}
+                <button class="btn-share" onclick="copyShareLinkById('${ev.id}', event)" title="${t.btn_share}">
+                  <i class="ph ph-share-network"></i>
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function openSingleEvent(id) {
+      const lang = localStorage.getItem('yes_lang') || 'en';
+      const t = translations[lang] || translations.en;
+      const ev = allEvents.find(e => String(e.id) === String(id));
+      if (!ev) return;
+
+      currentEventId = id;
+      const title = lang === 'az' ? (ev.title_az || ev.title_en) : (ev.title_en || ev.title_az);
+      const desc = lang === 'az' ? (ev.desc_az || ev.desc_en || '') : (ev.desc_en || ev.desc_az || '');
+      const dateStr = ev.event_date
+        ? new Date(ev.event_date).toLocaleDateString(lang === 'az' ? 'az-AZ' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+        : t.date_tba;
+
+      document.getElementById('se-title').innerText = title;
+      document.getElementById('se-desc').innerHTML = typeof marked !== 'undefined' ? marked.parse(desc) : desc;
+      document.getElementById('se-img').src = ev.image || 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1200&q=80';
+      document.getElementById('se-date-badge').innerHTML = `<i class="ph ph-calendar"></i> ${dateStr}`;
+      
+      const stEl = document.getElementById('se-status-badge');
+      stEl.className = 'card-status-badge ' + (ev.is_active ? 'badge-open' : 'badge-closed');
+      stEl.innerText = ev.is_active ? t.status_open : t.status_closed;
+
+      const regBtn = document.getElementById('se-reg-btn');
+      if (ev.is_active && ev.registration_link) {
+        regBtn.href = ev.registration_link;
+        regBtn.style.display = 'inline-flex';
+        regBtn.classList.remove('disabled');
+      } else {
+        regBtn.style.display = 'none';
+      }
+
+      window.location.hash = 'event-' + ev.id;
+      document.getElementById('events-view').style.display = 'none';
+      document.getElementById('single-event').style.display = 'block';
+      window.scrollTo(0, 0);
+    }
+
+    function closeSingleEvent() {
+      currentEventId = null;
+      document.getElementById('single-event').style.display = 'none';
+      document.getElementById('events-view').style.display = 'block';
+      if (window.location.hash.includes('event-')) {
+        history.replaceState('', document.title, window.location.pathname);
+      }
+      window.scrollTo(0, 0);
+    }
+
+    function handleHash() {
+      const hash = window.location.hash;
+      if (hash && hash.startsWith('#event-')) {
+        const id = hash.replace('#event-', '');
+        if (allEvents.some(e => String(e.id) === id)) {
+          openSingleEvent(id);
+        }
+      }
+    }
+
+    function copyShareLinkById(id, e) {
+      if (e) e.stopPropagation();
+      const url = window.location.origin + window.location.pathname + '#event-' + id;
+      navigator.clipboard.writeText(url).then(() => showToast());
+    }
+
+    function copyEventShareLink() {
+      const url = window.location.origin + window.location.pathname + window.location.hash;
+      navigator.clipboard.writeText(url).then(() => showToast());
+    }
+
+    function showToast() {
+      const lang = localStorage.getItem('yes_lang') || 'en';
+      const t = translations[lang] || translations.en;
+      const el = document.getElementById('toast');
+      el.innerText = t.copied;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    window.addEventListener('hashchange', handleHash);
+
+    // Init
+    const savedLang = localStorage.getItem('yes_lang') || 'en';
+    applyLanguage(savedLang);
+    fetchEvents();
+  </script>
+</body>
+</html>

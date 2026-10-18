@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const filesToProcess = ['index.html', 'articles.html', 'wiki.html'];
+const filesToProcess = ['index.html', 'articles.html', 'events.html', 'wiki.html'];
 const azDir = path.join(__dirname, 'az');
 
 if (!fs.existsSync(azDir)) {
@@ -40,6 +40,8 @@ for (const file of filesToProcess) {
         }
     } else if (file === 'articles.html') {
         azContent = azContent.replace(/<title>.*?<\/title>/, '<title>YES Məqalələr \u2014 Gənclər Ekoloji Cəmiyyəti</title>');
+    } else if (file === 'events.html') {
+        azContent = azContent.replace(/<title>.*?<\/title>/, '<title>YES Tədbirlər və Elanlar \u2014 Gənclər Ekoloji Cəmiyyəti</title>');
     } else if (file === 'wiki.html') {
         azContent = azContent.replace(/<title>.*?<\/title>/, '<title>YES Wiki \u2014 Gənclər Ekoloji Cəmiyyəti</title>');
     }

@@ -2122,6 +2122,117 @@
       .auth-card { --w-form: 100%; --p: 20px; border-radius: 16px; }
       .auth-card .avatar { --sz-avatar: 110px; }
     }
+    /* EVENTS PREVIEW SECTION */
+    .events-preview-section {
+      background: white;
+      border-top: 1px solid rgba(45, 106, 79, 0.1);
+      border-bottom: 1px solid rgba(45, 106, 79, 0.1);
+      padding: 5rem 5%;
+    }
+    .home-events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .home-event-card {
+      background: #f8fcf9;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(45, 106, 79, 0.14);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .home-event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 36px rgba(45, 106, 79, 0.12);
+    }
+    .home-event-img-wrap {
+      position: relative;
+      width: 100%;
+      height: 205px;
+      overflow: hidden;
+      background: #1a2e1a;
+    }
+    .home-event-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .home-event-card:hover .home-event-img {
+      transform: scale(1.05);
+    }
+    .home-event-date {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: rgba(26, 46, 26, 0.85);
+      backdrop-filter: blur(8px);
+      color: white;
+      padding: 0.35rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .home-event-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.35rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .badge-open {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #a5d6a7;
+    }
+    .badge-closed {
+      background: #fbe9e7;
+      color: #d84315;
+      border: 1px solid #ffab91;
+    }
+    .home-event-body {
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .home-event-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.22rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.4rem;
+      line-height: 1.3;
+    }
+    .home-event-desc {
+      font-size: 0.9rem;
+      color: rgba(26, 46, 26, 0.72);
+      line-height: 1.55;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .home-event-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.06);
+      padding-top: 0.9rem;
+    }
   </style>
 </head>
 
@@ -2138,6 +2249,7 @@
         <li><a href="#about" data-i18n="nav_about">Biz Kimik</a></li>
         <li><a href="#pillars" data-i18n="nav_pillars">Fəaliyyətimiz</a></li>
         <li><a href="articles.html" data-i18n="nav_articles">Məqalələr</a></li>
+        <li><a href="events.html" data-i18n="nav_events">Tədbirlər</a></li>
         <li><a href="wiki.html" data-i18n="nav_wiki">Wiki</a></li>
         <li><a href="#volunteer" data-i18n="nav_volunteer">Könüllülük proqramı</a></li>
       </ul>
@@ -2180,7 +2292,13 @@
 
 
     <div class="hero-content">
-      <div class="hero-tag" data-i18n="hero_tag">Gənclərin rəhbərliyi ilə · Planet mərkəzli</div>
+      <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap; margin-bottom:0.8rem;">
+        <div class="hero-tag" data-i18n="hero_tag" style="margin-bottom:0;">Gənclərin rəhbərliyi ilə · Planet mərkəzli</div>
+        <a href="#events" class="hero-event-pill" style="display:inline-flex; align-items:center; gap:0.45rem; background:rgba(45,106,79,0.12); border:1px solid rgba(45,106,79,0.25); color:var(--green); padding:0.35rem 0.85rem; border-radius:20px; font-size:0.82rem; font-weight:700; text-decoration:none; transition:all 0.2s;">
+          <span style="width:7px; height:7px; border-radius:50%; background:var(--green); display:inline-block;"></span>
+          <span data-i18n="hero_events_badge">Tədbirlər və Elanlar →</span>
+        </a>
+      </div>
       <h1 data-i18n="hero_title"><span class="hero-typewriter-line"><em class="hero-typewriter"><span id="typewriter-text">Davamlı</span><span class="typewriter-cursor" aria-hidden="true">|</span></em></span><br>gələcək naminə<br>gənclərin potensialını artırırıq.</h1>
       <p class="hero-sub" data-i18n="hero_sub">Biz ətraf mühiti qorumaq və gələcək nəsil yaşıl liderləri ruhlandırmaq üçün birləşmiş gənc fəallar, düşünənlər və icraçılar icmasıyıq.</p>
       <div class="hero-btns">
@@ -2216,6 +2334,29 @@
       <div class="stat-label" data-i18n="stat_4_label">Dəyişiklik Potensialı</div>
     </div>
   </div>
+
+  <!-- ── UPCOMING EVENTS SECTION ── -->
+  <section class="section events-preview-section" id="events">
+    <div style="max-width:1300px; margin:0 auto;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:2.5rem; flex-wrap:wrap; gap:1.2rem;">
+        <div>
+          <div class="section-tag" data-i18n="events_tag" style="margin-bottom:0.5rem;">Tədbirlər və Elanlar</div>
+          <h2 class="section-title" data-i18n="events_title" style="margin-bottom:0.5rem;">Yaxınlaşan və Son <em style='color:var(--green);font-style:normal'>Tədbirlər</em></h2>
+          <p style="font-size:1.05rem; color:rgba(26,46,26,0.7); max-width:600px;" data-i18n="events_sub">Görüşlərimizdə, eko-təlimlərimizdə, aksiyalarımızda və layihələrimizdə iştirak edin. Birbaşa qeydiyyatdan keçin!</p>
+        </div>
+        <a href="events.html" class="btn-secondary" style="margin-top:0.5rem;">
+          <span class="circle" aria-hidden="true"><span class="icon arrow"></span></span>
+          <span class="button-text" data-i18n="btn_view_all_events">Bütün Tədbirlər</span>
+        </a>
+      </div>
+
+      <div id="home-events-grid" class="home-events-grid">
+        <div style="grid-column:1/-1; text-align:center; padding:3rem; color:rgba(26,46,26,0.5);">
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- PHOTO CAROUSEL -->
   <section class="photo-carousel-section">
@@ -2501,1525 +2642,34 @@
     <h2 class="section-title" data-i18n="join_title"><em style='color:var(--green); font-style:normal'>YES</em> Xəbər Bülleteninə Abunə Olun</h2>
     <p data-i18n="join_sub">Ən son ekoloji xəbərləri, məqalələri və layihələrimizlə bağlı yenilikləri birbaşa e-poçtunuza almaq üçün bülletenimizə abunə olun. (Qeyd: Bu bölmə yalnız xəbər bülleteni abunəliyi üçündür, şəxsi kabinet hesabı açmaq üçün deyil).</p>
     <form id="email-form" class="join-form">
-      <input id="email-input" type="email" placeholder="Your email for newsletter" data-i18n="join_placeholder" required>
-      <span class="nb-subscribe-wrap">
-        <button id="signup-btn" type="submit" data-i18n="join_btn">Abunə Ol 📬</button>
-      </span>
-      <div id="form-msg" class="form-msg"></div>
-    </form>
-  </section>
-
-  <script>
-    // ──────────────────────────────────────────────────
-    //  1) Google Apps Script'i deploy ettikten sonra
-    //     aşağıdaki URL'i kendi Web App URL'inle değiştir.
-    // ──────────────────────────────────────────────────
-    var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyddf_y2oZn-iH99ekj5V0Y5SQhSbn6BE8KNPLjIOwv736tOboxr1pGX4F89HOgUrNqUA/exec';
-
-    function submitEmail(e) {
-      e.preventDefault();
-
-      var input = document.getElementById('email-input');
-      var email = input.value.trim();
-      var msgEl = document.getElementById('form-msg');
-
-      if (!email.toLowerCase().endsWith('@gmail.com')) {
-        showMsg(msgEl, '⚠️ Only @gmail.com addresses are accepted.', 'error');
-        return;
-      }
-
-      showMsg(msgEl, '', '');
-      window.pendingJoinEmail = email;
-      openSurvey();
-    }
-
-    function showMsg(el, text, type) {
-      el.textContent = text;
-      el.className = 'form-msg ' + type;
-    }
-
-    function showPopup(message) {
-      var popup = document.createElement('div');
-      popup.className = 'toast-popup';
-      popup.innerHTML = `
-        <div class="toast-content">
-          <span class="toast-icon">✅</span>
-          <span class="toast-text">${message}</span>
-        </div>
-      `;
-      document.body.appendChild(popup);
-
-      setTimeout(() => popup.classList.add('show'), 100);
-      setTimeout(() => {
-        popup.classList.remove('show');
-        setTimeout(() => popup.remove(), 400);
-      }, 4000);
-    }
-
-    document.getElementById('email-form').addEventListener('submit', submitEmail);
-
-    function toggleMenu() {
-      document.querySelector('.nav-links').classList.toggle('active');
-    }
-
-    // ── Smooth scroll with exact navbar offset ──
-    function scrollToAnchor(targetId) {
-      var target = document.getElementById(targetId);
-      if (!target) return;
-      var nav = document.querySelector('nav');
-      var navH = nav ? nav.offsetHeight : 0;
-      var targetTop = target.offsetTop - navH;
-      window.scrollTo({ top: targetTop, behavior: 'smooth' });
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(function (link) {
-      link.addEventListener('click', function (e) {
-        var href = this.getAttribute('href');
-        if (href && href.length > 1) {
-          e.preventDefault();
-          var targetId = href.slice(1);
-          document.querySelector('.nav-links').classList.remove('active');
-          setTimeout(function () { scrollToAnchor(targetId); }, 50);
-        }
-      });
-    });
-
-    // ──────────────────────────────────────────────────
-    //  2) Multi-Language Support (EN/AZ)
-    // ──────────────────────────────────────────────────
-    var translations = {
-      en: {
-        nav_about: "Who We Are",
-        nav_pillars: "Our Work",
-        nav_articles: "Articles",
-        nav_wiki: "Wiki",
-        nav_join: "Join Us",
-        hero_tag: "Youth-Led · Planet-Focused",
-        hero_title: "Empowering<br>Youth for a<br><span class=\"hero-typewriter-line\"><em class=\"hero-typewriter\"><span id=\"typewriter-text\">Sustainable</span><span class=\"typewriter-cursor\" aria-hidden=\"true\">|</span></em></span><br><span class=\"hero-future-word\">Future.</span>",
-        hero_sub: "We are a community of young activists, thinkers, and doers united by one mission: to protect our environment and inspire the next generation of green leaders.",
-        btn_join: "Join the Movement",
-        btn_learn: "Learn More",
-        stat_1_label: "Community Members",
-        stat_2_label: "Active Goal",
-        stat_3_label: "Shared Planet",
-        stat_4_label: "Potential for Change",
-        card_1_title: "Environment First",
-        card_1_desc: "We put the planet at the center of every decision we make.",
-        card_2_title: "Youth Power",
-        card_2_desc: "Real change starts with the next generation — us.",
-        card_3_title: "Action-Oriented",
-        card_3_desc: "We don't just talk — we build, organize, and act.",
-        who_tag: "Who We Are",
-        who_title: "A Generation That Refuses to Wait",
-        who_p1: "Youth Environment Society (YES) is a youth-led organization dedicated to empowering the next generation of environmental advocates. We believe the time for action is now — not tomorrow, not after graduation.",
-        who_p2: "Through education, community organizing, and direct environmental action, we create meaningful change in our communities while building the skills and networks that will shape a greener future.",
-        who_btn: "Join YES Today",
-        pillars_title: "Three Pillars of Change",
-        pillar_1_title: "Environment",
-        pillar_1_desc: "Protecting ecosystems, reducing waste, and advocating for clean air, water, and land in our communities.",
-        pillar_2_title: "Youth",
-        pillar_2_desc: "Educating, inspiring, and mobilizing young people to become confident voices for our planet.",
-        pillar_3_title: "Action",
-        pillar_3_desc: "Running campaigns, events, and initiatives that create tangible, measurable impact where it matters most.",
-        join_tag: "Newsletter",
-        join_title: "Subscribe to Our <em style='color:var(--green); font-style:normal'>Newsletter</em>",
-        join_sub: "Subscribe to our email newsletter to receive regular updates, green news, and community stories straight to your inbox. (Note: This is an email newsletter subscription, not member account creation.)",
-        join_placeholder: "Your email for newsletter",
-        join_btn: "Subscribe 📬",
-        gallery_tag: "Last Article",
-        gallery_title: "<em style='color:var(--green); font-style:normal'>YES</em> in Action",
-        carousel_tag: "Moments",
-        carousel_title: "From the <em style='color:var(--lime);font-style:normal'>Field</em>",
-        carousel_sub: "A glimpse into our events, clean-ups, and community gatherings.",
-        slide_team: "YES Team",
-        slide_climate: "Climate Workshop",
-        slide_edu: "Eco Education",
-        slide_presentation: "Project Presentation",
-        slide_session: "Interactive Session",
-        nav_volunteer: "Volunteering Program",
-        vol_tag: "Volunteering Program",
-        vol_title: "Shape the Future with <em style='color:var(--green);font-style:normal'>Your Hands</em>",
-        vol_sub: "Join our volunteer program and be part of a passionate community working for a greener planet. Your time, energy, and ideas can make a real difference.",
-        vol_card1_title: "Build Your Network",
-        vol_card1_desc: "Connect with like-minded young activists, mentors, and environmental leaders across Azerbaijan and beyond.",
-        vol_card2_title: "Gain Real Experience",
-        vol_card2_desc: "Develop practical skills in project management, public speaking, research, and environmental advocacy.",
-        vol_card3_title: "Create Real Impact",
-        vol_card3_desc: "Participate in campaigns, clean-ups, and educational events that leave a measurable mark on your community.",
-        vol_card4_title: "Grow as a Leader",
-        vol_card4_desc: "Take on responsibilities, lead initiatives, and discover your potential as a young champion for sustainability.",
-        vol_btn: "Register Now",
-        vol_note: "Free to join · Open to all youth · Takes only 2 minutes · <strong>Deadline: July 7</strong>",
-        vol_closed_title: "Applications Closed!",
-        vol_closed_desc: "Registration for the volunteering program (Deadline: July 7) is now closed. We wish all applicants the best of luck! Future volunteering opportunities will be announced right here. In the meantime, follow us on social media to stay updated:",
-        footer_logo: "Follow Us",
-        footer_p: "© 2026 Youth Environment Society. Empowering youth for a sustainable future. All rights reserved.",
-        logo_text: "Youth Environment Society",
-        btn_share_link: "Share Link",
-        link_copied: "Link copied to clipboard! 🌱",
-        faq_tag: "FAQ",
-        faq_title: "Frequently Asked Questions",
-        faq_q1: "What is Youth Environment Society (YES)?",
-        faq_a1: "Youth Environment Society (YES) is a youth-led environmental organization in Azerbaijan that empowers young people through education, community organizing, and direct environmental action for a sustainable future.",
-        faq_q2: "How can I join YES?",
-        faq_a2: "You can join YES by signing up on our website or by registering as a volunteer through our volunteer program. It's free and open to all youth.",
-        faq_q3: "What does YES do?",
-        faq_a3: "YES focuses on three pillars: Environment (protecting ecosystems), Youth (educating and mobilizing young people), and Action (running campaigns, events, and initiatives that create real impact).",
-        faq_q4: "Is the volunteer program free?",
-        faq_a4: "Yes, the YES volunteer program is completely free to join and open to all youth. Registration takes only 2 minutes.",
-        auth_login_title: "Sign In",
-        auth_login_sub: "Welcome to your YES Dashboard.",
-        auth_register_title: "Sign Up",
-        auth_register_sub: "Create a new account and join us!",
-        auth_login_btn: "Sign In",
-        auth_register_btn: "Sign Up",
-        auth_switch_to_register: "Don't have an account? <span onclick=\"setAuthMode('register')\">Sign Up.</span>",
-        auth_switch_to_login: "Already have an account? <span onclick=\"setAuthMode('login')\">Sign In.</span>",
-        auth_email_placeholder: "Email address",
-        auth_pass_placeholder: "Password",
-        auth_fname_placeholder: "First Name",
-        auth_lname_placeholder: "Last Name",
-        auth_dob_title: "Date of Birth",
-        auth_missing_fields: "Please enter your email and password.",
-        auth_invalid_creds: "Invalid email or password.",
-        auth_wait: "Please wait...",
-        auth_missing_reg_fields: "Please enter your First Name, Last Name and Date of Birth.",
-        auth_success_confirm: "Registration successful! Please check your email (including Spam folder) and click the confirmation link.",
-        auth_forgot_title: "Reset Password",
-        auth_forgot_sub: "Enter your email and we'll send you a reset link.",
-        auth_forgot_btn: "Send Reset Link",
-        auth_forgot_link: "Forgot password?",
-        auth_forgot_success: "Password reset link sent! Check your email (including Spam folder).",
-        auth_forgot_back: "Back to Sign In",
-        auth_missing_email: "Please enter your email address.",
-        surv_header_title: "Join <em>our community</em>",
-        surv_header_sub: "Step forward as a young environmental leader.<br>Just a few questions — takes 1 minute.",
-        surv_step1_title: "Let's get to know you",
-        surv_name_label: "Full Name",
-        surv_name_placeholder: "e.g. John Smith",
-        surv_name_err: "Please fill in this field",
-        surv_country_label: "Country",
-        surv_country_placeholder: "— Select —",
-        surv_country_err: "Please select your country",
-        surv_city_label: "City / District",
-        surv_city_placeholder: "— Select —",
-        surv_city_err: "Please select your city",
-        surv_city_other_label: "Enter your city name",
-        surv_city_other_placeholder: "e.g. Khankendi",
-        surv_city_other_err: "Please fill in this field",
-        surv_district_label: "District within Baku (optional)",
-        surv_next_btn: "Continue ➔",
-        surv_back_btn: "← Back",
-        surv_step2_title: "Education details",
-        surv_edu_label: "Who are you?",
-        surv_edu_school: "School",
-        surv_edu_student: "Student",
-        surv_edu_other: "Other",
-        surv_edu_err: "Please select one",
-        surv_school_name_label: "School name / number",
-        surv_school_name_placeholder: "e.g. School No. 18",
-        surv_school_name_err: "Please enter the school name",
-        surv_school_grade_label: "Grade",
-        surv_uni_name_label: "University name",
-        surv_uni_name_err: "Please select a university",
-        surv_uni_other_label: "University name",
-        surv_uni_other_placeholder: "Enter university name",
-        surv_uni_other_err: "Please enter the university name",
-        surv_uni_intl_placeholder: "e.g. Harvard University, Oxford, etc.",
-        surv_uni_intl_err: "Please enter your university name",
-        surv_uni_major_label: "Major / Faculty",
-        surv_uni_major_placeholder: "e.g. Environmental Engineering",
-        surv_uni_year_label: "Year",
-        surv_other_activity_label: "Your field of activity",
-        surv_other_activity_placeholder: "e.g. Working, graduated...",
-        surv_step3_title: "Your Interests",
-        surv_interest_label: "Which areas of YES interest you?",
-        surv_interest_ecology: "Ecology",
-        surv_interest_climate: "Climate Change",
-        surv_interest_volunteer: "Volunteering",
-        surv_interest_events: "Events",
-        surv_interest_education: "Eco Education",
-        surv_interest_media: "Media / SMM",
-        surv_source_label: "How did you hear about us?",
-        surv_source_instagram: "Instagram",
-        surv_source_friend: "Friend's recommendation",
-        surv_source_school: "School/University",
-        surv_source_event: "At an event",
-        surv_source_other: "Other",
-        surv_note_label: "Notes / Wishes (optional)",
-        surv_note_placeholder: "Anything that interests you...",
-        surv_submit_btn: "Join! 🌱",
-        surv_sending: "Sending...",
-        surv_error: "Sorry, a registration error occurred. Please try again.",
-        surv_success_title: "Welcome!",
-        surv_success_text: "Your application has been received. The YES team will contact you soon!",
-        surv_close_btn: "Close"
-      },
-      az: {
-        nav_about: "Biz Kimik",
-        nav_pillars: "Fəaliyyətimiz",
-        nav_articles: "Məqalələr",
-        nav_wiki: "Wiki",
-        nav_join: "Bizə Qoşulun",
-        hero_tag: "Gənclərin rəhbərliyi ilə · Planet mərkəzli",
-        hero_title: "<span class=\"hero-typewriter-line\"><em class=\"hero-typewriter\"><span id=\"typewriter-text\">Davamlı</span><span class=\"typewriter-cursor\" aria-hidden=\"true\">|</span></em></span><br>gələcək naminə<br>gənclərin potensialını artırırıq.",
-        hero_sub: "Biz ətraf mühiti qorumaq və gələcək nəsil yaşıl liderləri ruhlandırmaq üçün birləşmiş gənc fəallar, düşünənlər və icraçılar icmasıyıq.",
-        btn_join: "Hərəkata Qoşulun",
-        btn_learn: "Daha Ətraflı",
-        stat_1_label: "İcma Üzvü",
-        stat_2_label: "Hədəflərimiz",
-        stat_3_label: "Ortaq Planet",
-        stat_4_label: "Dəyişiklik Potensialı",
-        card_1_title: "İlk növbədə Ətraf Mühit",
-        card_1_desc: "Hər qərarımızda ekoloji maraqları ön planda tuturuq.",
-        card_2_title: "Gəncliyin Gücü",
-        card_2_desc: "Əsl dəyişiklik gələcək nəsillərlə — bizimlə başlayır.",
-        card_3_title: "Fəaliyyətə Yönəlmiş",
-        card_3_desc: "Biz sadəcə danışmırıq - biz qururuq, təşkil edirik və hərəkət edirik.",
-        who_tag: "Biz Kimik",
-        who_title: "Gözləməyə vaxtı olmayan nəsil",
-        who_p1: "YES gələcək nəsil ətraf mühit tərəfdarlarını gücləndirməyə həsr olunmuş, gənclər tərəfindən idarə olunan bir təşkilatdır. Biz inanırıq ki, hərəkət etmək vaxtı indi gəlib - sabah yox, məzuniyyətdən sonra yox.",
-        who_p2: "Təhsil, icma təşkili və birbaşa ekoloji fəaliyyət vasitəsilə biz icmalarımızda mənalı dəyişikliklər yaradırıq, eyni zamanda yaşıl gələcəyi formalaşdıracaq bacarıq və şəbəkələr qururuq.",
-        who_btn: "YES-ə Bu Gün Qoşulun",
-        pillars_title: "Dəyişikliyin Üç Sütunu",
-        pillar_1_title: "Ekoloji fəaliyyət",
-        pillar_1_desc: "İcmalarımızda ekosistemlərin qorunması, tullantıların azaldılması və təmiz hava, su və torpaq üçün mübarizə aparmaq.",
-        pillar_2_title: "Gənclik",
-        pillar_2_desc: "Gəncləri təhsil vermək, ruhlandırmaq və planetimiz üçün inamlı səslərə çevrilmək üçün hərəkətə keçirmək.",
-        pillar_3_title: "Real təsir",
-        pillar_3_desc: "Ən çox ehtiyac duyulan yerlərdə maddi, ölçülə bilən təsir yaradan kampaniyalar, tədbirlər və təşəbbüslər həyata keçirmək.",
-        join_tag: "Xəbər Bülleteni",
-        join_title: "<em style='color:var(--green); font-style:normal'>YES</em> Xəbər Bülleteninə Abunə Olun",
-        join_sub: "Ən son ekoloji xəbərləri, məqalələri və layihələrimizlə bağlı yenilikləri birbaşa e-poçtunuza almaq üçün bülletenimizə abunə olun. (Qeyd: Bu bölmə yalnız xəbər bülleteni abunəliyi üçündür, şəxsi kabinet hesabı açmaq üçün deyil).",
-        join_placeholder: "Bülleten üçün email ünvanınız",
-        join_btn: "Abunə Ol 📬",
-        gallery_tag: "Ən Son Məqalə",
-        gallery_title: "Fəaliyyətdə <em style='color:var(--green); font-style:normal'>YES</em>",
-        carousel_tag: "Kadrlar",
-        carousel_title: "Tədbirlərimizdən <em style='color:var(--lime);font-style:normal'>Kadrlar</em>",
-        carousel_sub: "Eko-aksiyalar, tədbirlər və icma görüşlərimizdən ən yaddaqalan anlar.",
-        slide_team: "YES Komandası",
-        slide_climate: "İqlim Təlimləri",
-        slide_edu: "Ekoloji Maarifləndirmə",
-        slide_presentation: "Layihə Təqdimatı",
-        slide_session: "İnteraktiv Sessiya",
-        nav_volunteer: "Könüllülük proqramı",
-        vol_tag: "Könüllülük Proqramı",
-        vol_title: "Gələcəyi <em style='color:var(--green);font-style:normal'>Öz əllərinizlə</em> Formalaşdırın",
-        vol_sub: "Könüllülük proqramımıza qoşulun və daha yaşıl bir planet üçün çalışan ehtiraslı bir icmanın üzvü olun. Vaxtınız, enerjiniz və ideyalarınız real fərq yarada bilər.",
-        vol_card1_title: "Şəbəkənizi Qurun",
-        vol_card1_desc: "Azərbaycan və dünya üzrə həmfikir gənc fəallar, mentorlar və ekoloji liderlərlə əlaqə yaradın.",
-        vol_card2_title: "Real Təcrübə Qazanın",
-        vol_card2_desc: "Layihə idarəetməsi, ictimai çıxış, tədqiqat və ekoloji müdafiə sahəsində praktiki bacarıqlar inkişaf etdirin.",
-        vol_card3_title: "Real Təsir Yaradın",
-        vol_card3_desc: "İcmanızda ölçülə bilən iz qoyan kampaniyalarda, təmizlik aksiyalarında və təhsil tədbirlərində iştirak edin.",
-        vol_card4_title: "Lider Kimi Böyüyün",
-        vol_card4_desc: "Məsuliyyət götürün, təşəbbüslərə rəhbərlik edin və davamlı inkişaf naminə gənc bir çempion kimi potensialınızı kəşf edin.",
-        vol_btn: "Qeydiyyatdan keç",
-        vol_note: "Pulsuzdur · Bütün gənclərə açıqdır · Cəmi 2 dəqiqə çəkir · <strong>Son müraciət: 7 İyul</strong>",
-        vol_closed_title: "Müraciətlər Başa Çatdı!",
-        vol_closed_desc: "Könüllülük proqramına qeydiyyat müddəti (7 İyul) başa çatmışdır. Müraciət edən hər bir namizədə uğurlar arzulayırıq! Növbəti könüllülük proqramı açılan zaman elanlar burada paylaşılacaq. Sosial şəbəkələrdən bizi izləyərək yeniliklərdən daha tez xəbərdar ola bilərsiniz:",
-        footer_logo: "Sosial şəbəkələrimiz",
-        footer_p: "© 2026 Youth Environment Society. Davamlı gələcək üçün gənclərin gücləndirilməsi. Bütün hüquqlar qorunur.",
-        logo_text: "Gənclərin Ekoloji Cəmiyyəti",
-        btn_share_link: "Linki Paylaş",
-        link_copied: "Link kopyalandı! 🌱",
-        faq_tag: "Tez-tez Verilən Suallar",
-        faq_title: "Ən Çox Verilən Suallar",
-        faq_q1: "Youth Environment Society (YES) nədir?",
-        faq_a1: "YES (Gənclərin Ekoloji Cəmiyyəti), təhsil, icma təşkilatlanması və birbaşa ekoloji fəaliyyətlər vasitəsilə davamlı gələcək üçün gəncləri gücləndirən gənclərin rəhbərlik etdiyi təşkilatdır.",
-        faq_q2: "YES-ə necə qoşula bilərəm?",
-        faq_a2: "Veb saytımızda qeydiyyatdan keçərək və ya Könüllülük proqramımıza müraciət edərək bizə qoşula bilərsiniz. Proqram pulsuzdur və bütün gənclər üçün açıqdır.",
-        faq_q3: "YES hansı fəaliyyətləri həyata keçirir?",
-        faq_a3: "YES 3 əsas sütun üzərində fəaliyyət göstərir: Ətraf mühit (ekosistemləri qorumaq), Gənclik (gəncləri maarifləndirmək) və Fəaliyyət (real təsir yaradan kampaniyalar, təmizlik aksiyaları və tədbirlər təşkil etmək).",
-        faq_q4: "Könüllü proqramı pulsuzdurmu?",
-        faq_a4: "Bəli, YES könüllülük proqramına qoşulmaq tamamilə pulsuzdur və bütün gənclər iştirak edə bilər. Qeydiyyat cəmi 2 dəqiqə vaxt aparır.",
-        auth_login_title: "Daxil ol",
-        auth_login_sub: "YES Şəxsi Kabinetinizə xoş gəldiniz.",
-        auth_register_title: "Qeydiyyat",
-        auth_register_sub: "Yeni hesab yaradın və bizə qoşulun!",
-        auth_login_btn: "Daxil ol",
-        auth_register_btn: "Qeydiyyatı Tamamla",
-        auth_switch_to_register: "Hesabınız yoxdur? <span onclick=\"setAuthMode('register')\">Qeydiyyatdan keçin.</span>",
-        auth_switch_to_login: "Artıq hesabınız var? <span onclick=\"setAuthMode('login')\">Daxil olun.</span>",
-        auth_email_placeholder: "E-poçt ünvanı",
-        auth_pass_placeholder: "Şifrə",
-        auth_fname_placeholder: "Adınız",
-        auth_lname_placeholder: "Soyadınız",
-        auth_dob_title: "Doğum Tarixi",
-        auth_missing_fields: "Zəhmət olmasa e-poçt və şifrəni daxil edin.",
-        auth_invalid_creds: "E-poçt ünvanı və ya şifrə yanlışdır.",
-        auth_wait: "Gözləyin...",
-        auth_missing_reg_fields: "Ad, Soyad və Doğum Tarixini daxil edin.",
-        auth_success_confirm: "Qeydiyyat uğurla tamamlandı! Zəhmət olmasa e-poçtunuza (Spam qovluğuna da baxa bilərsiniz) göndərilən təsdiq linkinə klikləyin.",
-        auth_forgot_title: "Şifrəni Sıfırla",
-        auth_forgot_sub: "E-poçtunuzu daxil edin, sizə sıfırlama linki göndərəcəyik.",
-        auth_forgot_btn: "Sıfırlama Linki Göndər",
-        auth_forgot_link: "Şifrəni unutdunuz?",
-        auth_forgot_success: "Şifrə sıfırlama linki göndərildi! E-poçtunuzu yoxlayın (Spam qovluğuna da baxın).",
-        auth_forgot_back: "Daxil olmağa qayıt",
-        auth_missing_email: "Zəhmət olmasa e-poçt ünvanınızı daxil edin.",
-        surv_header_title: "İcmamıza <em>qoşul</em>",
-        surv_header_sub: "Gənc ekoloji lider kimi bizimlə addımla.<br>Sadəcə bir neçə sual — 1 dəqiqə çəkir.",
-        surv_step1_title: "Sizi yaxından tanıyaq",
-        surv_name_label: "Ad Soyad",
-        surv_name_placeholder: "Əli Hüseynov",
-        surv_name_err: "Bu sahəni doldurun",
-        surv_country_label: "Ölkə",
-        surv_country_placeholder: "— Seçin —",
-        surv_country_err: "Ölkənizi seçin",
-        surv_city_label: "Şəhər / Rayon",
-        surv_city_placeholder: "— Seçin —",
-        surv_city_err: "Şəhər/rayon seçin",
-        surv_city_other_label: "Şəhər/Rayon adını yazın",
-        surv_city_other_placeholder: "Məsələn: Xankəndi",
-        surv_city_other_err: "Bu sahəni doldurun",
-        surv_district_label: "Bakı daxilindəki rayon (ixtiyari)",
-        surv_next_btn: "Davam et ➔",
-        surv_back_btn: "← Geri",
-        surv_step2_title: "Təhsil məlumatları",
-        surv_edu_label: "Siz kimsiniz?",
-        surv_edu_school: "Məktəb",
-        surv_edu_student: "Tələbə",
-        surv_edu_other: "Digər",
-        surv_edu_err: "Bir seçim edin",
-        surv_school_name_label: "Məktəbin adı / nömrəsi",
-        surv_school_name_placeholder: "Məs: 18 nömrəli tam orta məktəb",
-        surv_school_name_err: "Məktəb adını daxil edin",
-        surv_school_grade_label: "Sinif",
-        surv_uni_name_label: "Universitetinizin adı",
-        surv_uni_name_err: "Universitet seçin",
-        surv_uni_other_label: "Universitetin adı",
-        surv_uni_other_placeholder: "Universitetin adını yazın",
-        surv_uni_other_err: "Universitetin adını daxil edin",
-        surv_uni_intl_placeholder: "Məs: İstanbul Universiteti, Harvard və s.",
-        surv_uni_intl_err: "Universitetinizin adını daxil edin",
-        surv_uni_major_label: "İxtisas / Fakültə",
-        surv_uni_major_placeholder: "Məs: Ekoloji mühəndislik",
-        surv_uni_year_label: "Kurs",
-        surv_other_activity_label: "Fəaliyyət sahəniz",
-        surv_other_activity_placeholder: "Məs: İşləyirəm, məzunam...",
-        surv_step3_title: "Maraqlarınız",
-        surv_interest_label: "YES-də hansı sahələr sizi maraqlandırır?",
-        surv_interest_ecology: "Ekologiya",
-        surv_interest_climate: "İqlim dəyişikliyi",
-        surv_interest_volunteer: "Könüllülük",
-        surv_interest_events: "Tədbirlər",
-        surv_interest_education: "Ekoloji təhsil",
-        surv_interest_media: "Media / SMM",
-        surv_source_label: "Bizimlə necə tanış oldunuz?",
-        surv_source_instagram: "Instagram",
-        surv_source_friend: "Dostumun tövsiyəsi",
-        surv_source_school: "Məktəb/Universitet",
-        surv_source_event: "Tədbirdə",
-        surv_source_other: "Digər",
-        surv_note_label: "Qeyd / İstək (ixtiyari)",
-        surv_note_placeholder: "Sizi maraqlandıran nəsə varsa...",
-        surv_submit_btn: "Qoşul! 🌱",
-        surv_sending: "Göndərilir...",
-        surv_error: "Təəssüf ki, qeydiyyat zamanı xəta baş verdi. Xahiş edirik yenidən cəhd edin.",
-        surv_success_title: "Xoş gəldiniz!",
-        surv_success_text: "Müraciətiniz alındı. Tezliklə YES komandası ilə əlaqə saxlayacağıq!",
-        surv_close_btn: "Bağla"
-      }
-    };
-
-    function setLang(lang) {
-      localStorage.setItem('yes_lang', lang);
-      applyLanguage(lang);
-    }
-
-    function applyLanguage(lang) {
-      var t = translations[lang] || translations['en'];
-      document.querySelectorAll('[data-i18n]').forEach(function (el) {
-        var key = el.getAttribute('data-i18n');
-        if (t[key]) {
-          if (el.tagName === 'INPUT') {
-            el.placeholder = t[key];
-          } else {
-            el.innerHTML = t[key];
-          }
-        }
-      });
-
-      // Update active state in dropdown
-      document.getElementById('active-lang').innerText = lang.toUpperCase();
-      document.querySelectorAll('.lang-options button').forEach(function (btn) {
-        btn.classList.remove('active');
-      });
-      document.getElementById('opt-' + lang).classList.add('active');
-      document.documentElement.lang = lang;
-
-      // Update survey modal texts
-      applySurveyLanguage(lang);
-
-      if (window.resetHeroTypewriter) {
-        window.resetHeroTypewriter();
-      }
-
-      // Update auth modal placeholders
-      var authEmail = document.getElementById('auth-email');
-      var authPass = document.getElementById('auth-pass');
-      var authFname = document.getElementById('auth-fname');
-      var authLname = document.getElementById('auth-lname');
-      var authDob = document.getElementById('auth-dob');
-      if (authEmail) authEmail.placeholder = t.auth_email_placeholder || '';
-      if (authPass) authPass.placeholder = t.auth_pass_placeholder || '';
-      if (authFname) authFname.placeholder = t.auth_fname_placeholder || '';
-      if (authLname) authLname.placeholder = t.auth_lname_placeholder || '';
-      if (authDob) authDob.title = t.auth_dob_title || '';
-    }
-
-    function applySurveyLanguage(lang) {
-      var t = translations[lang] || translations['en'];
-      // Header
-      var survH2 = document.querySelector('.survey-header h2');
-      if (survH2) survH2.innerHTML = t.surv_header_title || '';
-      var survP = document.querySelector('.survey-header p');
-      if (survP) survP.innerHTML = t.surv_header_sub || '';
-      // Step 1
-      var st1 = document.getElementById('sstep-1');
-      if (st1) {
-        var t1 = st1.querySelector('.surv-title'); if (t1) t1.textContent = t.surv_step1_title || '';
-        var fName = st1.querySelector('label[for="s-name"], #f-sname label'); if (fName) fName.innerHTML = (t.surv_name_label || '') + ' <span class="req">*</span>';
-        var iName = document.getElementById('s-name'); if (iName) iName.placeholder = t.surv_name_placeholder || '';
-        var eNameErr = st1.querySelector('#f-sname .surv-err'); if (eNameErr) eNameErr.textContent = t.surv_name_err || '';
-        // Country label
-        var fCountry = document.getElementById('f-scountry');
-        if (fCountry) {
-          var lCountry = fCountry.querySelector('label'); if (lCountry) lCountry.innerHTML = (t.surv_country_label || '') + ' <span class="req">*</span>';
-          var eCountry = fCountry.querySelector('.surv-err'); if (eCountry) eCountry.textContent = t.surv_country_err || '';
-        }
-        // City/District label
-        var fCity = document.getElementById('f-scity');
-        if (fCity) {
-          var lCity = fCity.querySelector('label'); if (lCity) lCity.innerHTML = (t.surv_city_label || '') + ' <span class="req">*</span>';
-          var eCity = fCity.querySelector('.surv-err'); if (eCity) eCity.textContent = t.surv_city_err || '';
-        }
-        var fCityOther = document.getElementById('f-scity-other');
-        if (fCityOther) {
-          var lCityOther = fCityOther.querySelector('label'); if (lCityOther) lCityOther.innerHTML = (t.surv_city_other_label || '') + ' <span class="req">*</span>';
-          var iCityOther = document.getElementById('s-city-other'); if (iCityOther) iCityOther.placeholder = t.surv_city_other_placeholder || '';
-          var eCityOther = fCityOther.querySelector('.surv-err'); if (eCityOther) eCityOther.textContent = t.surv_city_other_err || '';
-        }
-        var lDistrict = st1.querySelector('#f-sdistrict label'); if (lDistrict) lDistrict.textContent = t.surv_district_label || '';
-        var btnNext1 = st1.querySelector('.surv-btn-next'); if (btnNext1) btnNext1.textContent = t.surv_next_btn || '';
-      }
-      // Step 2
-      var st2 = document.getElementById('sstep-2');
-      if (st2) {
-        var t2 = st2.querySelector('.surv-title'); if (t2) t2.textContent = t.surv_step2_title || '';
-        var lEdu = st2.querySelector('#f-sedu-type label'); if (lEdu) lEdu.innerHTML = (t.surv_edu_label || '') + ' <span class="req">*</span>';
-        var radioLabels = st2.querySelectorAll('.surv-radio-grid.three .surv-radio .lbl');
-        if (radioLabels[0]) radioLabels[0].innerHTML = '<span class="icon">🏫</span>' + (t.surv_edu_school || '');
-        if (radioLabels[1]) radioLabels[1].innerHTML = '<span class="icon">🎓</span>' + (t.surv_edu_student || '');
-        if (radioLabels[2]) radioLabels[2].innerHTML = '<span class="icon">💼</span>' + (t.surv_edu_other || '');
-        var eduErr = document.getElementById('s-edu-type-err'); if (eduErr) eduErr.textContent = t.surv_edu_err || '';
-        var lSchoolName = st2.querySelector('#f-sschool-name label'); if (lSchoolName) lSchoolName.innerHTML = (t.surv_school_name_label || '') + ' <span class="req">*</span>';
-        var iSchoolName = document.getElementById('s-school-name'); if (iSchoolName) iSchoolName.placeholder = t.surv_school_name_placeholder || '';
-        var eSchoolErr = st2.querySelector('#f-sschool-name .surv-err'); if (eSchoolErr) eSchoolErr.textContent = t.surv_school_name_err || '';
-        var lUniName = st2.querySelector('#f-suni-name label'); if (lUniName) lUniName.innerHTML = (t.surv_uni_name_label || '') + ' <span class="req">*</span>';
-        var eUniErr = st2.querySelector('#f-suni-name .surv-err'); if (eUniErr) eUniErr.textContent = t.surv_uni_name_err || '';
-        var lUniOther = st2.querySelector('#f-suni-other-wrap label'); if (lUniOther) lUniOther.innerHTML = (t.surv_uni_other_label || '') + ' <span class="req">*</span>';
-        var iUniOther = document.getElementById('s-uni-other'); if (iUniOther) iUniOther.placeholder = t.surv_uni_other_placeholder || '';
-        var eUniOtherErr = st2.querySelector('#f-suni-other-wrap .surv-err'); if (eUniOtherErr) eUniOtherErr.textContent = t.surv_uni_other_err || '';
-        var lUniIntl = st2.querySelector('#f-suni-intl label'); if (lUniIntl) lUniIntl.innerHTML = (t.surv_uni_name_label || '') + ' <span class="req">*</span>';
-        var iUniIntl = document.getElementById('s-uni-intl'); if (iUniIntl) iUniIntl.placeholder = t.surv_uni_intl_placeholder || '';
-        var eUniIntlErr = st2.querySelector('#f-suni-intl .surv-err'); if (eUniIntlErr) eUniIntlErr.textContent = t.surv_uni_intl_err || '';
-        var lOtherAct = st2.querySelector('#s-other-edu-block .surv-field label'); if (lOtherAct) lOtherAct.textContent = t.surv_other_activity_label || '';
-        var iOtherAct = document.getElementById('s-other-activity'); if (iOtherAct) iOtherAct.placeholder = t.surv_other_activity_placeholder || '';
-        var btnBack2 = st2.querySelector('.surv-btn-back'); if (btnBack2) btnBack2.textContent = t.surv_back_btn || '';
-        var btnNext2 = st2.querySelector('.surv-btn-next'); if (btnNext2) btnNext2.textContent = t.surv_next_btn || '';
-      }
-      // Step 3
-      var st3 = document.getElementById('sstep-3');
-      if (st3) {
-        var t3 = st3.querySelector('.surv-title'); if (t3) t3.textContent = t.surv_step3_title || '';
-        var interestLabel = st3.querySelector('#f-sinterest > label') || st3.querySelector('.surv-field > label'); if (interestLabel) interestLabel.textContent = t.surv_interest_label || '';
-        var iLabels = st3.querySelectorAll('.surv-radio-grid .surv-radio .lbl');
-        var icons3 = ['🌿','🌡️','🤝','📅','📚','📸'];
-        var iKeys = ['surv_interest_ecology','surv_interest_climate','surv_interest_volunteer','surv_interest_events','surv_interest_education','surv_interest_media'];
-        iLabels.forEach(function(lbl, i) { if (iKeys[i]) lbl.innerHTML = '<span class="icon">' + icons3[i] + '</span>' + (t[iKeys[i]] || ''); });
-        // Source
-        var sSelect = document.getElementById('s-source');
-        if (sSelect) {
-          var srcKeys = [t.surv_source_instagram, t.surv_source_friend, t.surv_source_school, t.surv_source_event, t.surv_source_other];
-          var srcOpts = sSelect.querySelectorAll('option:not([value=""])');
-          srcOpts.forEach(function(op, i) { if (srcKeys[i]) op.textContent = srcKeys[i]; });
-        }
-        var srcLabel = st3.querySelector('#f-ssource > label'); if (srcLabel) srcLabel.textContent = t.surv_source_label || '';
-        // Note
-        var noteLabel = st3.querySelector('#f-snote > label'); if (noteLabel) noteLabel.textContent = t.surv_note_label || '';
-        var iNote = document.getElementById('s-note'); if (iNote) iNote.placeholder = t.surv_note_placeholder || '';
-        var btnBack3 = st3.querySelector('.surv-btn-back'); if (btnBack3) btnBack3.textContent = t.surv_back_btn || '';
-        var btnSubmit = document.getElementById('s-submit-btn'); if (btnSubmit && !btnSubmit.disabled) btnSubmit.textContent = t.surv_submit_btn || '';
-      }
-      // Success
-      var succEl = document.getElementById('s-success');
-      if (succEl) {
-        var succH2 = succEl.querySelector('h2'); if (succH2) succH2.textContent = t.surv_success_title || '';
-        var succP = succEl.querySelector('p'); if (succP) succP.textContent = t.surv_success_text || '';
-        var succBtn = succEl.querySelector('.surv-btn-next'); if (succBtn) succBtn.textContent = t.surv_close_btn || '';
-      }
-      // Update country dropdown: show/hide Azerbaijan city section
-      updateCityVisibility();
-    }
-
-    function toggleFaq(btn) {
-      const item = btn.parentElement;
-      const isActive = item.classList.contains('active');
-
-      // Bütün FAQ-ları bağla
-      document.querySelectorAll('.faq-item').forEach(faq => {
-        faq.classList.remove('active');
-      });
-
-      // Əgər əvvəlcədən açıq deyildisə, aç
-      if (!isActive) {
-        item.classList.add('active');
-      }
-    }
-
-    // Load saved language
-    var savedLang = 'az';
-    applyLanguage(savedLang);
-  </script>
-
-  <!-- Hero Word Typewriter Effect -->
-  <script>
-    (function () {
-      var wordsByLang = {
-        en: ["Sustainable", "Greener", "Cleaner", "Resilient", "Brighter"],
-        az: ["Davamlı", "Daha yaşıl", "Daha təmiz", "Parlaq", "Sağlam"]
-      };
-
-      var wordIndex = 0;
-      var charIndex = 0;
-      var isDeleting = false;
-      var timer = null;
-
-      function getLang() {
-        var docLang = (document.documentElement.lang || '').toLowerCase();
-        if (docLang.startsWith('az') || window.location.pathname.indexOf('/az/') !== -1) {
-          return 'az';
-        }
-        var saved = localStorage.getItem('yes_lang');
-        return saved === 'az' ? 'az' : 'en';
-      }
-
-      function tick() {
-        var textEl = document.getElementById('typewriter-text');
-        if (!textEl) return;
-
-        var lang = getLang();
-        var words = wordsByLang[lang] || wordsByLang.en;
-        var currentWord = words[wordIndex % words.length];
-
-        if (isDeleting) {
-          charIndex--;
-          textEl.textContent = currentWord.substring(0, charIndex);
-        } else {
-          charIndex++;
-          textEl.textContent = currentWord.substring(0, charIndex);
-        }
-
-        var speed = isDeleting ? 50 : 100;
-
-        if (!isDeleting && charIndex === currentWord.length) {
-          speed = 2200; // Pause after word is typed
-          isDeleting = true;
-        } else if (isDeleting && charIndex === 0) {
-          isDeleting = false;
-          wordIndex = (wordIndex + 1) % words.length;
-          speed = 400; // Brief pause before starting next word
-        }
-
-        timer = setTimeout(tick, speed);
-      }
-
-      window.resetHeroTypewriter = function () {
-        if (timer) {
-          clearTimeout(timer);
-          timer = null;
-        }
-        var textEl = document.getElementById('typewriter-text');
-        if (!textEl) return;
-
-        var lang = getLang();
-        var words = wordsByLang[lang] || wordsByLang.en;
-        wordIndex = 0;
-        charIndex = words[0].length;
-        textEl.textContent = words[0];
-        isDeleting = false;
-
-        timer = setTimeout(function () {
-          isDeleting = true;
-          tick();
-        }, 2200);
-      };
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', window.resetHeroTypewriter);
-      } else {
-        window.resetHeroTypewriter();
-      }
-    })();
-  </script>
-
-  <style>
-    /* Survey Modal Styling */
-    .survey-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(10px);
-      z-index: 10000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      overflow-y: auto;
-    }
-
-    .survey-modal.show {
-      display: flex;
-      opacity: 1;
-    }
-
-    .survey-card {
-      background: white;
-      width: 100%;
-      max-width: 560px;
-      border-radius: 20px;
-      padding: 32px 28px;
-      position: relative;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      margin: auto;
-      transform: scale(0.9);
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .survey-modal.show .survey-card {
-      transform: scale(1);
-    }
-
-    .survey-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 36px;
-      height: 36px;
-      background: rgba(0, 0, 0, 0.05);
-      color: var(--dark);
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-
-    .survey-close:hover {
-      background: rgba(0, 0, 0, 0.1);
-      transform: rotate(90deg);
-    }
-
-    .survey-header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
-    .survey-header h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.8rem;
-      color: var(--dark);
-      margin-bottom: 8px;
-    }
-
-    .survey-header h2 em {
-      color: var(--green);
-      font-style: normal;
-    }
-
-    .survey-header p {
-      font-size: 0.9rem;
-      opacity: 0.7;
-    }
-
-    .survey-prog {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 20px;
-      justify-content: center;
-    }
-
-    .survey-step-dot {
-      height: 4px;
-      flex: 1;
-      max-width: 60px;
-      background: rgba(0, 0, 0, 0.1);
-      border-radius: 4px;
-      transition: 0.4s;
-    }
-
-    .survey-step-dot.active {
-      background: var(--green);
-    }
-
-    .survey-step-dot.done {
-      background: var(--lime);
-    }
-
-    .surv-step {
-      display: none;
-      animation: stepIn 0.3s ease both;
-      text-align: left;
-    }
-
-    .surv-step.active {
-      display: block;
-    }
-
-    @keyframes stepIn {
-      from {
-        opacity: 0;
-        transform: translateX(12px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    .surv-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.2rem;
-      margin-bottom: 16px;
-      color: var(--dark);
-      font-weight: 700;
-    }
-
-    .surv-field {
-      margin-bottom: 16px;
-    }
-
-    .surv-field label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--dark);
-      margin-bottom: 6px;
-    }
-
-    .surv-field label .req {
-      color: var(--green);
-    }
-
-    .surv-field input[type="text"],
-    .surv-field select {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1.5px solid rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 0.9rem;
-      background: var(--bg);
-      outline: none;
-      transition: 0.2s;
-    }
-
-    .surv-field input[type="text"]:focus,
-    .surv-field select:focus {
-      border-color: var(--green);
-      background: white;
-      box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
-    }
-
-    .surv-field.has-error input[type="text"],
-    .surv-field.has-error select {
-      border-color: #e07a5f;
-    }
-
-    .surv-err {
-      font-size: 0.75rem;
-      color: #e07a5f;
-      margin-top: 4px;
-      display: none;
-    }
-
-    .surv-field.has-error .surv-err {
-      display: block;
-    }
-
-    .surv-hint {
-      font-size: 0.75rem;
-      color: rgba(0, 0, 0, 0.5);
-      margin-top: 4px;
-    }
-
-    .surv-radio-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .surv-radio-grid.three {
-      grid-template-columns: 1fr 1fr 1fr;
-    }
-
-    @media (max-width: 480px) {
-      .surv-radio-grid.three {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    .surv-radio {
-      position: relative;
-      cursor: pointer;
-    }
-
-    .surv-radio input {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .surv-radio .lbl {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      padding: 12px 6px;
-      border: 1.5px solid rgba(0, 0, 0, 0.1);
-      border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      background: var(--bg);
-      transition: 0.2s;
-      text-align: center;
-    }
-
-    .surv-radio .icon {
-      font-size: 1.4rem;
-    }
-
-    .surv-radio input:checked+.lbl {
-      border-color: var(--green);
-      background: rgba(45, 106, 79, 0.1);
-      color: var(--green);
-      box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
-    }
-
-    .surv-radio:hover .lbl {
-      border-color: var(--lime);
-      background: white;
-    }
-
-    .surv-cond {
-      display: none;
-      margin-top: 16px;
-    }
-
-    .surv-cond.show {
-      display: block;
-      animation: stepIn 0.3s ease both;
-    }
-
-    .surv-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 24px;
-    }
-
-    .surv-btn-back {
-      background: none;
-      border: 1.5px solid rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-      padding: 10px 16px;
-      font-size: 0.85rem;
-      color: var(--dark);
-      cursor: pointer;
-      display: none;
-      font-weight: 600;
-      font-family: inherit;
-    }
-
-    .surv-btn-back:hover {
-      border-color: var(--dark);
-    }
-
-    .surv-btn-next {
-      flex: 1;
-      background: var(--green);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 12px 20px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-      font-family: inherit;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .surv-btn-next:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
-    }
-
-    .surv-btn-next:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
-
-    .surv-success {
-      display: none;
-      text-align: center;
-      padding: 16px 0;
-    }
-
-    .surv-success.show {
-      display: block;
-      animation: stepIn 0.3s ease;
-    }
-
-    .surv-success-icon {
-      font-size: 3rem;
-      margin-bottom: 10px;
-    }
-
-    .surv-success h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.5rem;
-      color: var(--green);
-      margin-bottom: 10px;
-    }
-
-    .surv-divider {
-      height: 1px;
-      background: rgba(0, 0, 0, 0.1);
-      margin: 20px 0;
-    }
-
-    /* Toast Popup Styling */
-    .toast-popup {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: #ffffff;
-      color: #1a2e1a;
-      padding: 1rem 1.5rem;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-      border-left: 5px solid #2d6a4f;
-      z-index: 9999;
-      transform: translateX(120%);
-      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    .toast-popup.show {
-      transform: translateX(0);
-    }
-
-    .toast-content {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .toast-icon {
-      font-size: 1.2rem;
-    }
-
-    .toast-text {
-      font-weight: 500;
-      font-size: 0.95rem;
-    }
-
-    /* Event Modal Styling */
-    .event-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(10px);
-      z-index: 10000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .event-modal.show {
-      display: flex;
-      opacity: 1;
-    }
-
-    .modal-content {
-      background: var(--dark);
-      width: 100%;
-      max-width: 900px;
-      border-radius: 24px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      max-height: 90vh;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transform: scale(0.9);
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .event-modal.show .modal-content {
-      transform: scale(1);
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 40px;
-      height: 40px;
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
-      transition: all 0.2s ease;
-    }
-
-    .modal-close:hover {
-      background: var(--green);
-      transform: rotate(90deg);
-    }
-
-    .modal-body {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      overflow-y: auto;
-      flex: 1;
-    }
-
-    .modal-img {
-      width: 100%;
-      height: 500px;
-      object-fit: cover;
-      position: sticky;
-      top: 0;
-      align-self: start;
-    }
-
-    .modal-details {
-      padding: 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .modal-details h2 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      color: var(--green);
-    }
-
-    .modal-details p {
-      font-size: 1.1rem;
-      line-height: 1.6;
-      color: rgba(255, 255, 255, 0.8);
-    }
-
-    @media (max-width: 768px) {
-      .modal-body {
-        grid-template-columns: 1fr;
-      }
-
-      .modal-img {
-        height: 250px;
-      }
-
-      .modal-details {
-        padding: 25px;
-      }
-
-      .modal-details h2 {
-        font-size: 1.4rem;
-      }
-
-      .modal-content {
-        width: 95%;
-        max-height: 95vh;
-      }
-    }
-  </style>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-logo" data-i18n="footer_logo">Sosial şəbəkələrimiz</div>
-    <ul class="social-links">
-      <li>
-        <a href="https://www.linkedin.com/company/youth-environment-society-yes/" target="_blank" aria-label="LinkedIn"
-          class="linkedin">
-          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
-          </svg>
-        </a>
-      </li>
-      <li>
-        <a href="https://www.instagram.com/youthensoc" target="_blank" aria-label="Instagram">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="ig-grad" cx="30%" cy="107%" r="150%">
-                <stop offset="0%" stop-color="#fdf497" />
-                <stop offset="5%" stop-color="#fdf497" />
-                <stop offset="45%" stop-color="#fd5949" />
-                <stop offset="60%" stop-color="#d6249f" />
-                <stop offset="90%" stop-color="#285AEB" />
-              </radialGradient>
-            </defs>
-            <rect x="2" y="2" width="20" height="20" rx="6" ry="6" fill="url(#ig-grad)" />
-            <circle cx="12" cy="12" r="4.5" stroke="white" stroke-width="1.6" fill="none" />
-            <circle cx="17.5" cy="6.5" r="1.1" fill="white" />
-          </svg>
-        </a>
-      </li>
-    </ul>
-    <p data-i18n="footer_p">© 2026 Youth Environment Society. Davamlı gələcək üçün gənclərin gücləndirilməsi. Bütün hüquqlar qorunur.</p>
-  </footer>
-
-  <!-- EVENT MODAL -->
-  <div id="event-modal" class="event-modal">
-    <div class="modal-content">
-      <button class="modal-close" onclick="closeModal()">✕</button>
-      <div class="modal-body">
-        <img id="modal-img" class="modal-img" src="" alt="Event Detail" width="800" height="500" loading="lazy">
-        <div class="modal-details">
-          <h2 id="modal-title">Event Title</h2>
-          <div id="modal-desc" style="font-size: 1.05rem; line-height: 1.6; color: rgba(255, 255, 255, 0.8);">Event Description goes here.</div>
-          <div style="margin-top: 2rem;">
-            <button id="modal-share-btn" class="btn-primary" style="font-size: 0.85rem; padding: 0.6rem 1.2rem;"
-              onclick="copyShareLink()">
-              🔗 <span data-i18n="btn_share_link">Linki Paylaş</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- AUTH MODAL -->
-  <div id="auth-modal" class="auth-modal" onclick="if(event.target===this)closeAuthModal()">
-    <div class="auth-card">
-      <button class="auth-close" onclick="closeAuthModal()">✕</button>
-
-      <input value="" class="blind-check" type="checkbox" id="blind-input" name="blindcheck" hidden />
-
-      <label for="blind-input" class="blind_input">
-        <span class="hide">Hide</span>
-        <span class="show">Show</span>
-      </label>
-
-      <div class="auth-form">
-        <div class="auth-form-title" id="auth-title">Sign In</div>
-        <div class="auth-form-sub" id="auth-subtitle">Welcome to your YES Dashboard.</div>
-
-        <label class="label_input" for="auth-fname" id="auth-fname-label" style="display:none;">First Name</label>
-        <input spellcheck="false" class="input" type="text" name="fname" id="auth-fname" placeholder="First Name" style="display:none;" />
-
-        <label class="label_input" for="auth-lname" id="auth-lname-label" style="display:none;">Last Name</label>
-        <input spellcheck="false" class="input" type="text" name="lname" id="auth-lname" placeholder="Last Name" style="display:none;" />
-
-        <label class="label_input" for="auth-dob" id="auth-dob-label" style="display:none;">Date of Birth</label>
-        <input spellcheck="false" class="input" type="date" name="dob" id="auth-dob" style="display:none;" title="Date of Birth" />
-
-        <label class="label_input" for="auth-email">Email</label>
-        <input spellcheck="false" class="input" type="email" name="email" id="auth-email" placeholder="Email address" />
-
-        <div class="frg_pss" id="auth-pass-row">
-          <label class="label_input" for="auth-pass">Password</label>
-          <a href="javascript:void(0)" onclick="setAuthMode('forgot')" id="auth-forgot-link">Forgot password?</a>
-        </div>
-        <input spellcheck="false" class="input" type="text" name="password" id="auth-pass" placeholder="Password" />
-
-        <div class="auth-switch">
-          <span id="auth-switch-text">Don't have an account? <span onclick="setAuthMode('register')">Sign Up.</span></span>
-        </div>
-
-        <button class="submit" type="button" id="auth-submit-btn" onclick="submitAuth()">Sign In</button>
-        <p id="auth-error"></p>
-      </div>
-
-      <label for="blind-input" class="avatar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 64 64" id="monkey">
-          <ellipse cx="53.7" cy="33" rx="8.3" ry="8.2" fill="#89664c"></ellipse>
-          <ellipse cx="53.7" cy="33" rx="5.4" ry="5.4" fill="#ffc5d3"></ellipse>
-          <ellipse cx="10.2" cy="33" rx="8.2" ry="8.2" fill="#89664c"></ellipse>
-          <ellipse cx="10.2" cy="33" rx="5.4" ry="5.4" fill="#ffc5d3"></ellipse>
-          <g fill="#89664c">
-            <path d="m43.4 10.8c1.1-.6 1.9-.9 1.9-.9-3.2-1.1-6-1.8-8.5-2.1 1.3-1 2.1-1.3 2.1-1.3-20.4-2.9-30.1 9-30.1 19.5h46.4c-.7-7.4-4.8-12.4-11.8-15.2"></path>
-            <path d="m55.3 27.6c0-9.7-10.4-17.6-23.3-17.6s-23.3 7.9-23.3 17.6c0 2.3.6 4.4 1.6 6.4-1 2-1.6 4.2-1.6 6.4 0 9.7 10.4 17.6 23.3 17.6s23.3-7.9 23.3-17.6c0-2.3-.6-4.4-1.6-6.4 1-2 1.6-4.2 1.6-6.4"></path>
-          </g>
-          <path d="m52 28.2c0-16.9-20-6.1-20-6.1s-20-10.8-20 6.1c0 4.7 2.9 9 7.5 11.7-1.3 1.7-2.1 3.6-2.1 5.7 0 6.1 6.6 11 14.7 11s14.7-4.9 14.7-11c0-2.1-.8-4-2.1-5.7 4.4-2.7 7.3-7 7.3-11.7" fill="#e0ac7e"></path>
-          <g fill="#3b302a" class="monkey-eye-nose">
-            <path d="m35.1 38.7c0 1.1-.4 2.1-1 2.1-.6 0-1-.9-1-2.1 0-1.1.4-2.1 1-2.1.6.1 1 1 1 2.1"></path>
-            <path d="m30.9 38.7c0 1.1-.4 2.1-1 2.1-.6 0-1-.9-1-2.1 0-1.1.4-2.1 1-2.1.5.1 1 1 1 2.1"></path>
-            <ellipse cx="40.7" cy="31.7" rx="3.5" ry="4.5" class="monkey-eye-r"></ellipse>
-            <ellipse cx="23.3" cy="31.7" rx="3.5" ry="4.5" class="monkey-eye-l"></ellipse>
-          </g>
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 64 64" id="monkey-hands">
-          <path fill="#89664C" d="M9.4,32.5L2.1,61.9H14c-1.6-7.7,4-21,4-21L9.4,32.5z"></path>
-          <path fill="#FFD6BB" d="M15.8,24.8c0,0,4.9-4.5,9.5-3.9c2.3,0.3-7.1,7.6-7.1,7.6s9.7-8.2,11.7-5.6c1.8,2.3-8.9,9.8-8.9,9.8 s10-8.1,9.6-4.6c-0.3,3.8-7.9,12.8-12.5,13.8C11.5,43.2,6.3,39,9.8,24.4C11.6,17,13.3,25.2,15.8,24.8"></path>
-          <path fill="#89664C" d="M54.8,32.5l7.3,29.4H50.2c1.6-7.7-4-21-4-21L54.8,32.5z"></path>
-          <path fill="#FFD6BB" d="M48.4,24.8c0,0-4.9-4.5-9.5-3.9c-2.3,0.3,7.1,7.6,7.1,7.6s-9.7-8.2-11.7-5.6c-1.8,2.3,8.9,9.8,8.9,9.8 s-10-8.1-9.7-4.6c0.4,3.8,8,12.8,12.6,13.8c6.6,1.3,11.8-2.9,8.3-17.5C52.6,17,50.9,25.2,48.4,24.8"></path>
-        </svg>
-      </label>
-    </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script>
-    // ── Supabase (Gallery & Auth) ──────────────────────────────────
-    const SUPABASE_URL = 'https://wqcugmhjfuvnwxhspytw.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxY3VnbWhqZnV2bnd4aHNweXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMzY2NzcsImV4cCI6MjA5MTYxMjY3N30.A2rZNI2hOpDNC_JLeQNO9Is50HswX-jB5he9wNOpYLo';
-    const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    // ────────────────────────────────────────────────────────
-
-    // ── AUTH LOGIC ──────────────────────────────────────────
-    let currentUser = null;
-    let authMode = 'login'; // 'login' | 'register'
-
-    sbClient.auth.onAuthStateChange((event, session) => {
-      currentUser = session ? session.user : null;
-      updateNavAuthButton();
-    });
-
-    async function checkUser() {
-      const { data: { session } } = await sbClient.auth.getSession();
-      currentUser = session ? session.user : null;
-      updateNavAuthButton();
-    }
-
-    function updateNavAuthButton() {
-      const btn = document.getElementById('nav-auth-btn');
-      btn.style.display = 'flex';
-      const lang = localStorage.getItem('yes_lang') || 'en';
-      if (currentUser) {
-        btn.title = lang === 'az' ? 'Şəxsi Kabinet' : 'Dashboard';
-      } else {
-        btn.title = lang === 'az' ? 'Daxil ol' : 'Sign In';
-      }
-    }
-
-    function handleAuthClick() {
-      if (currentUser) {
-        window.location.href = 'dashboard.html';
-      } else {
-        openAuthModal();
-      }
-    }
-
-    function openAuthModal(mode) {
-      document.getElementById('auth-modal').classList.add('show');
-      setAuthMode(mode || 'login');
-      document.getElementById('auth-error').style.display = 'none';
-    }
-
-    function closeAuthModal() {
-      document.getElementById('auth-modal').classList.remove('show');
-      var blindCheck = document.getElementById('blind-input');
-      if (blindCheck) blindCheck.checked = false;
-    }
-
-    function setAuthMode(mode) {
-      authMode = mode;
-      const lang = localStorage.getItem('yes_lang') || 'en';
-      const t = translations[lang] || translations['en'];
-      const title = document.getElementById('auth-title');
-      const sub = document.getElementById('auth-subtitle');
-      const btn = document.getElementById('auth-submit-btn');
-      const switchText = document.getElementById('auth-switch-text');
-      const fName = document.getElementById('auth-fname');
-      const lName = document.getElementById('auth-lname');
-      const dob = document.getElementById('auth-dob');
-      const fNameLabel = document.getElementById('auth-fname-label');
-      const lNameLabel = document.getElementById('auth-lname-label');
-      const dobLabel = document.getElementById('auth-dob-label');
-      const passRow = document.getElementById('auth-pass-row');
-      const passInput = document.getElementById('auth-pass');
-      const blindLabel = document.querySelector('.auth-card label.blind_input');
-      const forgotLink = document.getElementById('auth-forgot-link');
-      
-      document.getElementById('auth-error').style.display = 'none';
-      btn.style.display = 'block';
-      btn.disabled = false;
-
-      // Show password row & blind toggle by default
-      if (passRow) passRow.style.display = 'flex';
-      if (passInput) passInput.style.display = 'block';
-      if (blindLabel) blindLabel.style.display = 'inline-flex';
-      if (forgotLink) forgotLink.style.display = 'inline';
-
-      if (mode === 'login') {
-        title.innerText = t.auth_login_title || 'Sign In';
-        sub.innerText = t.auth_login_sub || 'Welcome to your YES Dashboard.';
-        btn.innerText = t.auth_login_btn || 'Sign In';
-        switchText.innerHTML = t.auth_switch_to_register || 'Don\'t have an account? <span onclick="setAuthMode(\'register\')">Sign Up.</span>';
-        fName.style.display = 'none'; lName.style.display = 'none'; dob.style.display = 'none';
-        if (fNameLabel) fNameLabel.style.display = 'none';
-        if (lNameLabel) lNameLabel.style.display = 'none';
-        if (dobLabel) dobLabel.style.display = 'none';
-      } else if (mode === 'forgot') {
-        title.innerText = t.auth_forgot_title || 'Reset Password';
-        sub.innerText = t.auth_forgot_sub || "Enter your email and we'll send you a reset link.";
-        btn.innerText = t.auth_forgot_btn || 'Send Reset Link';
-        switchText.innerHTML = '<span onclick="setAuthMode(\'login\')">' + (t.auth_forgot_back || '← Back to Sign In') + '</span>';
-        fName.style.display = 'none'; lName.style.display = 'none'; dob.style.display = 'none';
-        if (fNameLabel) fNameLabel.style.display = 'none';
-        if (lNameLabel) lNameLabel.style.display = 'none';
-        if (dobLabel) dobLabel.style.display = 'none';
-        // Hide password field, blind toggle, and forgot link
-        if (passRow) passRow.style.display = 'none';
-        if (passInput) passInput.style.display = 'none';
-        if (blindLabel) blindLabel.style.display = 'none';
-      } else {
-        title.innerText = t.auth_register_title || 'Sign Up';
-        sub.innerText = t.auth_register_sub || 'Create a new account and join us!';
-        btn.innerText = t.auth_register_btn || 'Sign Up';
-        switchText.innerHTML = t.auth_switch_to_login || 'Already have an account? <span onclick="setAuthMode(\'login\')">Sign In.</span>';
-        fName.style.display = 'block'; lName.style.display = 'block'; dob.style.display = 'block';
-        if (fNameLabel) fNameLabel.style.display = 'inline';
-        if (lNameLabel) lNameLabel.style.display = 'inline';
-        if (dobLabel) dobLabel.style.display = 'inline';
-        if (forgotLink) forgotLink.style.display = 'none';
-      }
-      // Re-apply placeholder translations
-      if (fName) fName.placeholder = t.auth_fname_placeholder || '';
-      if (lName) lName.placeholder = t.auth_lname_placeholder || '';
-      if (dob) dob.title = t.auth_dob_title || '';
-      var authEmail = document.getElementById('auth-email');
-      var authPass2 = document.getElementById('auth-pass');
-      if (authEmail) authEmail.placeholder = t.auth_email_placeholder || '';
-      if (authPass2) authPass2.placeholder = t.auth_pass_placeholder || '';
-      if (forgotLink) forgotLink.innerText = t.auth_forgot_link || 'Forgot password?';
-    }
-
-    async function submitAuth() {
-      const email = document.getElementById('auth-email').value.trim();
-      const pass = document.getElementById('auth-pass').value;
-      const fName = document.getElementById('auth-fname').value.trim();
-      const lName = document.getElementById('auth-lname').value.trim();
-      const dob = document.getElementById('auth-dob').value;
-      const err = document.getElementById('auth-error');
-      const btn = document.getElementById('auth-submit-btn');
-
-      const lang = localStorage.getItem('yes_lang') || 'en';
-      const t = translations[lang] || translations['en'];
-
-      if (authMode === 'forgot') {
-        if (!email) { err.innerText = t.auth_missing_email || 'Please enter your email address.'; err.style.display = 'block'; return; }
-        btn.disabled = true;
-        btn.innerText = t.auth_wait || 'Please wait...';
-        err.style.display = 'none';
-        const { error } = await sbClient.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin + '/reset-password.html'
-        });
-        if (error) {
-          err.innerText = error.message; err.style.display = 'block'; err.style.color = '#e74c3c';
-          btn.disabled = false; btn.innerText = t.auth_forgot_btn || 'Send Reset Link';
-          return;
-        }
-        err.innerText = t.auth_forgot_success || 'Password reset link sent! Check your email.';
-        err.style.display = 'block';
-        err.style.color = 'var(--green)';
-        btn.style.display = 'none';
-        return;
-      }
-
-      if (!email || !pass) { err.innerText = t.auth_missing_fields || 'Please enter your email and password.'; err.style.display = 'block'; return; }
-      
-      btn.disabled = true;
-      btn.innerText = t.auth_wait || 'Please wait...';
-      err.style.display = 'none';
-      err.style.color = '#e74c3c'; // Reset error color
-
-      if (authMode === 'login') {
-        const { error } = await sbClient.auth.signInWithPassword({ email, password: pass });
-        if (error) { 
-          err.innerText = error.message === 'Invalid login credentials' ? (t.auth_invalid_creds || 'Invalid email or password.') : error.message; 
-          err.style.display = 'block'; btn.disabled = false; btn.innerText = t.auth_login_btn || 'Sign In'; return; 
-        }
-        closeAuthModal();
-        window.location.href = 'dashboard.html';
-      } else {
-        if (!fName || !lName || !dob) { err.innerText = t.auth_missing_reg_fields || 'Please enter your First Name, Last Name and Date of Birth.'; err.style.display = 'block'; btn.disabled = false; btn.innerText = t.auth_register_btn || 'Sign Up'; return; }
-        const { data, error } = await sbClient.auth.signUp({ 
-          email, 
-          password: pass,
-          options: { data: { first_name: fName, last_name: lName, birth_date: dob } }
-        });
-        
-        if (error) { 
-          err.innerText = error.message; err.style.display = 'block'; btn.disabled = false; btn.innerText = t.auth_register_btn || 'Sign Up'; return; 
-        }
-        
-        if (data.session) {
-          // Email confirmation NOT required, we are logged in!
-          await sbClient.from('profiles').upsert({ id: data.user.id, first_name: fName, last_name: lName, status: 'Namizəd', birth_date: dob, email: email });
-          closeAuthModal();
-          window.location.href = 'dashboard.html';
-        } else {
-          // Email confirmation required!
-          err.innerText = t.auth_success_confirm || 'Registration successful! Please check your email and click the confirmation link.';
-          err.style.display = 'block';
-          err.style.color = 'var(--green)';
-          btn.style.display = 'none';
-        }
-      }
-    }
-
-    // Call checkUser on load
-    window.addEventListener('DOMContentLoaded', checkUser);
-
-    var allEvents = []; // Supabase-den yuklenir (en son meqale)
-
-    async function fetchEvents() {
-      try {
-        const { data, error } = await sbClient
-          .from('articles')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(1);
-        if (error) throw error;
-        allEvents = data || [];
-      } catch (err) {
-        console.warn('Supabase fetch failed:', err);
-      }
-      document.getElementById('events-loader').style.display = 'none';
-      renderGallery();
-    }
+      <input id="email-input" type="email" placeholder="Your email for newsletter" data-i18n="join_placeholder" required>Bülleten üçün email ünvanınız</i> ${dateStr}</span>
+              <span class="home-event-badge ${isOpen ? 'badge-open' : 'badge-closed'}">${isOpen ? (lang === 'az' ? 'Qeydiyyat Açıqdır' : 'Registration Open') : (lang === 'az' ? 'Bitib' : 'Closed')}</span>
+            </div>
+            <div class="home-event-body">
+              <div>
+                <h3 class="home-event-title" onclick="window.location.href='events.html#event-${ev.id}'" style="cursor:pointer;">${title}</h3>
+                <p class="home-event-desc">${desc.replace(/[*#_~>]/g, '')}</p>
+              </div>
+              <div class="home-event-actions">
+                ${isOpen && ev.registration_link ? `
+                  <a href="${ev.registration_link}" target="_blank" rel="noopener noreferrer" class="btn-register" onclick="event.stopPropagation()">
+                    <i class="ph ph-check-circle"></i> <span>${t.btn_register_event || 'Register Now'}</span> <i class="ph ph-arrow-up-right"></i>
+                  </a>
+                ` : `
+                  <button class="btn-register disabled" disabled>
+                    <span>${t.btn_event_closed || 'Closed'}</span>
+                  </button>
+                `}
+                <a href="events.html#event-${ev.id}" class="btn-share" title="${t.btn_details || 'Details'}">
+                  <i class="ph ph-eye"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+    window.renderUpcomingEvents = renderUpcomingEvents;
 
 
     function openModal(index) {
@@ -4161,6 +2811,7 @@
     // Initialize
     window.addEventListener('load', async () => {
       await fetchEvents();
+      await fetchUpcomingEvents();
       handleHash();
     });
 

@@ -2121,6 +2121,117 @@
       .auth-card { --w-form: 100%; --p: 20px; border-radius: 16px; }
       .auth-card .avatar { --sz-avatar: 110px; }
     }
+    /* EVENTS PREVIEW SECTION */
+    .events-preview-section {
+      background: white;
+      border-top: 1px solid rgba(45, 106, 79, 0.1);
+      border-bottom: 1px solid rgba(45, 106, 79, 0.1);
+      padding: 5rem 5%;
+    }
+    .home-events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .home-event-card {
+      background: #f8fcf9;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(45, 106, 79, 0.14);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .home-event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 36px rgba(45, 106, 79, 0.12);
+    }
+    .home-event-img-wrap {
+      position: relative;
+      width: 100%;
+      height: 205px;
+      overflow: hidden;
+      background: #1a2e1a;
+    }
+    .home-event-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .home-event-card:hover .home-event-img {
+      transform: scale(1.05);
+    }
+    .home-event-date {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: rgba(26, 46, 26, 0.85);
+      backdrop-filter: blur(8px);
+      color: white;
+      padding: 0.35rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .home-event-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.35rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .badge-open {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #a5d6a7;
+    }
+    .badge-closed {
+      background: #fbe9e7;
+      color: #d84315;
+      border: 1px solid #ffab91;
+    }
+    .home-event-body {
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .home-event-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.22rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.4rem;
+      line-height: 1.3;
+    }
+    .home-event-desc {
+      font-size: 0.9rem;
+      color: rgba(26, 46, 26, 0.72);
+      line-height: 1.55;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .home-event-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.06);
+      padding-top: 0.9rem;
+    }
   </style>
 </head>
 
@@ -2137,6 +2248,7 @@
         <li><a href="#about" data-i18n="nav_about">Who We Are</a></li>
         <li><a href="#pillars" data-i18n="nav_pillars">Our Work</a></li>
         <li><a href="articles.html" data-i18n="nav_articles">Articles</a></li>
+        <li><a href="events.html" data-i18n="nav_events">Events</a></li>
         <li><a href="wiki.html" data-i18n="nav_wiki">Wiki</a></li>
         <li><a href="#volunteer" data-i18n="nav_volunteer">Volunteer</a></li>
       </ul>
@@ -2179,8 +2291,14 @@
 
 
     <div class="hero-content">
-      <div class="hero-tag" data-i18n="hero_tag">
-        Youth-Led · Planet-Focused
+      <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap; margin-bottom:0.8rem;">
+        <div class="hero-tag" data-i18n="hero_tag" style="margin-bottom:0;">
+          Youth-Led · Planet-Focused
+        </div>
+        <a href="#events" class="hero-event-pill" style="display:inline-flex; align-items:center; gap:0.45rem; background:rgba(45,106,79,0.12); border:1px solid rgba(45,106,79,0.25); color:var(--green); padding:0.35rem 0.85rem; border-radius:20px; font-size:0.82rem; font-weight:700; text-decoration:none; transition:all 0.2s;">
+          <span style="width:7px; height:7px; border-radius:50%; background:var(--green); display:inline-block;"></span>
+          <span data-i18n="hero_events_badge">Events & Announcements →</span>
+        </a>
       </div>
       <h1 data-i18n="hero_title">Empowering<br>Youth for a<br><span class="hero-typewriter-line"><em class="hero-typewriter"><span id="typewriter-text">Sustainable</span><span class="typewriter-cursor" aria-hidden="true">|</span></em></span><br><span class="hero-future-word">Future.</span></h1>
       <p class="hero-sub" data-i18n="hero_sub">We are a community of young activists, thinkers, and doers united by one
@@ -2219,6 +2337,29 @@
       <div class="stat-label" data-i18n="stat_4_label">Potential for Change</div>
     </div>
   </div>
+
+  <!-- ── UPCOMING EVENTS SECTION ── -->
+  <section class="section events-preview-section" id="events">
+    <div style="max-width:1300px; margin:0 auto;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:2.5rem; flex-wrap:wrap; gap:1.2rem;">
+        <div>
+          <div class="section-tag" data-i18n="events_tag" style="margin-bottom:0.5rem;">Events & Announcements</div>
+          <h2 class="section-title" data-i18n="events_title" style="margin-bottom:0.5rem;">Upcoming & Recent <em style="color:var(--green);font-style:normal">Events</em></h2>
+          <p style="font-size:1.05rem; color:rgba(26,46,26,0.7); max-width:600px;" data-i18n="events_sub">Join our workshops, conferences, eco-actions, and community events. Register directly to participate!</p>
+        </div>
+        <a href="events.html" class="btn-secondary" style="margin-top:0.5rem;">
+          <span class="circle" aria-hidden="true"><span class="icon arrow"></span></span>
+          <span class="button-text" data-i18n="btn_view_all_events">View All Events</span>
+        </a>
+      </div>
+
+      <div id="home-events-grid" class="home-events-grid">
+        <div style="grid-column:1/-1; text-align:center; padding:3rem; color:rgba(26,46,26,0.5);">
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- PHOTO CAROUSEL -->
   <section class="photo-carousel-section">
@@ -2620,8 +2761,19 @@
         nav_about: "Who We Are",
         nav_pillars: "Our Work",
         nav_articles: "Articles",
+        nav_events: "Events",
         nav_wiki: "Wiki",
+        nav_volunteer: "Volunteer",
         nav_join: "Join Us",
+        hero_events_badge: "Events & Announcements →",
+        events_tag: "Events & Announcements",
+        events_title: "Upcoming & Recent <em style='color:var(--green);font-style:normal'>Events</em>",
+        events_sub: "Join our workshops, conferences, eco-actions, and community events. Register directly to participate!",
+        btn_register_event: "Register Now",
+        btn_event_closed: "Registration Closed",
+        btn_view_all_events: "View All Events",
+        no_events_msg: "No events announced yet. Stay tuned!",
+        event_date_label: "Date",
         hero_tag: "Youth-Led · Planet-Focused",
         hero_title: "Empowering<br>Youth for a<br><span class=\"hero-typewriter-line\"><em class=\"hero-typewriter\"><span id=\"typewriter-text\">Sustainable</span><span class=\"typewriter-cursor\" aria-hidden=\"true\">|</span></em></span><br><span class=\"hero-future-word\">Future.</span>",
         hero_sub: "We are a community of young activists, thinkers, and doers united by one mission: to protect our environment and inspire the next generation of green leaders.",
@@ -2787,8 +2939,19 @@
         nav_about: "Biz Kimik",
         nav_pillars: "Fəaliyyətimiz",
         nav_articles: "Məqalələr",
+        nav_events: "Tədbirlər",
         nav_wiki: "Wiki",
+        nav_volunteer: "Könüllülük",
         nav_join: "Bizə Qoşulun",
+        hero_events_badge: "Tədbirlər və Elanlar →",
+        events_tag: "Tədbirlər və Elanlar",
+        events_title: "Yaxınlaşan və Son <em style='color:var(--green);font-style:normal'>Tədbirlər</em>",
+        events_sub: "Görüşlərimizdə, eko-təlimlərimizdə, aksiyalarımızda və layihələrimizdə iştirak edin. Birbaşa qeydiyyatdan keçin!",
+        btn_register_event: "Qeydiyyatdan keç",
+        btn_event_closed: "Qeydiyyat bitdi",
+        btn_view_all_events: "Bütün Tədbirlər",
+        no_events_msg: "Hələlik elan edilmiş tədbir yoxdur. Tezliklə yenilənəcək!",
+        event_date_label: "Tarix",
         hero_tag: "Gənclərin rəhbərliyi ilə · Planet mərkəzli",
         hero_title: "<span class=\"hero-typewriter-line\"><em class=\"hero-typewriter\"><span id=\"typewriter-text\">Davamlı</span><span class=\"typewriter-cursor\" aria-hidden=\"true\">|</span></em></span><br>gələcək naminə<br>gənclərin potensialını artırırıq.",
         hero_sub: "Biz ətraf mühiti qorumaq və gələcək nəsil yaşıl liderləri ruhlandırmaq üçün birləşmiş gənc fəallar, düşünənlər və icraçılar icmasıyıq.",
@@ -2996,6 +3159,10 @@
       if (authFname) authFname.placeholder = t.auth_fname_placeholder || '';
       if (authLname) authLname.placeholder = t.auth_lname_placeholder || '';
       if (authDob) authDob.title = t.auth_dob_title || '';
+
+      if (window.renderUpcomingEvents) {
+        window.renderUpcomingEvents();
+      }
     }
 
     function applySurveyLanguage(lang) {
@@ -4049,6 +4216,80 @@
       renderGallery();
     }
 
+    // ── UPCOMING EVENTS SECTION ──
+    let upcomingEventsList = [];
+
+    async function fetchUpcomingEvents() {
+      const grid = document.getElementById('home-events-grid');
+      if (!grid) return;
+      try {
+        const { data, error } = await sbClient
+          .from('events')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(6);
+        upcomingEventsList = data || [];
+      } catch (err) {
+        console.warn('Failed to fetch events for home page:', err);
+        upcomingEventsList = [];
+      }
+      renderUpcomingEvents();
+    }
+
+    function renderUpcomingEvents() {
+      const grid = document.getElementById('home-events-grid');
+      if (!grid) return;
+      const lang = localStorage.getItem('yes_lang') || 'en';
+      const t = translations[lang] || translations.en;
+
+      if (!upcomingEventsList || upcomingEventsList.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:3rem; color:rgba(26,46,26,0.5); font-size:1.05rem;">${t.no_events_msg || 'No events announced yet.'}</div>`;
+        return;
+      }
+
+      grid.innerHTML = upcomingEventsList.map(ev => {
+        const title = lang === 'az' ? (ev.title_az || ev.title_en) : (ev.title_en || ev.title_az);
+        const desc = lang === 'az' ? (ev.desc_az || ev.desc_en || '') : (ev.desc_en || ev.desc_az || '');
+        const dateStr = ev.event_date
+          ? new Date(ev.event_date).toLocaleDateString(lang === 'az' ? 'az-AZ' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+          : (t.event_date_label || 'Date: TBA');
+        const fallbackImg = 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80';
+        const imgSrc = ev.image || fallbackImg;
+        const isOpen = ev.is_active;
+
+        return `
+          <article class="home-event-card">
+            <div class="home-event-img-wrap" onclick="window.location.href='events.html#event-${ev.id}'" style="cursor:pointer;">
+              <img class="home-event-img" src="${imgSrc}" alt="${title}" loading="lazy" onerror="this.src='${fallbackImg}'">
+              <span class="home-event-date"><i class="ph ph-calendar"></i> ${dateStr}</span>
+              <span class="home-event-badge ${isOpen ? 'badge-open' : 'badge-closed'}">${isOpen ? (lang === 'az' ? 'Qeydiyyat Açıqdır' : 'Registration Open') : (lang === 'az' ? 'Bitib' : 'Closed')}</span>
+            </div>
+            <div class="home-event-body">
+              <div>
+                <h3 class="home-event-title" onclick="window.location.href='events.html#event-${ev.id}'" style="cursor:pointer;">${title}</h3>
+                <p class="home-event-desc">${desc.replace(/[*#_~>]/g, '')}</p>
+              </div>
+              <div class="home-event-actions">
+                ${isOpen && ev.registration_link ? `
+                  <a href="${ev.registration_link}" target="_blank" rel="noopener noreferrer" class="btn-register" onclick="event.stopPropagation()">
+                    <i class="ph ph-check-circle"></i> <span>${t.btn_register_event || 'Register Now'}</span> <i class="ph ph-arrow-up-right"></i>
+                  </a>
+                ` : `
+                  <button class="btn-register disabled" disabled>
+                    <span>${t.btn_event_closed || 'Closed'}</span>
+                  </button>
+                `}
+                <a href="events.html#event-${ev.id}" class="btn-share" title="${t.btn_details || 'Details'}">
+                  <i class="ph ph-eye"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+    window.renderUpcomingEvents = renderUpcomingEvents;
+
 
     function openModal(index) {
       var lang = localStorage.getItem('yes_lang') || 'en';
@@ -4189,6 +4430,7 @@
     // Initialize
     window.addEventListener('load', async () => {
       await fetchEvents();
+      await fetchUpcomingEvents();
       handleHash();
     });
 
