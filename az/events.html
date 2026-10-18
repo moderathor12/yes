@@ -40,10 +40,12 @@
     nav {
       position: fixed; top: 0; width: 100%; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 1.2rem 5%; background: rgba(240, 244, 240, 0.85);
+      padding: 1rem 5%; background: rgba(240, 244, 240, 0.85);
       backdrop-filter: blur(12px); border-bottom: 1px solid rgba(45, 106, 79, 0.15);
     }
     .logo { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 1.4rem; color: var(--green); text-decoration: none; }
+    .site-logo-img { height: 42px; width: auto; object-fit: contain; display: block; transition: transform 0.2s ease; }
+    .logo:hover .site-logo-img { transform: scale(1.02); }
     .logo-badge { background: var(--green); color: white; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 1.1rem; letter-spacing: 1px; }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a { font-size: 0.95rem; color: var(--dark); text-decoration: none; font-weight: 500; transition: color 0.2s; }
@@ -224,6 +226,8 @@
     @keyframes pulse { from { transform: scale(0.6); opacity: 0.4; } to { transform: scale(1.2); opacity: 1; } }
 
     @media (max-width: 768px) {
+      nav { padding: 0.9rem 4%; }
+      .site-logo-img { height: 34px; }
       .nav-links { display: none; }
       .nav-links.active {
         display: flex; flex-direction: column; position: absolute;
@@ -240,9 +244,8 @@
 
   <!-- NAV -->
   <nav>
-    <a class="logo" href="index.html">
-      <span class="logo-badge">YES</span>
-      <span data-i18n="logo_text">Gənclərin Ekoloji Cəmiyyəti</span>
+    <a class="logo" href="index.html" aria-label="Youth Environment Society">
+      <img src="logo.png" alt="Youth Environment Society" class="site-logo-img">
     </a>
     <div class="nav-right">
       <ul class="nav-links">
