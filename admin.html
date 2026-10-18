@@ -28,6 +28,7 @@
     #login-screen {
       min-height: 100vh; display: flex; align-items: center; justify-content: center;
       background: linear-gradient(135deg, #d8f3dc 0%, #b7e4c7 100%);
+      position: relative;
     }
     .login-card {
       background: white; padding: 3rem 2.5rem; border-radius: 24px;
@@ -63,6 +64,32 @@
     .btn-sm     { padding: 0.45rem 0.9rem; font-size: 0.8rem; border-radius: 8px; }
 
     #login-err { color: #e74c3c; margin-top: 0.8rem; font-size: 0.9rem; display: none; }
+
+    /* ── LANGUAGE SELECTOR ───────────────────────────────── */
+    .lang-dropdown { position: relative; display: inline-block; z-index: 100; }
+    .lang-current {
+      background: white; color: var(--dark); border: 1.5px solid rgba(0,0,0,0.1);
+      padding: 0.45rem 0.85rem; border-radius: 10px; font-size: 0.85rem; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; gap: 0.4rem;
+      font-family: 'Space Grotesk', sans-serif; transition: all 0.2s ease;
+    }
+    .lang-current:hover { background: #f0f0f0; border-color: var(--green); }
+    .lang-current svg { width: 14px; height: 14px; fill: currentColor; transition: transform 0.2s; }
+    .lang-dropdown:hover .lang-current svg { transform: rotate(180deg); }
+    .lang-options {
+      position: absolute; top: 100%; right: 0; background: white; border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 0.35rem; min-width: 80px;
+      opacity: 0; visibility: hidden; transform: translateY(6px);
+      transition: all 0.2s ease; margin-top: 0.3rem; z-index: 101;
+    }
+    .lang-dropdown:hover .lang-options { opacity: 1; visibility: visible; transform: translateY(0); }
+    .lang-options button {
+      display: block; width: 100%; padding: 0.4rem 0.75rem; border: none; background: none;
+      color: var(--dark); text-align: left; font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; border-radius: 6px; font-family: 'DM Sans', sans-serif; transition: background 0.15s;
+    }
+    .lang-options button:hover { background: var(--bg); color: var(--green); }
+    .lang-options button.active { background: rgba(45, 106, 79, 0.1); color: var(--green); font-weight: 700; }
 
     /* ── APP SHELL ───────────────────────────────────────── */
     #app { display: none; min-height: 100vh; }
@@ -138,175 +165,206 @@
     .stat-card.orange .stat-number { color: #f39c12; }
     .stat-sub { font-size: 0.8rem; opacity: 0.5; }
 
-    /* Recent articles in stats */
-    .recent-articles { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-    .recent-articles h3 { font-family: 'Space Grotesk', sans-serif; margin-bottom: 1.2rem; font-size: 1rem; }
-    .recent-row { display: flex; align-items: center; gap: 1rem; padding: 0.7rem 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
-    .recent-row:last-child { border-bottom: none; }
-    .recent-row img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; background: #eee; flex-shrink: 0; }
-    .recent-row-info { flex: 1; min-width: 0; }
-    .recent-row-info h4 { font-size: 0.875rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .recent-row-info span { font-size: 0.75rem; opacity: 0.5; }
-
-    /* Article list */
-    .list-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .list-header h2 { font-family: 'Space Grotesk', sans-serif; flex: 1; }
-    .search-box { display: flex; align-items: center; gap: 0.5rem; background: white; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 10px; padding: 0.5rem 0.9rem; }
-    .search-box input { border: none; background: none; margin: 0; padding: 0; width: 180px; font-size: 0.875rem; }
-    .search-box input:focus { box-shadow: none; }
-    .filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
-    .filter-btn { padding: 0.35rem 0.9rem; border: 1.5px solid rgba(0,0,0,0.12); border-radius: 20px; background: white; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; font-family: inherit; color: var(--dark); }
-    .filter-btn:hover, .filter-btn.active { background: var(--green); color: white; border-color: var(--green); }
-
-    .articles-list { display: grid; gap: 0.8rem; }
-    .article-item {
-      background: white; padding: 1.2rem 1.5rem; border-radius: 14px;
-      display: flex; gap: 1.2rem; align-items: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: box-shadow 0.2s;
-      border-left: 3px solid transparent;
+    .recent-articles {
+      background: white; border-radius: 16px; padding: 1.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
-    .article-item:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-    .article-item.draft { border-left-color: #f39c12; }
+    .recent-articles h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; margin-bottom: 1.2rem; }
+    .recent-row {
+      display: flex; align-items: center; gap: 1rem; padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 0.9rem;
+    }
+    .recent-row:last-child { border-bottom: none; }
+    .recent-row img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; }
+    .recent-row-info { flex: 1; min-width: 0; }
+    .recent-row-info h4 { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .recent-row-info span { font-size: 0.8rem; opacity: 0.5; }
+
+    /* Articles Page */
+    .list-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap;
+    }
+    .list-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; }
+    .search-box {
+      display: flex; align-items: center; gap: 0.5rem; background: white;
+      border: 1.5px solid rgba(0,0,0,0.1); border-radius: 10px; padding: 0 0.8rem;
+    }
+    .search-box input { border: none !important; margin: 0 !important; padding: 0.6rem 0.4rem !important; background: transparent !important; box-shadow: none !important; }
+    .filter-bar { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 0.4rem 1rem; border-radius: 8px; border: 1.5px solid rgba(0,0,0,0.1);
+      background: white; cursor: pointer; font-size: 0.85rem; font-weight: 600;
+      transition: all 0.2s; font-family: inherit;
+    }
+    .filter-btn.active, .filter-btn:hover { background: var(--green); color: white; border-color: var(--green); }
+
+    .articles-list { display: flex; flex-direction: column; gap: 0.8rem; }
+    .article-item {
+      background: white; border-radius: 14px; padding: 1.2rem 1.4rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 1.2rem;
+      border-left: 4px solid transparent; transition: all 0.2s;
+    }
+    .article-item:hover { transform: translateX(3px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
     .article-item.published { border-left-color: var(--lime); }
-    .article-item img { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; background: #eee; flex-shrink: 0; }
+    .article-item.draft { border-left-color: #f39c12; }
+    .article-item img { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
     .article-meta { flex: 1; min-width: 0; }
-    .article-meta h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .article-meta p { font-size: 0.8rem; opacity: 0.55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.4rem; }
-    .article-meta-row { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
-    .badge { display: inline-flex; align-items: center; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
-    .badge-published { background: rgba(116,198,157,0.2); color: var(--green); }
-    .badge-draft     { background: rgba(243,156,18,0.15); color: #b7770d; }
-    .badge-cat       { background: rgba(52,152,219,0.15); color: #1a6a9a; }
-    .badge-tag       { background: rgba(155,114,207,0.15); color: #5a3d8a; }
-    .article-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+    .article-meta h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .article-meta p { font-size: 0.8rem; opacity: 0.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .article-meta-row { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.4rem; flex-wrap: wrap; }
+    .badge {
+      font-size: 0.72rem; padding: 0.2rem 0.55rem; border-radius: 6px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .badge-published { background: #d8f3dc; color: #1b4332; }
+    .badge-draft { background: #fef3c7; color: #92400e; }
+    .badge-cat { background: #e0f2fe; color: #0369a1; }
+    .badge-tag { background: #f3e8ff; color: #6b21a8; }
+    .article-actions { display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; }
 
     /* Categories Page */
-    .categories-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
     .cat-card { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-    .cat-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; margin-bottom: 1rem; }
-    .cat-list { display: flex; flex-direction: column; gap: 0.5rem; }
-    .cat-row { display: flex; align-items: center; gap: 0.8rem; padding: 0.6rem 0.8rem; border-radius: 10px; background: var(--bg); }
-    .cat-row .cat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .cat-row span { flex: 1; font-size: 0.875rem; font-weight: 500; }
-    .cat-row small { opacity: 0.5; font-size: 0.75rem; }
-    .add-cat-form { display: flex; gap: 0.5rem; margin-top: 1rem; }
-    .add-cat-form input { flex: 1; margin: 0; padding: 0.65rem 0.9rem; font-size: 0.875rem; }
-    .color-preview { width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid rgba(0,0,0,0.1); cursor: pointer; padding: 2px; }
+    .cat-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; margin-bottom: 1.2rem; }
+    .cat-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .cat-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.6rem 0.8rem; background: var(--bg); border-radius: 10px; font-size: 0.9rem;
+    }
+    .cat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .cat-row span { flex: 1; margin-left: 0.6rem; font-weight: 600; }
+    .cat-row small { opacity: 0.5; margin-right: 0.8rem; }
+    .add-cat-form { display: flex; gap: 0.6rem; margin-top: 1rem; align-items: center; }
+    .add-cat-form input[type="text"] { margin-bottom: 0; flex: 1; }
+    .add-cat-form input[type="color"] {
+      width: 42px; height: 42px; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 10px;
+      cursor: pointer; padding: 2px; background: white; margin-bottom: 0; flex-shrink: 0;
+    }
 
-    /* Modal */
+    /* ── MODAL ───────────────────────────────────────────── */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200;
-      display: none; align-items: flex-start; justify-content: center; padding: 2rem; overflow-y: auto;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100;
+      display: flex; align-items: center; justify-content: center; padding: 1rem;
+      backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: 0.25s;
     }
-    .modal-overlay.open { display: flex; }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
     .modal-box {
-      background: white; border-radius: 20px; width: 100%; max-width: 760px;
-      padding: 2rem; position: relative; margin: auto;
+      background: white; border-radius: 20px; width: 100%; max-width: 680px;
+      max-height: 90vh; overflow-y: auto; padding: 2rem;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+      transform: scale(0.95); transition: 0.25s;
     }
+    .modal-overlay.open .modal-box { transform: scale(1); }
     .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-    .modal-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; }
-    .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; line-height: 1; opacity: 0.5; padding: 0.25rem; }
+    .modal-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; }
+    .modal-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--dark); opacity: 0.5; transition: 0.2s; }
     .modal-close:hover { opacity: 1; }
-    .modal-footer { display: flex; gap: 0.8rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0,0,0,0.08); }
-
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.825rem; opacity: 0.7; }
-    .form-group input, .form-group textarea, .form-group select { margin-bottom: 0; }
-
-    /* Status toggle */
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; opacity: 0.8; }
+    .form-group .EasyMDEContainer { margin-bottom: 0; }
+    .EasyMDEContainer .CodeMirror { border-radius: 0 0 10px 10px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; }
+    .editor-toolbar { border-radius: 10px 10px 0 0; }
     .status-toggle { display: flex; gap: 0.5rem; }
-    .status-option { flex: 1; padding: 0.65rem; border: 2px solid rgba(0,0,0,0.1); border-radius: 10px;
-      text-align: center; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
-    .status-option.selected-published { border-color: var(--lime); background: rgba(116,198,157,0.12); color: var(--green); }
-    .status-option.selected-draft { border-color: #f39c12; background: rgba(243,156,18,0.12); color: #b7770d; }
-
-    /* EasyMDE tweaks */
-    .EasyMDEContainer .CodeMirror {
-      border-radius: 0 0 10px 10px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
-      min-height: 160px; border-color: rgba(0,0,0,0.1);
+    .status-option {
+      flex: 1; padding: 0.7rem; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 10px;
+      text-align: center; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s;
     }
-    .EasyMDEContainer .editor-toolbar {
-      border-radius: 10px 10px 0 0; border-color: rgba(0,0,0,0.1); background: #f8f9fa;
-    }
-    .EasyMDEContainer .editor-preview { font-family: 'DM Sans', sans-serif; }
-    .EasyMDEContainer { margin-bottom: 1rem; }
+    .status-option.selected-published { background: #d8f3dc; border-color: var(--lime); color: #1b4332; }
+    .status-option.selected-draft { background: #fef3c7; border-color: #f39c12; color: #92400e; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 0.8rem; margin-top: 1.5rem; padding-top: 1.2rem; border-top: 1px solid rgba(0,0,0,0.07); }
 
     /* Tags input */
-    .tags-input-wrap { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0.6rem 0.8rem; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 12px; background: #fafafa; cursor: text; transition: 0.2s; }
-    .tags-input-wrap:focus-within { border-color: var(--green); box-shadow: 0 0 0 4px rgba(45,106,79,0.1); background: white; }
-    .tag-chip { display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(155,114,207,0.15); color: #5a3d8a; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
-    .tag-chip button { background: none; border: none; cursor: pointer; font-size: 0.85rem; line-height: 1; padding: 0; opacity: 0.6; color: inherit; width: auto; }
-    .tag-chip button:hover { opacity: 1; }
-    #tags-input-field { border: none; background: none; margin: 0; padding: 0.1rem 0.2rem; outline: none; font-size: 0.875rem; min-width: 100px; flex: 1; }
-    #tags-input-field:focus { box-shadow: none; }
-
-    /* Empty & loading states */
-    .empty-state { text-align: center; padding: 4rem 2rem; opacity: 0.4; }
-    .empty-state svg { width: 60px; height: 60px; margin-bottom: 1rem; }
-    .loading-dots { display: flex; gap: 0.4rem; justify-content: center; padding: 3rem; }
-    .loading-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--lime); animation: pulse 1.2s ease infinite; }
-    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes pulse { 0%, 100% { transform: scale(0.7); opacity: 0.5; } 50% { transform: scale(1); opacity: 1; } }
-
-    /* Notification */
-    .notif { position: fixed; bottom: 2rem; right: 2rem; z-index: 999; display: flex; flex-direction: column; gap: 0.5rem; }
-    .notif-item { background: var(--dark); color: white; padding: 0.8rem 1.2rem; border-radius: 12px; font-size: 0.875rem; box-shadow: 0 8px 24px rgba(0,0,0,0.2); animation: slideIn 0.3s ease; max-width: 300px; }
-    .notif-item.success { background: var(--green); }
-    .notif-item.error   { background: #c0392b; }
-    @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-    /* Confirm dialog */
-    .confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; display: none; align-items: center; justify-content: center; }
-    .confirm-overlay.open { display: flex; }
-    .confirm-box { background: white; border-radius: 16px; padding: 2rem; max-width: 400px; width: 90%; text-align: center; }
-    .confirm-box h3 { font-family: 'Space Grotesk', sans-serif; margin-bottom: 0.5rem; }
-    .confirm-box p { opacity: 0.6; font-size: 0.9rem; margin-bottom: 1.5rem; }
-    .confirm-box .confirm-actions { display: flex; gap: 0.8rem; }
-    .confirm-box .confirm-actions .btn { flex: 1; justify-content: center; }
-
-    /* ── Phosphor icon size in nav ─────────────────────── */
-    .nav-item i { font-size: 1.1rem; flex-shrink: 0; }
-
-    /* ── MOBILE ─────────────────────────────────────────── */
-    .hamburger-btn {
-      display: none; background: none; border: none; cursor: pointer;
-      color: var(--dark); padding: 0.4rem; border-radius: 8px;
-      transition: background 0.2s;
+    .tags-input-wrap {
+      display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;
+      padding: 0.4rem 0.6rem; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 12px;
+      background: #fafafa; min-height: 46px; cursor: text;
     }
-    .hamburger-btn:hover { background: rgba(0,0,0,0.06); }
-    .hamburger-btn i { font-size: 1.4rem; }
+    .tags-input-wrap:focus-within { border-color: var(--green); box-shadow: 0 0 0 4px rgba(45,106,79,0.1); background: white; }
+    .tag-chip {
+      background: #d8f3dc; color: #1b4332; padding: 0.25rem 0.6rem; border-radius: 6px;
+      font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.3rem;
+    }
+    .tag-chip button { background: none; border: none; cursor: pointer; color: inherit; font-size: 0.85rem; line-height: 1; padding: 0; }
+    .tags-input-wrap input {
+      border: none !important; background: transparent !important; box-shadow: none !important;
+      padding: 0.2rem 0.4rem !important; margin: 0 !important; flex: 1; min-width: 100px;
+    }
+
+    /* ── NOTIFICATIONS / TOAST ───────────────────────────── */
+    .notif { position: fixed; bottom: 2rem; right: 2rem; z-index: 999; display: flex; flex-direction: column; gap: 0.5rem; }
+    .notif-item {
+      padding: 0.9rem 1.4rem; border-radius: 12px; color: white; font-weight: 600;
+      font-size: 0.9rem; box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+      animation: slideIn 0.3s ease; display: flex; align-items: center; gap: 0.6rem;
+    }
+    .notif-item.success { background: var(--green); }
+    .notif-item.error { background: #e74c3c; }
+    @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* ── CONFIRM DIALOG ──────────────────────────────────── */
+    .confirm-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200;
+      display: flex; align-items: center; justify-content: center; padding: 1rem;
+      backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: 0.2s;
+    }
+    .confirm-overlay.open { opacity: 1; pointer-events: auto; }
+    .confirm-box {
+      background: white; border-radius: 18px; padding: 2rem; max-width: 380px; width: 100%;
+      text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    }
+    .confirm-box h3 { font-family: 'Space Grotesk', sans-serif; margin-bottom: 0.5rem; }
+    .confirm-box p { font-size: 0.9rem; opacity: 0.6; margin-bottom: 1.5rem; }
+    .confirm-actions { display: flex; gap: 0.8rem; justify-content: center; }
+
+    /* Empty state */
+    .empty-state { text-align: center; padding: 3rem 1rem; opacity: 0.45; }
+    .empty-state svg { width: 48px; height: 48px; margin: 0 auto 0.8rem; }
+    .empty-state p { font-size: 0.95rem; }
+
+    /* Loading dots */
+    .loading-dots { display: inline-flex; gap: 6px; align-items: center; padding: 1.5rem; justify-content: center; width: 100%; }
+    .loading-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 1s infinite alternate; }
+    .loading-dots span:nth-child(2) { animation-delay: 0.25s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.5s; }
+    @keyframes pulse { from { opacity: 0.2; transform: scale(0.8); } to { opacity: 1; transform: scale(1.2); } }
+
+    /* ── HAMBURGER & MOBILE ──────────────────────────────── */
+    .hamburger-btn {
+      display: none; background: none; border: none; font-size: 1.5rem;
+      cursor: pointer; color: var(--dark); padding: 0.3rem 0.5rem; border-radius: 8px;
+    }
+    .hamburger-btn:hover { background: rgba(0,0,0,0.05); }
 
     .sidebar-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.45); z-index: 49;
-      backdrop-filter: blur(2px);
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 45; opacity: 0; transition: opacity 0.25s;
     }
-    .sidebar-overlay.open { display: block; }
+
+    @media (max-width: 900px) {
+      .hamburger-btn { display: flex; align-items: center; justify-content: center; }
+      .sidebar {
+        transform: translateX(-100%); transition: transform 0.25s ease-out;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(0,0,0,0.3);
+      }
+      .sidebar-overlay.open { display: block; opacity: 1; }
+      .app-header { left: 0; }
+      .app-main { margin-left: 0; }
+    }
 
     @media (max-width: 768px) {
-      .hamburger-btn { display: flex; align-items: center; }
-      .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-        z-index: 50;
-      }
-      .sidebar.open { transform: translateX(0); }
-      .app-header { left: 0; margin-left: 0; padding: 0 1rem; }
-      .app-main { margin-left: 0; padding: 1.2rem 1rem; }
+      .app-main { padding: 1.2rem; }
       .form-row { grid-template-columns: 1fr; }
-      .categories-grid { grid-template-columns: 1fr; }
-      .stats-grid { grid-template-columns: 1fr 1fr; }
-      .article-item { flex-direction: column; align-items: flex-start; gap: 0.8rem; width: 100%; overflow: hidden; }
-      .article-meta { width: 100%; }
-      .article-item img { width: 100%; height: 160px; border-radius: 10px; }
+      .stat-number { font-size: 2.2rem; }
+      .article-item { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+      .article-item img { width: 100%; height: 140px; }
       .article-actions { width: 100%; justify-content: flex-end; }
-      .list-header { flex-wrap: wrap; gap: 0.6rem; }
-      .search-box input { width: 120px; }
-      .modal-overlay { padding: 1rem; }
-      .modal-box { padding: 1.2rem; }
-      .cat-card { padding: 1rem; }
+      .login-card { padding: 2rem 1.5rem; }
+      .modal-box { padding: 1.4rem; }
       .notif { right: 1rem; bottom: 1rem; }
     }
     @media (max-width: 400px) {
@@ -318,14 +376,26 @@
 
 <!-- ── LOGIN ──────────────────────────────────────────── -->
 <div id="login-screen">
+  <div style="position: absolute; top: 1.5rem; right: 1.5rem;">
+    <div class="lang-dropdown">
+      <button class="lang-current" type="button" aria-label="Language selector">
+        <span class="active-lang-text">AZ</span>
+        <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+      </button>
+      <div class="lang-options">
+        <button type="button" onclick="setLang('en')" class="opt-lang-en">EN</button>
+        <button type="button" onclick="setLang('az')" class="opt-lang-az active">AZ</button>
+      </div>
+    </div>
+  </div>
   <div class="login-card">
     <div class="login-logo">YES</div>
-    <h1>Admin Panel</h1>
-    <p>Daxil olmaq üçün hesab məlumatlarınızı daxil edin</p>
-    <input type="email" id="admin-email" placeholder="Admin E-poçtu">
-    <input type="password" id="admin-pass" placeholder="Şifrə" onkeydown="if(event.key==='Enter') login()">
-    <button class="btn btn-primary" id="login-btn" onclick="login()">Daxil ol →</button>
-    <p id="login-err">E-poçt və ya şifrə yanlışdır!</p>
+    <h1 data-i18n="login_title">Admin Panel</h1>
+    <p data-i18n="login_subtitle">Daxil olmaq üçün hesab məlumatlarınızı daxil edin</p>
+    <input type="email" id="admin-email" placeholder="Admin E-poçtu" data-i18n-ph="login_email_ph">
+    <input type="password" id="admin-pass" placeholder="Şifrə" data-i18n-ph="login_pass_ph" onkeydown="if(event.key==='Enter') login()">
+    <button class="btn btn-primary" id="login-btn" onclick="login()" data-i18n="login_btn">Daxil ol →</button>
+    <p id="login-err" data-i18n="login_err_auth">E-poçt və ya şifrə yanlışdır!</p>
   </div>
 </div>
 
@@ -339,45 +409,45 @@
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-badge">YES</div>
-      Admin Panel
+      <span data-i18n="admin_panel_title">Admin Panel</span>
     </div>
     <nav class="sidebar-nav">
-      <div class="nav-section">Əsas</div>
+      <div class="nav-section" data-i18n="nav_sec_main">Əsas</div>
       <button class="nav-item active" onclick="showPage('stats')" id="nav-stats">
         <i class="ph ph-chart-bar"></i>
-        Statistika
+        <span data-i18n="nav_stats">Statistika</span>
       </button>
       <button class="nav-item" onclick="showPage('articles')" id="nav-articles">
         <i class="ph ph-newspaper"></i>
-        Məqalələr
+        <span data-i18n="nav_articles">Məqalələr</span>
       </button>
       <button class="nav-item" onclick="showPage('categories')" id="nav-categories">
         <i class="ph ph-tag"></i>
-        Kateqoriya &amp; Teqlər
+        <span data-i18n="nav_categories">Kateqoriya &amp; Teqlər</span>
       </button>
 
-      <div class="nav-section">İdarəetmə</div>
+      <div class="nav-section" data-i18n="nav_sec_management">İdarəetmə</div>
       <button class="nav-item" onclick="showPage('users')" id="nav-users">
         <i class="ph ph-users"></i>
-        İstifadəçilər
+        <span data-i18n="nav_users">İstifadəçilər</span>
       </button>
       <button class="nav-item" onclick="showPage('events')" id="nav-events">
         <i class="ph ph-calendar"></i>
-        Tədbirlər
+        <span data-i18n="nav_events">Tədbirlər</span>
       </button>
       <button class="nav-item" onclick="showPage('resources')" id="nav-resources">
         <i class="ph ph-folder-open"></i>
-        Sənədlər / Resurs
+        <span data-i18n="nav_resources">Sənədlər / Resurs</span>
       </button>
       <button class="nav-item" onclick="showPage('notifications')" id="nav-notifications" style="position:relative;">
         <i class="ph ph-bell"></i>
-        Bildirişlər
+        <span data-i18n="nav_notifications">Bildirişlər</span>
       </button>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-ghost btn-sm" onclick="logout()" style="width:100%; justify-content:center;">
         <i class="ph ph-sign-out"></i>
-        Çıxış
+        <span data-i18n="btn_logout">Çıxış</span>
       </button>
     </div>
   </aside>
@@ -389,6 +459,16 @@
     </button>
     <h2 id="page-title">Statistika</h2>
     <div class="header-actions">
+      <div class="lang-dropdown">
+        <button class="lang-current" type="button" aria-label="Language selector">
+          <span class="active-lang-text">AZ</span>
+          <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+        </button>
+        <div class="lang-options">
+          <button type="button" onclick="setLang('en')" class="opt-lang-en">EN</button>
+          <button type="button" onclick="setLang('az')" class="opt-lang-az active">AZ</button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -399,65 +479,64 @@
     <div class="page active" id="page-stats">
       <div class="stats-grid">
         <div class="stat-card green">
-          <div class="stat-label">Ümumi Məqalə</div>
+          <div class="stat-label" data-i18n="stat_total_articles">Ümumi Məqalə</div>
           <div class="stat-number" id="st-total">—</div>
-          <div class="stat-sub">Bütün məqalələr</div>
+          <div class="stat-sub" data-i18n="stat_all_articles_sub">Bütün məqalələr</div>
         </div>
         <div class="stat-card lime">
-          <div class="stat-label">Dərc Olunmuş</div>
+          <div class="stat-label" data-i18n="stat_published">Dərc Olunmuş</div>
           <div class="stat-number" id="st-published">—</div>
-          <div class="stat-sub">Saytda görünür</div>
+          <div class="stat-sub" data-i18n="stat_published_sub">Saytda görünür</div>
         </div>
         <div class="stat-card orange">
-          <div class="stat-label">Qaralama</div>
+          <div class="stat-label" data-i18n="stat_drafts">Qaralama</div>
           <div class="stat-number" id="st-draft">—</div>
-          <div class="stat-sub">Gizli saxlanıb</div>
+          <div class="stat-sub" data-i18n="stat_drafts_sub">Gizli saxlanıb</div>
         </div>
         <div class="stat-card blue">
-          <div class="stat-label">Bu Ay</div>
+          <div class="stat-label" data-i18n="stat_this_month">Bu Ay</div>
           <div class="stat-number" id="st-month">—</div>
-          <div class="stat-sub">Son 30 gündə</div>
+          <div class="stat-sub" data-i18n="stat_this_month_sub">Son 30 gündə</div>
         </div>
       </div>
 
       <!-- User Stats -->
       <div style="margin: 1.5rem 0 0.5rem;">
-        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1rem; opacity:0.6; font-weight:600; text-transform:uppercase; letter-spacing:1px;"><i class="ph ph-users" style="vertical-align:middle;"></i> İstifadəçi Statistikası</h3>
+        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1rem; opacity:0.6; font-weight:600; text-transform:uppercase; letter-spacing:1px;"><i class="ph ph-users" style="vertical-align:middle;"></i> <span data-i18n="stats_user_heading">İstifadəçi Statistikası</span></h3>
       </div>
       <div class="stats-grid" style="margin-bottom:1.5rem;">
         <div class="stat-card green">
-          <div class="stat-label">Ümumi İstifadəçi</div>
+          <div class="stat-label" data-i18n="stat_total_users">Ümumi İstifadəçi</div>
           <div class="stat-number" id="st-users-total">—</div>
-          <div class="stat-sub">Qeydiyyatdan keçmiş</div>
+          <div class="stat-sub" data-i18n="stat_total_users_sub">Qeydiyyatdan keçmiş</div>
         </div>
         <div class="stat-card lime">
-          <div class="stat-label">Namizəd</div>
+          <div class="stat-label" data-i18n="stat_candidate">Namizəd</div>
           <div class="stat-number" id="st-users-namizad">—</div>
-          <div class="stat-sub">Yeni üzvlər</div>
+          <div class="stat-sub" data-i18n="stat_candidate_sub">Yeni üzvlər</div>
         </div>
         <div class="stat-card orange">
-          <div class="stat-label">Aktiv Könüllü</div>
+          <div class="stat-label" data-i18n="stat_active_vol">Aktiv Könüllü</div>
           <div class="stat-number" id="st-users-aktiv">—</div>
-          <div class="stat-sub">Fəal üzvlər</div>
+          <div class="stat-sub" data-i18n="stat_active_vol_sub">Fəal üzvlər</div>
         </div>
-       
       </div>
 
       <!-- Category breakdown -->
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
         <div class="recent-articles">
-          <h3><i class="ph ph-folder" style="vertical-align:middle;"></i> Kateqoriya Bölgüsü</h3>
+          <h3><i class="ph ph-folder" style="vertical-align:middle;"></i> <span data-i18n="stats_cat_breakdown">Kateqoriya Bölgüsü</span></h3>
           <div id="cat-breakdown"></div>
         </div>
         <div class="recent-articles">
-          <h3><i class="ph ph-user-circle" style="vertical-align:middle;"></i> Status Bölgüsü</h3>
+          <h3><i class="ph ph-user-circle" style="vertical-align:middle;"></i> <span data-i18n="stats_status_breakdown">Status Bölgüsü</span></h3>
           <div id="user-status-breakdown"></div>
         </div>
       </div>
 
       <!-- Recent articles -->
       <div class="recent-articles" style="margin-bottom:2rem;">
-        <h3><i class="ph ph-clock" style="vertical-align:middle;"></i> Son Əlavə Olunanlar</h3>
+        <h3><i class="ph ph-clock" style="vertical-align:middle;"></i> <span data-i18n="stats_recent_heading">Son Əlavə Olunanlar</span></h3>
         <div id="recent-list"></div>
       </div>
 
@@ -466,21 +545,21 @@
     <!-- ── ARTICLES PAGE ──────────────────────────── -->
     <div class="page" id="page-articles">
       <div class="list-header">
-        <h2>Məqalələr</h2>
+        <h2 data-i18n="articles_heading">Məqalələr</h2>
         <div class="search-box">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="art-search" placeholder="Məqalə axtar..." oninput="filterArticles()">
+          <input type="text" id="art-search" placeholder="Məqalə axtar..." data-i18n-ph="search_articles_ph" oninput="filterArticles()">
         </div>
         <button class="btn btn-green" onclick="showAddModal()">
           <i class="ph ph-plus"></i>
-          Yeni Məqalə
+          <span data-i18n="btn_new_article">Yeni Məqalə</span>
         </button>
       </div>
 
       <div class="filter-bar" id="art-filter-bar">
-        <button class="filter-btn active" onclick="setStatusFilter('all', this)">Hamısı</button>
-        <button class="filter-btn" onclick="setStatusFilter('published', this)"><i class="ph ph-check-circle"></i> Dərc Olunmuş</button>
-        <button class="filter-btn" onclick="setStatusFilter('draft', this)"><i class="ph ph-pencil-simple"></i> Qaralama</button>
+        <button class="filter-btn active" onclick="setStatusFilter('all', this)" data-i18n="filter_all">Hamısı</button>
+        <button class="filter-btn" onclick="setStatusFilter('published', this)"><i class="ph ph-check-circle"></i> <span data-i18n="filter_published">Dərc Olunmuş</span></button>
+        <button class="filter-btn" onclick="setStatusFilter('draft', this)"><i class="ph ph-pencil-simple"></i> <span data-i18n="filter_draft">Qaralama</span></button>
       </div>
 
       <div id="articles-container" class="articles-list">
@@ -491,25 +570,25 @@
     <!-- ── CATEGORIES PAGE ────────────────────────── -->
     <div class="page" id="page-categories">
       <div class="list-header">
-        <h2>Kateqoriya & Teqlər</h2>
+        <h2 data-i18n="categories_heading">Kateqoriya & Teqlər</h2>
       </div>
       <div class="categories-grid">
         <div class="cat-card">
-          <h3><i class="ph ph-folder" style="vertical-align:middle;"></i> Kateqoriyalar</h3>
+          <h3><i class="ph ph-folder" style="vertical-align:middle;"></i> <span data-i18n="categories_title">Kateqoriyalar</span></h3>
           <div id="cat-list-ui" class="cat-list"></div>
           <div class="add-cat-form" style="margin-top:1.2rem;">
-            <input type="text" id="new-cat-name" placeholder="Yeni kateqoriya adı..." style="margin:0; padding: 0.65rem 0.9rem; font-size:0.875rem;">
+            <input type="text" id="new-cat-name" placeholder="Yeni kateqoriya adı..." data-i18n-ph="new_cat_ph" style="margin:0; padding: 0.65rem 0.9rem; font-size:0.875rem;">
             <input type="color" id="new-cat-color" value="#2d6a4f" class="color-preview">
-            <button class="btn btn-green btn-sm" onclick="addCategory()">Əlavə et</button>
+            <button class="btn btn-green btn-sm" onclick="addCategory()" data-i18n="btn_add">Əlavə et</button>
           </div>
         </div>
         <div class="cat-card">
-          <h3><i class="ph ph-tag" style="vertical-align:middle;"></i> Populyar Teqlər</h3>
-          <p style="font-size:0.85rem; opacity:0.55; margin-bottom:1rem;">Məqalələrdə istifadə olunan teqlər avtomatik burada görünür.</p>
+          <h3><i class="ph ph-tag" style="vertical-align:middle;"></i> <span data-i18n="popular_tags_title">Populyar Teqlər</span></h3>
+          <p style="font-size:0.85rem; opacity:0.55; margin-bottom:1rem;" data-i18n="popular_tags_desc">Məqalələrdə istifadə olunan teqlər avtomatik burada görünür.</p>
           <div id="tags-cloud" style="display:flex; flex-wrap:wrap; gap:0.5rem;"></div>
           <div style="margin-top:2rem; padding:1rem; background:var(--bg); border-radius:12px;">
-            <p style="font-size:0.8rem; opacity:0.6; font-weight:600;"><i class="ph ph-lightbulb" style="vertical-align:middle;"></i> Məlumat</p>
-            <p style="font-size:0.8rem; opacity:0.5; margin-top:0.3rem;">Teqlər məqalə əlavə edərkən "Teqlər" bölməsindən idarə olunur. Vergüllə ayıraraq birdən çox teq yazın.</p>
+            <p style="font-size:0.8rem; opacity:0.6; font-weight:600;"><i class="ph ph-lightbulb" style="vertical-align:middle;"></i> <span data-i18n="info_label">Məlumat</span></p>
+            <p style="font-size:0.8rem; opacity:0.5; margin-top:0.3rem;" data-i18n="tags_info_desc">Teqlər məqalə əlavə edərkən "Teqlər" bölməsindən idarə olunur. Vergüllə ayıraraq birdən çox teq yazın.</p>
           </div>
         </div>
       </div>
@@ -518,20 +597,20 @@
     <!-- ── USERS PAGE ── -->
     <div class="page" id="page-users">
       <div class="list-header">
-        <h2>İstifadəçilər</h2>
+        <h2 data-i18n="users_heading">İstifadəçilər</h2>
         <div style="display:flex; align-items:center; gap:0.8rem;">
           <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.9rem; cursor:pointer;">
             <input type="checkbox" id="select-all-users" onchange="toggleSelectAll(this.checked)" style="width:16px;height:16px;accent-color:var(--green);">
-            Hamısını seç
+            <span data-i18n="select_all">Hamısını seç</span>
           </label>
           <button class="btn btn-green btn-sm" onclick="printSelectedCards('horizontal')" style="display:flex;align-items:center;gap:0.4rem;">
-            <i class="ph ph-printer"></i> Üfüqi Çap
+            <i class="ph ph-printer"></i> <span data-i18n="btn_print_h">Üfüqi Çap</span>
           </button>
           <button class="btn btn-sm" onclick="printSelectedCards('vertical')" style="display:flex;align-items:center;gap:0.4rem;background:transparent;border:1.5px solid var(--green);color:var(--green);">
-            <i class="ph ph-printer"></i> Şaquli Çap
+            <i class="ph ph-printer"></i> <span data-i18n="btn_print_v">Şaquli Çap</span>
           </button>
           <div class="search-box">
-            <input type="text" id="usr-search" placeholder="İstifadəçi axtar..." oninput="loadUsers()">
+            <input type="text" id="usr-search" placeholder="İstifadəçi axtar..." data-i18n-ph="search_users_ph" oninput="loadUsers()">
           </div>
         </div>
       </div>
@@ -543,8 +622,8 @@
     <!-- ── EVENTS PAGE ── -->
     <div class="page" id="page-events">
       <div class="list-header">
-        <h2>Tədbirlər</h2>
-        <button class="btn btn-green" onclick="showEventModal()">+ Yeni Tədbir</button>
+        <h2 data-i18n="events_heading">Tədbirlər</h2>
+        <button class="btn btn-green" onclick="showEventModal()" data-i18n="btn_new_event">+ Yeni Tədbir</button>
       </div>
       <div id="events-list" class="articles-list">
         <div class="loading-dots"><span></span><span></span><span></span></div>
@@ -554,32 +633,32 @@
     <!-- ── RESOURCES PAGE ── -->
     <div class="page" id="page-resources">
       <div class="list-header">
-        <h2>Resurslar və Sənədlər</h2>
-        <button class="btn btn-green" onclick="showResourceModal()">+ Yeni Resurs</button>
+        <h2 data-i18n="resources_heading">Resurslar və Sənədlər</h2>
+        <button class="btn btn-green" onclick="showResourceModal()" data-i18n="btn_new_resource">+ Yeni Resurs</button>
       </div>
       <div class="categories-grid">
         <div class="cat-card">
-          <h3>Ümumi Resurslar</h3>
+          <h3 data-i18n="general_resources">Ümumi Resurslar</h3>
           <div id="resources-list" class="cat-list">
-             <p style="opacity:0.5; font-size:0.9rem;">Yüklənir...</p>
+             <p style="opacity:0.5; font-size:0.9rem;" data-i18n="loading">Yüklənir...</p>
           </div>
         </div>
         <div class="cat-card">
-          <h3>Sertifikat Yüklə</h3>
-          <p style="font-size:0.85rem; opacity:0.55; margin-bottom:1rem;">İstifadəçiyə fərdi sertifikat təyin edin.</p>
+          <h3 data-i18n="assign_cert_title">Sertifikat Yüklə</h3>
+          <p style="font-size:0.85rem; opacity:0.55; margin-bottom:1rem;" data-i18n="assign_cert_desc">İstifadəçiyə fərdi sertifikat təyin edin.</p>
           <div class="form-group">
-            <label>İstifadəçi seçin</label>
-            <select id="cert-user-select" style="width:100%; padding:0.6rem; margin-bottom:1rem; border-radius:8px; border:1px solid #ccc;"><option value="">Yüklənir...</option></select>
+            <label data-i18n="label_select_user">İstifadəçi seçin</label>
+            <select id="cert-user-select" style="width:100%; padding:0.6rem; margin-bottom:1rem; border-radius:8px; border:1px solid #ccc;"><option value="" data-i18n="loading">Yüklənir...</option></select>
           </div>
           <div class="form-group">
-            <label>Sənədin Adı</label>
-            <input type="text" id="cert-title" placeholder="Məs: Fəxri Fərman">
+            <label data-i18n="label_doc_title">Sənədin Adı</label>
+            <input type="text" id="cert-title" placeholder="Məs: Fəxri Fərman" data-i18n-ph="cert_title_ph">
           </div>
           <div class="form-group">
-            <label>Link (Google Drive URL)</label>
+            <label data-i18n="label_doc_url">Link (Google Drive URL)</label>
             <input type="text" id="cert-url" placeholder="https://drive.google.com/...">
           </div>
-          <button class="btn btn-lime" onclick="assignCertificate()">Təyin Et</button>
+          <button class="btn btn-lime" onclick="assignCertificate()" data-i18n="btn_assign">Təyin Et</button>
         </div>
       </div>
     </div>
@@ -587,32 +666,32 @@
     <!-- ── NOTIFICATIONS PAGE ── -->
     <div class="page" id="page-notifications">
       <div class="list-header">
-        <h2>Bildirişlər</h2>
+        <h2 data-i18n="notifications_heading">Bildirişlər</h2>
       </div>
 
       <!-- Tab switcher -->
       <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem;">
-        <button class="filter-btn active" id="notif-tab-single" onclick="switchNotifTab('single')"><i class="ph ph-user"></i> Fərdi Bildiriş</button>
-        <button class="filter-btn" id="notif-tab-bulk" onclick="switchNotifTab('bulk')"><i class="ph ph-megaphone"></i> Toplu Bildiriş</button>
+        <button class="filter-btn active" id="notif-tab-single" onclick="switchNotifTab('single')"><i class="ph ph-user"></i> <span data-i18n="tab_single_notif">Fərdi Bildiriş</span></button>
+        <button class="filter-btn" id="notif-tab-bulk" onclick="switchNotifTab('bulk')"><i class="ph ph-megaphone"></i> <span data-i18n="tab_bulk_notif">Toplu Bildiriş</span></button>
       </div>
 
       <!-- SINGLE NOTIFICATION -->
       <div id="notif-single-panel">
         <div class="cat-card" style="max-width:600px;">
-          <h3 style="margin-bottom:1.2rem;">Fərdi Bildiriş Göndər</h3>
+          <h3 style="margin-bottom:1.2rem;" data-i18n="single_notif_title">Fərdi Bildiriş Göndər</h3>
           <div class="form-group">
-            <label>İstifadəçi seçin</label>
-            <select id="notif-single-user" style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #ccc; font-family:inherit;"><option value="">Yüklənir...</option></select>
+            <label data-i18n="label_select_user">İstifadəçi seçin</label>
+            <select id="notif-single-user" style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #ccc; font-family:inherit;"><option value="" data-i18n="loading">Yüklənir...</option></select>
           </div>
           <div class="form-group">
-            <label>Başlıq</label>
-            <input type="text" id="notif-single-title" placeholder="Bildiriş başlığı...">
+            <label data-i18n="label_notif_title">Başlıq</label>
+            <input type="text" id="notif-single-title" placeholder="Bildiriş başlığı..." data-i18n-ph="notif_title_ph">
           </div>
           <div class="form-group">
-            <label>Mesaj</label>
-            <textarea id="notif-single-msg" rows="4" placeholder="Mesajınızı daxil edin..." style="resize:vertical;"></textarea>
+            <label data-i18n="label_notif_msg">Mesaj</label>
+            <textarea id="notif-single-msg" rows="4" placeholder="Mesajınızı daxil edin..." data-i18n-ph="notif_msg_ph" style="resize:vertical;"></textarea>
           </div>
-          <button class="btn btn-green" onclick="sendSingleNotif()"><i class="ph ph-paper-plane-tilt"></i> Göndər</button>
+          <button class="btn btn-green" onclick="sendSingleNotif()"><i class="ph ph-paper-plane-tilt"></i> <span data-i18n="btn_send">Göndər</span></button>
         </div>
       </div>
 
@@ -621,37 +700,37 @@
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
           <div class="cat-card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-              <h3>İstifadəçiləri seçin</h3>
+              <h3 data-i18n="bulk_select_users">İstifadəçiləri seçin</h3>
               <div style="display:flex; gap:0.5rem;">
-                <button class="btn btn-sm" style="background:#f0f0f0; color:#333; font-size:0.78rem;" onclick="selectAllNotifUsers(true)">Hamısını seç</button>
-                <button class="btn btn-sm" style="background:#f0f0f0; color:#333; font-size:0.78rem;" onclick="selectAllNotifUsers(false)">Ləğv et</button>
+                <button class="btn btn-sm" style="background:#f0f0f0; color:#333; font-size:0.78rem;" onclick="selectAllNotifUsers(true)" data-i18n="btn_select_all">Hamısını seç</button>
+                <button class="btn btn-sm" style="background:#f0f0f0; color:#333; font-size:0.78rem;" onclick="selectAllNotifUsers(false)" data-i18n="btn_deselect_all">Ləğv et</button>
               </div>
             </div>
             <div id="notif-bulk-users" style="display:flex; flex-direction:column; gap:0.5rem; max-height:380px; overflow-y:auto;">
-              <p style="opacity:0.5; font-size:0.85rem;">Yüklənir...</p>
+              <p style="opacity:0.5; font-size:0.85rem;" data-i18n="loading">Yüklənir...</p>
             </div>
           </div>
           <div class="cat-card">
-            <h3 style="margin-bottom:1.2rem;">Bildiriş Məzmunu</h3>
+            <h3 style="margin-bottom:1.2rem;" data-i18n="bulk_notif_content">Bildiriş Məzmunu</h3>
             <div class="form-group">
-              <label>Başlıq</label>
-              <input type="text" id="notif-bulk-title" placeholder="Bildiriş başlığı...">
+              <label data-i18n="label_notif_title">Başlıq</label>
+              <input type="text" id="notif-bulk-title" placeholder="Bildiriş başlığı..." data-i18n-ph="notif_title_ph">
             </div>
             <div class="form-group">
-              <label>Mesaj</label>
-              <textarea id="notif-bulk-msg" rows="5" placeholder="Mesajınızı daxil edin..." style="resize:vertical;"></textarea>
+              <label data-i18n="label_notif_msg">Mesaj</label>
+              <textarea id="notif-bulk-msg" rows="5" placeholder="Mesajınızı daxil edin..." data-i18n-ph="notif_msg_ph" style="resize:vertical;"></textarea>
             </div>
             <div id="notif-selected-count" style="font-size:0.85rem; opacity:0.6; margin-bottom:1rem;">0 istifadəçi seçilib</div>
-            <button class="btn btn-green" onclick="sendBulkNotif()"><i class="ph ph-megaphone"></i> Seçilənlərə Göndər</button>
+            <button class="btn btn-green" onclick="sendBulkNotif()"><i class="ph ph-megaphone"></i> <span data-i18n="btn_send_selected">Seçilənlərə Göndər</span></button>
           </div>
         </div>
       </div>
 
       <!-- Sent notifications history -->
       <div class="cat-card" style="margin-top:2rem;">
-        <h3 style="margin-bottom:1rem;"><i class="ph ph-list-bullets" style="vertical-align:middle;"></i> Son Göndərilmiş Bildirişlər</h3>
+        <h3 style="margin-bottom:1rem;"><i class="ph ph-list-bullets" style="vertical-align:middle;"></i> <span data-i18n="recent_sent_notifs">Son Göndərilmiş Bildirişlər</span></h3>
         <div id="sent-notif-list">
-          <p style="opacity:0.5; font-size:0.85rem;">Yüklənir...</p>
+          <p style="opacity:0.5; font-size:0.85rem;" data-i18n="loading">Yüklənir...</p>
         </div>
       </div>
     </div>
@@ -663,66 +742,66 @@
 <div class="modal-overlay" id="article-modal">
   <div class="modal-box">
     <div class="modal-header">
-      <h2 id="modal-title">Yeni Məqalə</h2>
+      <h2 id="modal-title" data-i18n="modal_article_new">Yeni Məqalə</h2>
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label>Başlıq (EN) *</label>
+        <label data-i18n="label_art_title_en">Başlıq (EN) *</label>
         <input type="text" id="art-title-en" placeholder="Article title in English">
       </div>
       <div class="form-group">
-        <label>Başlıq (AZ) *</label>
+        <label data-i18n="label_art_title_az">Başlıq (AZ) *</label>
         <input type="text" id="art-title-az" placeholder="Azərbaycanca başlıq">
       </div>
     </div>
 
     <div class="form-group">
-      <label>Şəkil URL-i</label>
+      <label data-i18n="label_art_image">Şəkil URL-i</label>
       <input type="text" id="art-image" placeholder="https://example.com/image.jpg">
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label>Kateqoriya</label>
+        <label data-i18n="label_art_category">Kateqoriya</label>
         <select id="art-category">
           <option value="">— Seç —</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Status</label>
+        <label data-i18n="label_art_status">Status</label>
         <div class="status-toggle">
-          <div class="status-option selected-published" id="opt-published" onclick="selectStatus('published')"><i class="ph ph-check-circle"></i> Dərc et</div>
-          <div class="status-option" id="opt-draft" onclick="selectStatus('draft')"><i class="ph ph-pencil-simple"></i> Qaralama</div>
+          <div class="status-option selected-published" id="opt-published" onclick="selectStatus('published')"><i class="ph ph-check-circle"></i> <span data-i18n="status_publish">Dərc et</span></div>
+          <div class="status-option" id="opt-draft" onclick="selectStatus('draft')"><i class="ph ph-pencil-simple"></i> <span data-i18n="status_draft">Qaralama</span></div>
         </div>
       </div>
     </div>
 
     <div class="form-group">
-      <label>Teqlər (vergüllə ayır)</label>
+      <label data-i18n="label_art_tags">Teqlər (vergüllə ayır)</label>
       <div class="tags-input-wrap" id="tags-wrap" onclick="document.getElementById('tags-input-field').focus()">
-        <input type="text" id="tags-input-field" placeholder="məs: iqlim, gənclər, ekoloji..."
+        <input type="text" id="tags-input-field" placeholder="məs: iqlim, gənclər, ekoloji..." data-i18n-ph="tags_field_ph"
           onkeydown="handleTagInput(event)" oninput="tagInputHint(event)">
       </div>
     </div>
 
     <div class="form-group">
-      <label>Məzmun (EN) — Markdown dəstəklənir *</label>
+      <label data-i18n="label_art_desc_en">Məzmun (EN) — Markdown dəstəklənir *</label>
       <textarea id="art-desc-en" rows="5"></textarea>
     </div>
 
     <div class="form-group">
-      <label>Məzmun (AZ) — Markdown dəstəklənir *</label>
+      <label data-i18n="label_art_desc_az">Məzmun (AZ) — Markdown dəstəklənir *</label>
       <textarea id="art-desc-az" rows="5"></textarea>
     </div>
 
     <input type="hidden" id="art-id">
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal()">Ləğv et</button>
+      <button class="btn btn-ghost" onclick="closeModal()" data-i18n="btn_cancel">Ləğv et</button>
       <button class="btn btn-green" id="save-btn" onclick="saveArticle()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Yadda Saxla
+        <span data-i18n="btn_save">Yadda Saxla</span>
       </button>
     </div>
   </div>
@@ -731,11 +810,11 @@
 <!-- ── CONFIRM DIALOG ─────────────────────────────────── -->
 <div class="confirm-overlay" id="confirm-overlay">
   <div class="confirm-box">
-    <h3>Silmək istəyirsiniz?</h3>
-    <p>Bu əməliyyat geri alına bilməz. Məqalə həmişəlik silinəcək.</p>
+    <h3 data-i18n="confirm_delete_title">Silmək istəyirsiniz?</h3>
+    <p data-i18n="confirm_delete_desc">Bu əməliyyat geri alına bilməz. Məqalə həmişəlik silinəcək.</p>
     <div class="confirm-actions">
-      <button class="btn btn-ghost" onclick="closeConfirm()">Ləğv et</button>
-      <button class="btn btn-red" id="confirm-ok-btn">Sil</button>
+      <button class="btn btn-ghost" onclick="closeConfirm()" data-i18n="btn_cancel">Ləğv et</button>
+      <button class="btn btn-red" id="confirm-ok-btn" data-i18n="btn_delete">Sil</button>
     </div>
   </div>
 </div>
@@ -747,14 +826,14 @@
 <div class="modal-overlay" id="event-modal">
   <div class="modal-box" style="max-width:500px;">
     <div class="modal-header">
-      <h2 id="ev-modal-title">Yeni Tədbir</h2>
+      <h2 id="ev-modal-title" data-i18n="modal_event_new">Yeni Tədbir</h2>
       <button class="modal-close" onclick="closeEventModal()"><i class="ph ph-x"></i></button>
     </div>
-    <div class="form-group"><label>Bağlıq (AZ)</label><input type="text" id="ev-title-az"></div>
-    <div class="form-group"><label>Bağlıq (EN)</label><input type="text" id="ev-title-en"></div>
-    <div class="form-group"><label>Tarix</label><input type="date" id="ev-date"></div>
-    <div class="form-group"><label>Qeydiyyat Linki</label><input type="text" id="ev-link" placeholder="Məs: https://forms.gle/..."></div>
-    <div class="modal-footer"><button class="btn btn-green" onclick="saveEvent()">Yadda saxla</button></div>
+    <div class="form-group"><label data-i18n="label_ev_title_az">Başlıq (AZ)</label><input type="text" id="ev-title-az"></div>
+    <div class="form-group"><label data-i18n="label_ev_title_en">Başlıq (EN)</label><input type="text" id="ev-title-en"></div>
+    <div class="form-group"><label data-i18n="label_ev_date">Tarix</label><input type="date" id="ev-date"></div>
+    <div class="form-group"><label data-i18n="label_ev_link">Qeydiyyat Linki</label><input type="text" id="ev-link" placeholder="Məs: https://forms.gle/..." data-i18n-ph="ev_link_ph"></div>
+    <div class="modal-footer"><button class="btn btn-green" onclick="saveEvent()" data-i18n="btn_save">Yadda saxla</button></div>
   </div>
 </div>
 
@@ -762,13 +841,13 @@
 <div class="modal-overlay" id="resource-modal">
   <div class="modal-box" style="max-width:500px;">
     <div class="modal-header">
-      <h2>Yeni Resurs</h2>
+      <h2 data-i18n="modal_resource_new">Yeni Resurs</h2>
       <button class="modal-close" onclick="closeResourceModal()"><i class="ph ph-x"></i></button>
     </div>
-    <div class="form-group"><label>Başlıq</label><input type="text" id="res-title"></div>
-    <div class="form-group"><label>Qısa məlumat</label><textarea id="res-desc" rows="3"></textarea></div>
-    <div class="form-group"><label>Link (URL)</label><input type="text" id="res-url"></div>
-    <div class="modal-footer"><button class="btn btn-green" onclick="saveResource()">Yadda saxla</button></div>
+    <div class="form-group"><label data-i18n="label_res_title">Başlıq</label><input type="text" id="res-title"></div>
+    <div class="form-group"><label data-i18n="label_res_desc">Qısa məlumat</label><textarea id="res-desc" rows="3"></textarea></div>
+    <div class="form-group"><label data-i18n="label_res_url">Link (URL)</label><input type="text" id="res-url"></div>
+    <div class="modal-footer"><button class="btn btn-green" onclick="saveResource()" data-i18n="btn_save">Yadda saxla</button></div>
   </div>
 </div>
 
@@ -776,21 +855,459 @@
 <div class="modal-overlay" id="user-detail-modal">
   <div class="modal-box" style="max-width:560px;">
     <div class="modal-header">
-      <h2 id="udm-name">İstifadəçi</h2>
+      <h2 id="udm-name" data-i18n="modal_user_title">İstifadəçi</h2>
       <button class="modal-close" onclick="closeUserModal()"><i class="ph ph-x"></i></button>
     </div>
     <p id="udm-id" style="font-size:0.78rem;opacity:0.45;margin-bottom:1.2rem;"></p>
-    <h4 style="margin-bottom:0.8rem;font-size:0.9rem;opacity:0.7;"><i class="ph ph-certificate" style="vertical-align:middle;"></i> Sertifikatlar / Sənədlər</h4>
+    <h4 style="margin-bottom:0.8rem;font-size:0.9rem;opacity:0.7;"><i class="ph ph-certificate" style="vertical-align:middle;"></i> <span data-i18n="user_docs_title">Sertifikatlar / Sənədlər</span></h4>
     <div id="udm-certs" style="display:flex;flex-direction:column;gap:0.6rem;min-height:60px;">
-      <p style="opacity:0.45;font-size:0.9rem;">Yüklənir...</p>
+      <p style="opacity:0.45;font-size:0.9rem;" data-i18n="loading">Yüklənir...</p>
     </div>
     <div class="modal-footer" style="margin-top:1.5rem;">
-      <button class="btn" style="background:#eee;color:#333;" onclick="closeUserModal()">Bağla</button>
+      <button class="btn" style="background:#eee;color:#333;" onclick="closeUserModal()" data-i18n="btn_close">Bağla</button>
     </div>
   </div>
 </div>
 
 <script>
+  // ── TRANSLATIONS ──────────────────────────────────────
+  const translations = {
+    az: {
+      page_title: "Admin Panel — YES Community",
+      login_title: "Admin Panel",
+      login_subtitle: "Daxil olmaq üçün hesab məlumatlarınızı daxil edin",
+      login_email_ph: "Admin E-poçtu",
+      login_pass_ph: "Şifrə",
+      login_btn: "Daxil ol →",
+      login_logging_in: "Daxil olunur...",
+      login_err_auth: "E-poçt ünvanı və ya şifrə yanlışdır.",
+      login_err_unauth: "Bu hesabın admin panelinə giriş icazəsi yoxdur.",
+      admin_panel_title: "Admin Panel",
+      nav_sec_main: "Əsas",
+      nav_stats: "Statistika",
+      nav_articles: "Məqalələr",
+      nav_categories: "Kateqoriya & Teqlər",
+      nav_sec_management: "İdarəetmə",
+      nav_users: "İstifadəçilər",
+      nav_events: "Tədbirlər",
+      nav_resources: "Sənədlər / Resurs",
+      nav_notifications: "Bildirişlər",
+      btn_logout: "Çıxış",
+      
+      stat_total_articles: "Ümumi Məqalə",
+      stat_all_articles_sub: "Bütün məqalələr",
+      stat_published: "Dərc Olunmuş",
+      stat_published_sub: "Saytda görünür",
+      stat_drafts: "Qaralama",
+      stat_drafts_sub: "Gizli saxlanıb",
+      stat_this_month: "Bu Ay",
+      stat_this_month_sub: "Son 30 gündə",
+      stats_user_heading: "İstifadəçi Statistikası",
+      stat_total_users: "Ümumi İstifadəçi",
+      stat_total_users_sub: "Qeydiyyatdan keçmiş",
+      stat_candidate: "Namizəd",
+      stat_candidate_sub: "Yeni üzvlər",
+      stat_active_vol: "Aktiv Könüllü",
+      stat_active_vol_sub: "Fəal üzvlər",
+      stats_cat_breakdown: "Kateqoriya Bölgüsü",
+      stats_status_breakdown: "Status Bölgüsü",
+      stats_recent_heading: "Son Əlavə Olunanlar",
+      
+      articles_heading: "Məqalələr",
+      search_articles_ph: "Məqalə axtar...",
+      btn_new_article: "Yeni Məqalə",
+      filter_all: "Hamısı",
+      filter_published: "Dərc Olunmuş",
+      filter_draft: "Qaralama",
+      no_articles_found: "Məqalə tapılmadı",
+      no_articles_yet: "Hələ məqalə yoxdur",
+      badge_published: "Dərc",
+      badge_draft: "Qaralama",
+      btn_edit: "Düzəlt",
+      btn_delete: "Sil",
+      
+      categories_heading: "Kateqoriya & Teqlər",
+      categories_title: "Kateqoriyalar",
+      new_cat_ph: "Yeni kateqoriya adı...",
+      btn_add: "Əlavə et",
+      popular_tags_title: "Populyar Teqlər",
+      popular_tags_desc: "Məqalələrdə istifadə olunan teqlər avtomatik burada görünür.",
+      info_label: "Məlumat",
+      tags_info_desc: "Teqlər məqalə əlavə edərkən \"Teqlər\" bölməsindən idarə olunur. Vergüllə ayıraraq birdən çox teq yazın.",
+      no_tags_yet: "Hələ teq yoxdur",
+      uncategorized: "Kateqoriyasız",
+      article_count: "məqalə",
+      no_categories_yet: "Hələ kateqoriya yoxdur",
+      
+      users_heading: "İstifadəçilər",
+      select_all: "Hamısını seç",
+      btn_print_h: "Üfüqi Çap",
+      btn_print_v: "Şaquli Çap",
+      search_users_ph: "İstifadəçi axtar...",
+      no_users_found: "İstifadəçi tapılmadı.",
+      new_role_prompt: "Yeni rolun adı:",
+      create_new_role: "+ Yeni rol yarat",
+      status_candidate: "Namizəd",
+      status_active_volunteer: "Aktiv könüllü",
+      
+      events_heading: "Tədbirlər",
+      btn_new_event: "+ Yeni Tədbir",
+      no_events_yet: "Tədbir yoxdur.",
+      event_date_label: "Tarix:",
+      event_not_specified: "Göstərilməyib",
+      event_active: "Aktiv",
+      event_passive: "Passiv",
+      btn_close_event: "Bağla",
+      btn_open_event: "Aç",
+      
+      resources_heading: "Resurslar və Sənədlər",
+      btn_new_resource: "+ Yeni Resurs",
+      general_resources: "Ümumi Resurslar",
+      assign_cert_title: "Sertifikat Yüklə",
+      assign_cert_desc: "İstifadəçiyə fərdi sertifikat təyin edin.",
+      label_select_user: "İstifadəçi seçin",
+      label_doc_title: "Sənədin Adı",
+      cert_title_ph: "Məs: Fəxri Fərman",
+      label_doc_url: "Link (Google Drive URL)",
+      btn_assign: "Təyin Et",
+      no_resources_yet: "Resurs tapılmadı.",
+      
+      notifications_heading: "Bildirişlər",
+      tab_single_notif: "Fərdi Bildiriş",
+      tab_bulk_notif: "Toplu Bildiriş",
+      single_notif_title: "Fərdi Bildiriş Göndər",
+      label_notif_title: "Başlıq",
+      notif_title_ph: "Bildiriş başlığı...",
+      label_notif_msg: "Mesaj",
+      notif_msg_ph: "Mesajınızı daxil edin...",
+      btn_send: "Göndər",
+      bulk_select_users: "İstifadəçiləri seçin",
+      btn_select_all: "Hamısını seç",
+      btn_deselect_all: "Ləğv et",
+      bulk_notif_content: "Bildiriş Məzmunu",
+      users_selected_count: "{n} istifadəçi seçilib",
+      btn_send_selected: "Seçilənlərə Göndər",
+      recent_sent_notifs: "Son Göndərilmiş Bildirişlər",
+      no_notifs_yet: "Hələ bildiriş göndərilməyib.",
+      notif_read: "Oxundu",
+      notif_unread: "Oxunmayıb",
+      
+      modal_article_new: "Yeni Məqalə",
+      modal_article_edit: "Məqaləni Düzəlt",
+      label_art_title_en: "Başlıq (EN) *",
+      label_art_title_az: "Başlıq (AZ) *",
+      label_art_image: "Şəkil URL-i",
+      label_art_category: "Kateqoriya",
+      select_category_ph: "— Kateqoriya seç —",
+      label_art_status: "Status",
+      status_publish: "Dərc et",
+      status_draft: "Qaralama",
+      label_art_tags: "Teqlər (vergüllə ayır)",
+      tags_field_ph: "məs: iqlim, gənclər, ekoloji...",
+      label_art_desc_en: "Məzmun (EN) — Markdown dəstəklənir *",
+      label_art_desc_az: "Məzmun (AZ) — Markdown dəstəklənir *",
+      btn_cancel: "Ləğv et",
+      btn_save: "Yadda Saxla",
+      saving: "Saxlanılır...",
+      
+      confirm_delete_title: "Silmək istəyirsiniz?",
+      confirm_delete_desc: "Bu əməliyyat geri alına bilməz. Məqalə həmişəlik silinəcək.",
+      modal_event_new: "Yeni Tədbir",
+      label_ev_title_az: "Başlıq (AZ)",
+      label_ev_title_en: "Başlıq (EN)",
+      label_ev_date: "Tarix",
+      label_ev_link: "Qeydiyyat Linki",
+      ev_link_ph: "Məs: https://forms.gle/...",
+      modal_resource_new: "Yeni Resurs",
+      label_res_title: "Başlıq",
+      label_res_desc: "Qısa məlumat",
+      label_res_url: "Link (URL)",
+      modal_user_title: "İstifadəçi",
+      user_docs_title: "Sertifikatlar / Sənədlər",
+      btn_close: "Bağla",
+      loading: "Yüklənir...",
+      no_docs_found: "Heç bir sənəd tapılmadı.",
+      view_link: "Linkə bax",
+      
+      alert_select_at_least_one_user: "Zəhmət olmasa ən azı bir istifadəçi seçin.",
+      alert_delete_user_confirm: "{name} adlı istifadəçini tamamilə silmək istədiyinizə əminsiniz?",
+      alert_delete_doc_confirm: "Bu sənədi silmək istədiyinizə əminsiniz?",
+      alert_delete_event_confirm: "Tədbiri silmək istədiyinizə əminsiniz?",
+      alert_delete_res_confirm: "Resursu silmək istədiyinizə əminsiniz?",
+      notify_titles_required: "Başlıqlar mütləqdir!",
+      notify_article_updated: "Məqalə yeniləndi ✅",
+      notify_article_added: "Məqalə əlavə olundu ✅",
+      notify_article_deleted: "Məqalə silindi 🗑️",
+      notify_cat_name_empty: "Ad boş ola bilməz",
+      notify_cat_exists: "Bu kateqoriya artıq var",
+      notify_cat_added: "Kateqoriya əlavə olundu ✅",
+      notify_user_status_updated: "İstifadəçi statusu yeniləndi",
+      notify_user_deleted: "İstifadəçi uğurla silindi",
+      notify_cert_deleted: "Sənəd silindi",
+      notify_cert_assigned: "Sertifikat təyin edildi!",
+      notify_event_opened: "Tədbir qeydiyyata açıldı",
+      notify_event_closed: "Tədbir bağlandı",
+      notify_event_created: "Yeni tədbir yaradıldı",
+      notify_event_deleted: "Tədbir silindi",
+      notify_resource_added: "Resurs əlavə edildi",
+      notify_fill_all_fields: "Bütün xanaları doldurun",
+      notify_notif_sent: "Bildiriş göndərildi ✓",
+      notify_bulk_notif_sent: "{n} istifadəçiyə bildiriş göndərildi ✓",
+      mde_ph_en: "Məqaləni ingilis dilində yazın...",
+      mde_ph_az: "Məqaləni Azərbaycan dilində yazın..."
+    },
+    en: {
+      page_title: "Admin Panel — YES Community",
+      login_title: "Admin Panel",
+      login_subtitle: "Enter your credentials to log in",
+      login_email_ph: "Admin Email",
+      login_pass_ph: "Password",
+      login_btn: "Log in →",
+      login_logging_in: "Logging in...",
+      login_err_auth: "Incorrect email address or password.",
+      login_err_unauth: "This account does not have admin panel access.",
+      admin_panel_title: "Admin Panel",
+      nav_sec_main: "Main",
+      nav_stats: "Statistics",
+      nav_articles: "Articles",
+      nav_categories: "Categories & Tags",
+      nav_sec_management: "Management",
+      nav_users: "Users",
+      nav_events: "Events",
+      nav_resources: "Documents / Resources",
+      nav_notifications: "Notifications",
+      btn_logout: "Log out",
+      
+      stat_total_articles: "Total Articles",
+      stat_all_articles_sub: "All articles",
+      stat_published: "Published",
+      stat_published_sub: "Visible on website",
+      stat_drafts: "Drafts",
+      stat_drafts_sub: "Saved as draft",
+      stat_this_month: "This Month",
+      stat_this_month_sub: "Last 30 days",
+      stats_user_heading: "User Statistics",
+      stat_total_users: "Total Users",
+      stat_total_users_sub: "Registered",
+      stat_candidate: "Candidates",
+      stat_candidate_sub: "New members",
+      stat_active_vol: "Active Volunteers",
+      stat_active_vol_sub: "Active members",
+      stats_cat_breakdown: "Category Breakdown",
+      stats_status_breakdown: "Status Breakdown",
+      stats_recent_heading: "Recently Added",
+      
+      articles_heading: "Articles",
+      search_articles_ph: "Search articles...",
+      btn_new_article: "New Article",
+      filter_all: "All",
+      filter_published: "Published",
+      filter_draft: "Drafts",
+      no_articles_found: "No articles found",
+      no_articles_yet: "No articles yet",
+      badge_published: "Published",
+      badge_draft: "Draft",
+      btn_edit: "Edit",
+      btn_delete: "Delete",
+      
+      categories_heading: "Categories & Tags",
+      categories_title: "Categories",
+      new_cat_ph: "New category name...",
+      btn_add: "Add",
+      popular_tags_title: "Popular Tags",
+      popular_tags_desc: "Tags used in articles automatically appear here.",
+      info_label: "Information",
+      tags_info_desc: "Tags are managed from the \"Tags\" field when creating articles. Separate multiple tags with commas.",
+      no_tags_yet: "No tags yet",
+      uncategorized: "Uncategorized",
+      article_count: "articles",
+      no_categories_yet: "No categories yet",
+      
+      users_heading: "Users",
+      select_all: "Select all",
+      btn_print_h: "Horizontal Print",
+      btn_print_v: "Vertical Print",
+      search_users_ph: "Search users...",
+      no_users_found: "No users found.",
+      new_role_prompt: "New role name:",
+      create_new_role: "+ Create new role",
+      status_candidate: "Candidate",
+      status_active_volunteer: "Active volunteer",
+      
+      events_heading: "Events",
+      btn_new_event: "+ New Event",
+      no_events_yet: "No events.",
+      event_date_label: "Date:",
+      event_not_specified: "Not specified",
+      event_active: "Active",
+      event_passive: "Inactive",
+      btn_close_event: "Close",
+      btn_open_event: "Open",
+      
+      resources_heading: "Resources & Documents",
+      btn_new_resource: "+ New Resource",
+      general_resources: "General Resources",
+      assign_cert_title: "Upload Certificate",
+      assign_cert_desc: "Assign an individual certificate to a user.",
+      label_select_user: "Select user",
+      label_doc_title: "Document Title",
+      cert_title_ph: "E.g.: Certificate of Honor",
+      label_doc_url: "Link (Google Drive URL)",
+      btn_assign: "Assign",
+      no_resources_yet: "No resources found.",
+      
+      notifications_heading: "Notifications",
+      tab_single_notif: "Single Notification",
+      tab_bulk_notif: "Bulk Notification",
+      single_notif_title: "Send Single Notification",
+      label_notif_title: "Title",
+      notif_title_ph: "Notification title...",
+      label_notif_msg: "Message",
+      notif_msg_ph: "Enter your message...",
+      btn_send: "Send",
+      bulk_select_users: "Select users",
+      btn_select_all: "Select all",
+      btn_deselect_all: "Deselect",
+      bulk_notif_content: "Notification Content",
+      users_selected_count: "{n} users selected",
+      btn_send_selected: "Send to Selected",
+      recent_sent_notifs: "Recently Sent Notifications",
+      no_notifs_yet: "No notifications sent yet.",
+      notif_read: "Read",
+      notif_unread: "Unread",
+      
+      modal_article_new: "New Article",
+      modal_article_edit: "Edit Article",
+      label_art_title_en: "Title (EN) *",
+      label_art_title_az: "Title (AZ) *",
+      label_art_image: "Image URL",
+      label_art_category: "Category",
+      select_category_ph: "— Select category —",
+      label_art_status: "Status",
+      status_publish: "Publish",
+      status_draft: "Draft",
+      label_art_tags: "Tags (comma-separated)",
+      tags_field_ph: "e.g.: climate, youth, eco...",
+      label_art_desc_en: "Content (EN) — Markdown supported *",
+      label_art_desc_az: "Content (AZ) — Markdown supported *",
+      btn_cancel: "Cancel",
+      btn_save: "Save",
+      saving: "Saving...",
+      
+      confirm_delete_title: "Are you sure you want to delete?",
+      confirm_delete_desc: "This action cannot be undone. The article will be permanently deleted.",
+      modal_event_new: "New Event",
+      label_ev_title_az: "Title (AZ)",
+      label_ev_title_en: "Title (EN)",
+      label_ev_date: "Date",
+      label_ev_link: "Registration Link",
+      ev_link_ph: "E.g.: https://forms.gle/...",
+      modal_resource_new: "New Resource",
+      label_res_title: "Title",
+      label_res_desc: "Brief description",
+      label_res_url: "Link (URL)",
+      modal_user_title: "User",
+      user_docs_title: "Certificates / Documents",
+      btn_close: "Close",
+      loading: "Loading...",
+      no_docs_found: "No documents found.",
+      view_link: "View link",
+      
+      alert_select_at_least_one_user: "Please select at least one user.",
+      alert_delete_user_confirm: "Are you sure you want to permanently delete user {name}?",
+      alert_delete_doc_confirm: "Are you sure you want to delete this document?",
+      alert_delete_event_confirm: "Are you sure you want to delete this event?",
+      alert_delete_res_confirm: "Are you sure you want to delete this resource?",
+      notify_titles_required: "Titles are required!",
+      notify_article_updated: "Article updated ✅",
+      notify_article_added: "Article added ✅",
+      notify_article_deleted: "Article deleted 🗑️",
+      notify_cat_name_empty: "Name cannot be empty",
+      notify_cat_exists: "This category already exists",
+      notify_cat_added: "Category added ✅",
+      notify_user_status_updated: "User status updated",
+      notify_user_deleted: "User successfully deleted",
+      notify_cert_deleted: "Document deleted",
+      notify_cert_assigned: "Certificate assigned!",
+      notify_event_opened: "Event opened for registration",
+      notify_event_closed: "Event closed",
+      notify_event_created: "New event created",
+      notify_event_deleted: "Event deleted",
+      notify_resource_added: "Resource added",
+      notify_fill_all_fields: "Please fill all fields",
+      notify_notif_sent: "Notification sent ✓",
+      notify_bulk_notif_sent: "Notification sent to {n} users ✓",
+      mde_ph_en: "Write article in English...",
+      mde_ph_az: "Write article in Azerbaijani..."
+    }
+  };
+
+  let currentLang = localStorage.getItem('yes_lang') || 'az';
+  let currentPage = 'stats';
+
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('yes_lang', lang);
+    applyLanguage(lang);
+  }
+
+  function applyLanguage(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    const t = translations[lang] || translations.az;
+    document.title = t.page_title;
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key]) el.innerHTML = t[key];
+    });
+
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+      const key = el.getAttribute('data-i18n-ph');
+      if (t[key]) el.setAttribute('placeholder', t[key]);
+    });
+
+    document.querySelectorAll('.active-lang-text').forEach(el => {
+      el.innerText = lang.toUpperCase();
+    });
+
+    document.querySelectorAll('.opt-lang-en').forEach(btn => btn.classList.toggle('active', lang === 'en'));
+    document.querySelectorAll('.opt-lang-az').forEach(btn => btn.classList.toggle('active', lang === 'az'));
+
+    const titles = {
+      stats: t.nav_stats,
+      articles: t.nav_articles,
+      categories: t.nav_categories,
+      users: t.nav_users,
+      events: t.nav_events,
+      resources: t.nav_resources,
+      notifications: t.nav_notifications
+    };
+    const titleEl = document.getElementById('page-title');
+    if (titleEl && currentPage) {
+      titleEl.innerText = titles[currentPage] || currentPage;
+    }
+
+    renderStats();
+    filterArticles();
+    renderCategoryBreakdown();
+    renderRecentList();
+    renderCategoryUI();
+    renderTagsCloud();
+    if (currentPage === 'users') loadUsers();
+    if (currentPage === 'events') loadEventsAdmin();
+    if (currentPage === 'resources') loadResourcesAdmin();
+    if (currentPage === 'notifications') { updateSelectedCount(); loadSentNotifs(); }
+  }
+
+  function formatUserStatus(s) {
+    if (currentLang === 'en') {
+      if (s === 'Namizəd') return 'Candidate';
+      if (s === 'Aktiv könüllü') return 'Active volunteer';
+    }
+    return s || (currentLang === 'en' ? 'Candidate' : 'Namizəd');
+  }
+
   // ── SUPABASE ─────────────────────────────────────────
   const SUPABASE_URL = 'https://wqcugmhjfuvnwxhspytw.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxY3VnbWhqZnV2bnd4aHNweXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMzY2NzcsImV4cCI6MjA5MTYxMjY3N30.A2rZNI2hOpDNC_JLeQNO9Is50HswX-jB5he9wNOpYLo';
@@ -818,25 +1335,26 @@
 
   // ── AUTH ──────────────────────────────────────────────
   async function login() {
+    const t = translations[currentLang] || translations.az;
     const btn = document.getElementById('login-btn');
     const email = document.getElementById('admin-email').value.trim();
     const pass  = document.getElementById('admin-pass').value;
     const err   = document.getElementById('login-err');
     err.style.display = 'none';
-    btn.disabled = true; btn.innerText = 'Daxil olunur...';
+    btn.disabled = true; btn.innerText = t.login_logging_in;
     const { error } = await sb.auth.signInWithPassword({ email, password: pass });
     if (error) {
-      err.innerText = 'E-poçt ünvanı və ya şifrə yanlışdır.';
+      err.innerText = t.login_err_auth;
       err.style.display = 'block';
-      btn.disabled = false; btn.innerText = 'Daxil ol →';
+      btn.disabled = false; btn.innerText = t.login_btn;
       return;
     }
     // Check if the logged-in user is an authorised admin
     if (!ADMIN_EMAILS.includes(email)) {
       await sb.auth.signOut();
-      err.innerText = 'Bu hesabın admin panelinə giriş icazəsi yoxdur.';
+      err.innerText = t.login_err_unauth;
       err.style.display = 'block';
-      btn.disabled = false; btn.innerText = 'Daxil ol →';
+      btn.disabled = false; btn.innerText = t.login_btn;
       return;
     }
     showApp();
@@ -856,13 +1374,14 @@
   ];
 
   window.addEventListener('load', async () => {
+    applyLanguage(currentLang);
     const { data: { user }, error } = await sb.auth.getUser();
     if (user && ADMIN_EMAILS.includes(user.email)) {
       showApp();
     } else if (user) {
-      // Logged in but NOT an admin — sign out and show error
       await sb.auth.signOut();
-      document.getElementById('login-err').innerText = 'Bu hesabın admin panelinə giriş icazəsi yoxdur.';
+      const t = translations[currentLang] || translations.az;
+      document.getElementById('login-err').innerText = t.login_err_unauth;
       document.getElementById('login-err').style.display = 'block';
     }
   });
@@ -873,6 +1392,7 @@
     initMDE();
     loadArticles();
     renderCategoryUI();
+    applyLanguage(currentLang);
   }
 
   // ── MOBILE LAYOUT ─────────────────────────────────────
@@ -883,18 +1403,20 @@
 
   // ── PAGES ─────────────────────────────────────────────
   function showPage(name) {
+    currentPage = name;
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('page-' + name).classList.add('active');
     document.getElementById('nav-' + name).classList.add('active');
+    const t = translations[currentLang] || translations.az;
     const titles = {
-      stats: 'Statistika',
-      articles: 'Məqalələr',
-      categories: 'Kateqoriya & Teqlər',
-      users: 'İstifadəçilər',
-      events: 'Tədbirlər',
-      resources: 'Resurslar və Sənədlər',
-      notifications: 'Bildirişlər'
+      stats: t.nav_stats,
+      articles: t.nav_articles,
+      categories: t.nav_categories,
+      users: t.nav_users,
+      events: t.nav_events,
+      resources: t.nav_resources,
+      notifications: t.nav_notifications
     };
     document.getElementById('page-title').innerText = titles[name] || name;
 
@@ -917,10 +1439,11 @@
   let allUsersForNotif = [];
 
   async function loadNotificationsPage() {
+    const t = translations[currentLang] || translations.az;
     const { data } = await sb.from('profiles').select('id, first_name, last_name').order('first_name');
     allUsersForNotif = data || [];
     const sel = document.getElementById('notif-single-user');
-    sel.innerHTML = '<option value="">İstifadəçi seçin</option>' +
+    sel.innerHTML = `<option value="">${t.label_select_user}</option>` +
       allUsersForNotif.map(u => `<option value="${u.id}">${u.first_name} ${u.last_name}</option>`).join('');
     const bulkList = document.getElementById('notif-bulk-users');
     bulkList.innerHTML = allUsersForNotif.map(u => `
@@ -944,36 +1467,39 @@
   }
 
   function updateSelectedCount() {
+    const t = translations[currentLang] || translations.az;
     const count = document.querySelectorAll('.notif-user-check:checked').length;
-    document.getElementById('notif-selected-count').innerText = count + ' istifadəçi seçilib';
+    document.getElementById('notif-selected-count').innerText = t.users_selected_count.replace('{n}', count);
   }
 
   async function sendSingleNotif() {
+    const t = translations[currentLang] || translations.az;
     const userId = document.getElementById('notif-single-user').value;
     const title  = document.getElementById('notif-single-title').value.trim();
     const msg    = document.getElementById('notif-single-msg').value.trim();
-    if (!userId) { notify('İstifadəçi seçin', 'error'); return; }
-    if (!title)  { notify('Başlıq daxil edin', 'error'); return; }
-    if (!msg)    { notify('Mesaj daxil edin', 'error'); return; }
+    if (!userId) { notify(t.label_select_user, 'error'); return; }
+    if (!title)  { notify(t.notify_titles_required, 'error'); return; }
+    if (!msg)    { notify(t.notify_fill_all_fields, 'error'); return; }
     const { error } = await sb.from('notifications').insert({ user_id: userId, title, message: msg });
     if (error) { notify(error.message, 'error'); return; }
-    notify('Bildiriş göndərildi ✓', 'success');
+    notify(t.notify_notif_sent, 'success');
     document.getElementById('notif-single-title').value = '';
     document.getElementById('notif-single-msg').value = '';
     loadSentNotifs();
   }
 
   async function sendBulkNotif() {
+    const t = translations[currentLang] || translations.az;
     const title   = document.getElementById('notif-bulk-title').value.trim();
     const msg     = document.getElementById('notif-bulk-msg').value.trim();
     const checked = [...document.querySelectorAll('.notif-user-check:checked')].map(cb => cb.value);
-    if (checked.length === 0) { notify('Ən azı bir istifadəçi seçin', 'error'); return; }
-    if (!title) { notify('Başlıq daxil edin', 'error'); return; }
-    if (!msg)   { notify('Mesaj daxil edin', 'error'); return; }
+    if (checked.length === 0) { notify(t.alert_select_at_least_one_user, 'error'); return; }
+    if (!title) { notify(t.notify_titles_required, 'error'); return; }
+    if (!msg)   { notify(t.notify_fill_all_fields, 'error'); return; }
     const rows = checked.map(uid => ({ user_id: uid, title, message: msg }));
     const { error } = await sb.from('notifications').insert(rows);
     if (error) { notify(error.message, 'error'); return; }
-    notify(`${checked.length} istifadəçiyə bildiriş göndərildi ✓`, 'success');
+    notify(t.notify_bulk_notif_sent.replace('{n}', checked.length), 'success');
     document.getElementById('notif-bulk-title').value = '';
     document.getElementById('notif-bulk-msg').value = '';
     selectAllNotifUsers(false);
@@ -982,25 +1508,23 @@
 
   function linkify(text) {
     if (!text) return '';
-    // Escape HTML first
     const escaped = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    // Convert URLs to clickable links
     return escaped.replace(/(https?:\/\/[^\s<>"]+)/g,
       '<a href="$1" target="_blank" rel="noopener" style="color:#3498db;text-decoration:underline;word-break:break-all;">$1</a>');
   }
 
   async function loadSentNotifs() {
+    const t = translations[currentLang] || translations.az;
     const { data, error } = await sb.from('notifications')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(30);
     const list = document.getElementById('sent-notif-list');
-    if (error) { list.innerHTML = `<p style="color:red;font-size:0.85rem;">Xəta: ${error.message}</p>`; return; }
+    if (error) { list.innerHTML = `<p style="color:red;font-size:0.85rem;">Error: ${error.message}</p>`; return; }
     if (!data || data.length === 0) {
-      list.innerHTML = '<p style="opacity:0.5;font-size:0.85rem;">Hələ bildiriş göndərilməyib.</p>';
+      list.innerHTML = `<p style="opacity:0.5;font-size:0.85rem;">${t.no_notifs_yet}</p>`;
       return;
     }
-    // Build a name map from already-loaded users
     const nameMap = {};
     allUsersForNotif.forEach(u => { nameMap[u.id] = `${u.first_name} ${u.last_name}`; });
 
@@ -1009,9 +1533,9 @@
         <div style="flex:1;min-width:0;">
           <div style="font-weight:600;font-size:0.9rem;margin-bottom:0.2rem;">${n.title}</div>
           <div style="font-size:0.8rem;opacity:0.7;margin:0.2rem 0;line-height:1.5;word-break:break-word;">${linkify(n.message)}</div>
-          <div style="font-size:0.75rem;opacity:0.45;margin-top:0.3rem;">→ ${nameMap[n.user_id] || n.user_id.slice(0,8)+'...'} &nbsp;|&nbsp; ${new Date(n.created_at).toLocaleString('az-AZ')} &nbsp;|&nbsp; ${n.is_read ? '<i class="ph ph-check-circle" style="color:#74c69d"></i> Oxundu' : '<i class="ph ph-circle" style="color:#3498db"></i> Oxunmayıb'}</div>
+          <div style="font-size:0.75rem;opacity:0.45;margin-top:0.3rem;">→ ${nameMap[n.user_id] || n.user_id.slice(0,8)+'...'} &nbsp;|&nbsp; ${new Date(n.created_at).toLocaleString(currentLang === 'az' ? 'az-AZ' : 'en-US')} &nbsp;|&nbsp; ${n.is_read ? '<i class="ph ph-check-circle" style="color:#74c69d"></i> ' + t.notif_read : '<i class="ph ph-circle" style="color:#3498db"></i> ' + t.notif_unread}</div>
         </div>
-        <button onclick="deleteNotif('${n.id}')" style="background:none;border:none;color:#e74c3c;cursor:pointer;font-size:1.1rem;padding:0 0.3rem;flex-shrink:0;margin-left:0.5rem;" title="Sil"><i class="ph ph-trash"></i></button>
+        <button onclick="deleteNotif('${n.id}')" style="background:none;border:none;color:#e74c3c;cursor:pointer;font-size:1.1rem;padding:0 0.3rem;flex-shrink:0;margin-left:0.5rem;" title="${t.btn_delete}"><i class="ph ph-trash"></i></button>
       </div>`).join('');
   }
 
@@ -1027,7 +1551,7 @@
     document.getElementById('recent-list').innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
 
     const { data, error } = await sb.from('articles').select('*').order('created_at', { ascending: false });
-    if (error) { notify('Xəta: ' + error.message, 'error'); return; }
+    if (error) { notify('Error: ' + error.message, 'error'); return; }
     allArticles = data || [];
     renderStats();
     filterArticles();
@@ -1044,12 +1568,15 @@
     const monthAgo = new Date(now.getFullYear(), now.getMonth(), 1);
     const thisMonth = allArticles.filter(a => new Date(a.created_at) >= monthAgo).length;
 
-    document.getElementById('st-total').innerText     = total;
-    document.getElementById('st-published').innerText = published;
-    document.getElementById('st-draft').innerText     = draft;
-    document.getElementById('st-month').innerText     = thisMonth;
+    const elTotal = document.getElementById('st-total');
+    const elPub = document.getElementById('st-published');
+    const elDraft = document.getElementById('st-draft');
+    const elMonth = document.getElementById('st-month');
+    if (elTotal) elTotal.innerText = total;
+    if (elPub) elPub.innerText = published;
+    if (elDraft) elDraft.innerText = draft;
+    if (elMonth) elMonth.innerText = thisMonth;
 
-    // Load user statistics async
     loadUserStats();
   }
 
@@ -1061,11 +1588,13 @@
     const namizad = data.filter(u => !u.status || u.status === 'Namizəd').length;
     const aktiv   = data.filter(u => u.status === 'Aktiv könüllü').length;
     
-    document.getElementById('st-users-total').innerText = total;
-    document.getElementById('st-users-namizad').innerText = namizad;
-    document.getElementById('st-users-aktiv').innerText = aktiv;
+    const elUTotal = document.getElementById('st-users-total');
+    const elUNam = document.getElementById('st-users-namizad');
+    const elUAkt = document.getElementById('st-users-aktiv');
+    if (elUTotal) elUTotal.innerText = total;
+    if (elUNam) elUNam.innerText = namizad;
+    if (elUAkt) elUAkt.innerText = aktiv;
 
-    //Status breakdown bar chart
     const breakdown = document.getElementById('user-status-breakdown');
     if (!breakdown) return;
 
@@ -1078,7 +1607,8 @@
     const palette = ['#3498db', '#9b59b6', '#e74c3c', '#1abc9c', '#34495e'];
     let cIdx = 0;
     const statuses = Object.keys(statusCounts).map(key => ({
-      label: key,
+      rawKey: key,
+      label: formatUserStatus(key),
       count: statusCounts[key],
       color: key === 'Namizəd' ? '#74c69d' : (key === 'Aktiv könüllü' ? '#f39c12' : palette[(cIdx++) % palette.length])
     })).sort((a,b) => b.count - a.count);
@@ -1099,18 +1629,20 @@
   }
 
   function renderCategoryBreakdown() {
+    const t = translations[currentLang] || translations.az;
     const container = document.getElementById('cat-breakdown');
+    if (!container) return;
     const catCounts = {};
     allArticles.forEach(a => {
-      const cat = a.category || 'Kateqoriyasız';
+      const cat = a.category || t.uncategorized;
       catCounts[cat] = (catCounts[cat] || 0) + 1;
     });
     const entries = Object.entries(catCounts).sort((a,b) => b[1] - a[1]);
-    if (entries.length === 0) { container.innerHTML = '<div class="empty-state" style="padding:1rem; font-size:0.85rem;">Hələ məqalə yoxdur</div>'; return; }
+    if (entries.length === 0) { container.innerHTML = `<div class="empty-state" style="padding:1rem; font-size:0.85rem;">${t.no_articles_yet}</div>`; return; }
     container.innerHTML = entries.map(([cat, count]) => {
       const catObj = categories.find(c => c.name === cat);
       const color = catObj ? catObj.color : '#999';
-      const pct = Math.round((count / allArticles.length) * 100);
+      const pct = Math.round((count / (allArticles.length || 1)) * 100);
       return `<div class="recent-row">
         <div class="cat-dot" style="background:${color}; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></div>
         <div style="flex:1"><div style="font-size:0.85rem; font-weight:600;">${cat}</div>
@@ -1122,19 +1654,24 @@
   }
 
   function renderRecentList() {
+    const t = translations[currentLang] || translations.az;
     const recent = allArticles.slice(0, 5);
     const container = document.getElementById('recent-list');
-    if (recent.length === 0) { container.innerHTML = '<div style="opacity:0.4; font-size:0.85rem; padding:1rem;">Hələ məqalə yoxdur</div>'; return; }
-    container.innerHTML = recent.map(a => `
+    if (!container) return;
+    if (recent.length === 0) { container.innerHTML = `<div style="opacity:0.4; font-size:0.85rem; padding:1rem;">${t.no_articles_yet}</div>`; return; }
+    container.innerHTML = recent.map(a => {
+      const isPub = !a.status || a.status === 'published';
+      const title = currentLang === 'en' ? (a.title_en || a.title_az || '(no title)') : (a.title_az || a.title_en || '(başlıq yoxdur)');
+      return `
       <div class="recent-row">
         <img src="${a.image || ''}" alt="" onerror="this.style.background='#eee';this.removeAttribute('src')">
         <div class="recent-row-info">
-          <h4>${a.title_en || '(başlıq yoxdur)'}</h4>
-          <span>${new Date(a.created_at).toLocaleDateString('az-AZ')}</span>
+          <h4>${title}</h4>
+          <span>${new Date(a.created_at).toLocaleDateString(currentLang === 'az' ? 'az-AZ' : 'en-US')}</span>
         </div>
-        <span class="badge ${(!a.status || a.status==='published') ? 'badge-published' : 'badge-draft'}">${(!a.status || a.status==='published') ? 'Dərc' : 'Qaralama'}</span>
+        <span class="badge ${isPub ? 'badge-published' : 'badge-draft'}">${isPub ? t.badge_published : t.badge_draft}</span>
       </div>
-    `).join('');
+    `}).join('');
   }
 
   // ── FILTER & RENDER ───────────────────────────────────
@@ -1146,7 +1683,8 @@
   }
 
   function filterArticles() {
-    const q = (document.getElementById('art-search').value || '').toLowerCase();
+    const searchInput = document.getElementById('art-search');
+    const q = (searchInput ? searchInput.value : '').toLowerCase();
     filteredArticles = allArticles.filter(a => {
       const matchStatus = currentStatusFilter === 'all'
         || (currentStatusFilter === 'published' && (!a.status || a.status === 'published'))
@@ -1158,11 +1696,13 @@
   }
 
   function renderArticleList() {
+    const t = translations[currentLang] || translations.az;
     const container = document.getElementById('articles-container');
+    if (!container) return;
     if (filteredArticles.length === 0) {
       container.innerHTML = `<div class="empty-state">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        <p>Məqalə tapılmadı</p></div>`;
+        <p>${t.no_articles_found}</p></div>`;
       return;
     }
     container.innerHTML = '';
@@ -1178,25 +1718,24 @@
           <h3>${art.title_en || '(başlıq yoxdur)'}</h3>
           <p>${art.title_az || ''}</p>
           <div class="article-meta-row">
-            <span class="badge ${isPublished ? 'badge-published' : 'badge-draft'}">${isPublished ? '<i class="ph ph-check-circle"></i> Dərc' : '<i class="ph ph-pencil-simple"></i> Qaralama'}</span>
+            <span class="badge ${isPublished ? 'badge-published' : 'badge-draft'}">${isPublished ? '<i class="ph ph-check-circle"></i> ' + t.badge_published : '<i class="ph ph-pencil-simple"></i> ' + t.badge_draft}</span>
             ${art.category ? `<span class="badge badge-cat"><i class="ph ph-folder"></i> ${art.category}</span>` : ''}
             ${tags.slice(0,3).map(t=>`<span class="badge badge-tag">#${t}</span>`).join('')}
-            <span style="font-size:0.72rem; opacity:0.4; margin-left:auto;">${new Date(art.created_at).toLocaleDateString('az-AZ')}</span>
+            <span style="font-size:0.72rem; opacity:0.4; margin-left:auto;">${new Date(art.created_at).toLocaleDateString(currentLang === 'az' ? 'az-AZ' : 'en-US')}</span>
           </div>
         </div>
         <div class="article-actions">
-          <button class="btn btn-blue btn-sm" onclick="showEditModal(${idx})"><i class="ph ph-pencil-simple"></i> Düzəlt</button>
+          <button class="btn btn-blue btn-sm" onclick="showEditModal(${idx})"><i class="ph ph-pencil-simple"></i> ${t.btn_edit}</button>
           <button class="btn btn-red btn-sm delete-btn" data-id="${art.id}"><i class="ph ph-trash"></i></button>
         </div>`;
       container.appendChild(div);
     });
 
-    // Attach delete listeners via data-id to avoid 'null' string bug
     container.querySelectorAll('.delete-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-id');
         if (!id || id === 'null' || id === 'undefined') {
-          notify('Bu məqalənin ID-si tapılmadı, yenidən yükləyin', 'error');
+          notify('Article ID not found, please refresh', 'error');
           return;
         }
         confirmDelete(id);
@@ -1206,9 +1745,11 @@
 
   // ── MARKDOWN EDITORS ──────────────────────────────────
   function initMDE() {
+    const t = translations[currentLang] || translations.az;
+    if (mdeEN || mdeAZ) return; // already initialized
     mdeEN = new EasyMDE({
       element: document.getElementById('art-desc-en'),
-      placeholder: 'Məqaləni ingilis dilində yazın...',
+      placeholder: t.mde_ph_en,
       spellChecker: false,
       autofocus: false,
       status: false,
@@ -1216,7 +1757,7 @@
     });
     mdeAZ = new EasyMDE({
       element: document.getElementById('art-desc-az'),
-      placeholder: 'Məqaləni Azərbaycan dilində yazın...',
+      placeholder: t.mde_ph_az,
       spellChecker: false,
       autofocus: false,
       status: false,
@@ -1270,7 +1811,8 @@
 
   // ── MODALS ────────────────────────────────────────────
   function showAddModal() {
-    document.getElementById('modal-title').innerText = 'Yeni Məqalə';
+    const t = translations[currentLang] || translations.az;
+    document.getElementById('modal-title').innerText = t.modal_article_new;
     document.getElementById('art-id').value = '';
     document.getElementById('art-title-en').value = '';
     document.getElementById('art-title-az').value = '';
@@ -1288,8 +1830,9 @@
   }
 
   function showEditModal(idx) {
+    const t = translations[currentLang] || translations.az;
     const art = allArticles[idx];
-    document.getElementById('modal-title').innerText = 'Məqaləni Düzəlt';
+    document.getElementById('modal-title').innerText = t.modal_article_edit;
     document.getElementById('art-id').value = art.id;
     document.getElementById('art-title-en').value = art.title_en || '';
     document.getElementById('art-title-az').value = art.title_az || '';
@@ -1311,8 +1854,10 @@
   }
 
   function populateCategorySelect(selected) {
+    const t = translations[currentLang] || translations.az;
     const sel = document.getElementById('art-category');
-    sel.innerHTML = '<option value="">— Kateqoriya seç —</option>';
+    if (!sel) return;
+    sel.innerHTML = `<option value="">${t.select_category_ph}</option>`;
     categories.forEach(c => {
       const opt = document.createElement('option');
       opt.value = c.name; opt.textContent = c.name;
@@ -1323,11 +1868,12 @@
 
   // ── SAVE ARTICLE ──────────────────────────────────────
   async function saveArticle() {
+    const t = translations[currentLang] || translations.az;
     const btn = document.getElementById('save-btn');
     const id = document.getElementById('art-id').value;
     const titleEN = document.getElementById('art-title-en').value.trim();
     const titleAZ = document.getElementById('art-title-az').value.trim();
-    if (!titleEN || !titleAZ) { notify('Başlıqlar mütləqdir!', 'error'); return; }
+    if (!titleEN || !titleAZ) { notify(t.notify_titles_required, 'error'); return; }
 
     const article = {
       title_en:  titleEN,
@@ -1340,29 +1886,29 @@
       status:    selectedStatus,
     };
 
-    btn.disabled = true; btn.innerText = 'Saxlanılır...';
+    btn.disabled = true; btn.innerText = t.saving;
     let error;
     if (id) {
       ({ error } = await sb.from('articles').update(article).eq('id', id));
     } else {
       ({ error } = await sb.from('articles').insert(article));
     }
-    btn.disabled = false; btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Yadda Saxla`;
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> ${t.btn_save}`;
 
     if (error) {
-      // If columns don't exist, save without new fields
       if (error.message && error.message.includes('column')) {
         const basicArticle = { title_en: article.title_en, title_az: article.title_az, image: article.image, desc_en: article.desc_en, desc_az: article.desc_az };
         let e2;
         if (id) { ({ error: e2 } = await sb.from('articles').update(basicArticle).eq('id', id)); }
         else     { ({ error: e2 } = await sb.from('articles').insert(basicArticle)); }
-        if (e2) { notify('Xəta: ' + e2.message, 'error'); return; }
-        notify('Yadda saxlandı (yeni sahələr üçün Supabase-də sütun əlavə edin)', 'success');
+        if (e2) { notify('Error: ' + e2.message, 'error'); return; }
+        notify(t.notify_article_added, 'success');
       } else {
-        notify('Xəta: ' + error.message, 'error'); return;
+        notify('Error: ' + error.message, 'error'); return;
       }
     } else {
-      notify(id ? 'Məqalə yeniləndi ✅' : 'Məqalə əlavə olundu ✅', 'success');
+      notify(id ? t.notify_article_updated : t.notify_article_added, 'success');
     }
     closeModal();
     loadArticles();
@@ -1380,44 +1926,46 @@
     document.getElementById('confirm-overlay').classList.remove('open');
   }
   async function doDelete() {
-    // Save ID to local variable BEFORE closeConfirm clears pendingDeleteId
+    const t = translations[currentLang] || translations.az;
     const idToDelete = pendingDeleteId;
     closeConfirm();
     if (!idToDelete || idToDelete === 'null' || idToDelete === 'undefined') {
-      notify('Xəta: Məqalənin ID-si tapılmadı', 'error');
+      notify('Error: Article ID not found', 'error');
       return;
     }
     const { error } = await sb.from('articles').delete().eq('id', idToDelete);
-    if (error) { notify('Xəta: ' + error.message, 'error'); return; }
-    notify('Məqalə silindi 🗑️', 'success');
+    if (error) { notify('Error: ' + error.message, 'error'); return; }
+    notify(t.notify_article_deleted, 'success');
     loadArticles();
   }
 
   // ── CATEGORIES ────────────────────────────────────────
   function renderCategoryUI() {
+    const t = translations[currentLang] || translations.az;
     const list = document.getElementById('cat-list-ui');
-    const colors = { 'Ətraf Mühit': '#2d6a4f','Gənclər':'#3498db','Tədbirlər':'#9b59b6','Könüllülük':'#e67e22' };
-    if (categories.length === 0) { list.innerHTML = '<div style="opacity:0.4; font-size:0.85rem;">Hələ kateqoriya yoxdur</div>'; return; }
+    if (!list) return;
+    if (categories.length === 0) { list.innerHTML = `<div style="opacity:0.4; font-size:0.85rem;">${t.no_categories_yet}</div>`; return; }
     list.innerHTML = categories.map((c, i) => `
       <div class="cat-row">
         <div class="cat-dot" style="background:${c.color}"></div>
         <span>${c.name}</span>
-        <small>${allArticles.filter(a=>a.category===c.name).length} məqalə</small>
+        <small>${allArticles.filter(a=>a.category===c.name).length} ${t.article_count}</small>
         <button class="btn btn-ghost btn-sm" onclick="deleteCategory(${i})" style="padding:0.2rem 0.5rem; font-size:0.75rem;">×</button>
       </div>`).join('');
     populateCategorySelect();
   }
 
   function addCategory() {
+    const t = translations[currentLang] || translations.az;
     const name = document.getElementById('new-cat-name').value.trim();
     const color = document.getElementById('new-cat-color').value;
-    if (!name) { notify('Ad boş ola bilməz', 'error'); return; }
-    if (categories.find(c => c.name === name)) { notify('Bu kateqoriya artıq var', 'error'); return; }
+    if (!name) { notify(t.notify_cat_name_empty, 'error'); return; }
+    if (categories.find(c => c.name === name)) { notify(t.notify_cat_exists, 'error'); return; }
     categories.push({ name, color });
     saveCategories();
     document.getElementById('new-cat-name').value = '';
     renderCategoryUI();
-    notify('Kateqoriya əlavə olundu ✅', 'success');
+    notify(t.notify_cat_added, 'success');
   }
 
   function deleteCategory(i) {
@@ -1427,14 +1975,16 @@
   }
 
   function renderTagsCloud() {
+    const t = translations[currentLang] || translations.az;
     const tagCount = {};
     allArticles.forEach(a => {
       if (!a.tags) return;
-      a.tags.split(',').map(t=>t.trim()).filter(Boolean).forEach(t => { tagCount[t] = (tagCount[t]||0)+1; });
+      a.tags.split(',').map(t=>t.trim()).filter(Boolean).forEach(tag => { tagCount[tag] = (tagCount[tag]||0)+1; });
     });
     const container = document.getElementById('tags-cloud');
+    if (!container) return;
     const entries = Object.entries(tagCount).sort((a,b)=>b[1]-a[1]);
-    if (entries.length === 0) { container.innerHTML = '<span style="opacity:0.4; font-size:0.85rem;">Hələ teq yoxdur</span>'; return; }
+    if (entries.length === 0) { container.innerHTML = `<span style="opacity:0.4; font-size:0.85rem;">${t.no_tags_yet}</span>`; return; }
     container.innerHTML = entries.map(([tag, count]) =>
       `<span class="badge badge-tag" style="font-size:0.8rem; padding:0.3rem 0.8rem;">#${tag} <small style="opacity:0.6; margin-left:3px;">${count}</small></span>`
     ).join('');
@@ -1450,12 +2000,12 @@
     setTimeout(() => el.remove(), 3500);
   }
 
-  // ── PASTE INTERCEPTOR (preserved from original) ───────
+  // ── PASTE INTERCEPTOR ─────────────────────────────────
   document.addEventListener('paste', function(e) {
     if (e.target.tagName !== 'TEXTAREA') return;
     var html = e.clipboardData.getData('text/html');
     if (!html) return;
-    if (!/\<a\b[^>]*href=/i.test(html)) return;
+    if (!/<a\b[^>]*href=/i.test(html)) return;
     e.preventDefault();
     var div = document.createElement('div');
     var cleanHtml = html.replace(/<(style|script|xml|meta|link)[^>]*>[\s\S]*?<\/\1>/gi, '');
@@ -1481,28 +2031,32 @@
 
   // ── USERS ──
   async function loadUsers() {
-    const q = document.getElementById('usr-search').value.toLowerCase();
+    const t = translations[currentLang] || translations.az;
+    const usrSearch = document.getElementById('usr-search');
+    const q = (usrSearch ? usrSearch.value : '').toLowerCase();
     const { data, error } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
     const list = document.getElementById('users-list');
-    if (!data) { list.innerHTML = '<p>Məlumat tapılmadı.</p>'; return; }
+    if (!list) return;
+    if (!data) { list.innerHTML = `<p>${t.no_users_found}</p>`; return; }
     
-    const filtered = data.filter(u => (u.first_name + ' ' + u.last_name).toLowerCase().includes(q));
+    const filtered = data.filter(u => ((u.first_name || '') + ' ' + (u.last_name || '')).toLowerCase().includes(q));
     
-    // Bütün sistemdəki fərqli statusları toplayırıq
     const allStatuses = new Set(['Namizəd', 'Aktiv könüllü']);
     data.forEach(u => { if (u.status) allStatuses.add(u.status); });
     
     const select = document.getElementById('cert-user-select');
     if (select) {
-      select.innerHTML = '<option value="">İstifadəçi seçin</option>' + 
+      select.innerHTML = `<option value="">${t.label_select_user}</option>` + 
         data.map(u => `<option value="${u.id}">${u.first_name} ${u.last_name}</option>`).join('');
     }
 
     list.innerHTML = filtered.map(u => {
-      // Hər bir user üçün select option-ları
-      const userOptions = Array.from(allStatuses).map(s => 
-        `<option value="${s}" ${u.status === s ? 'selected' : (!u.status && s === 'Namizəd' ? 'selected' : '')}>${s}</option>`
-      ).join('');
+      const userOptions = Array.from(allStatuses).map(s => {
+        const label = formatUserStatus(s);
+        return `<option value="${s}" ${u.status === s ? 'selected' : (!u.status && s === 'Namizəd' ? 'selected' : '')}>${label}</option>`;
+      }).join('');
+
+      const displayedStatus = formatUserStatus(u.status || 'Namizəd');
 
       return `
       <div class="article-item" style="border-left-color:var(--lime);" id="user-row-${u.id}">
@@ -1513,20 +2067,20 @@
           <h3>${u.first_name} ${u.last_name}</h3>
           <p style="font-size:0.78rem;opacity:0.5;">ID: ${u.member_id || '—'}</p>
           <div class="article-meta-row" style="margin-top:0.3rem;">
-            <span class="badge badge-published">${u.status || 'Namizəd'}</span>
-            <span class="badge badge-cat">${new Date(u.created_at).toLocaleDateString('az-AZ')}</span>
+            <span class="badge badge-published">${displayedStatus}</span>
+            <span class="badge badge-cat">${new Date(u.created_at).toLocaleDateString(currentLang === 'az' ? 'az-AZ' : 'en-US')}</span>
           </div>
         </div>
         <div class="article-actions">
-          <select onclick="event.stopPropagation()" onchange="event.stopPropagation(); if(this.value==='_new'){ const n=prompt('Yeni rolun adı:'); if(n) updateUserStatus('${u.id}', n); else this.value='${u.status||'Namizəd'}'; } else { updateUserStatus('${u.id}', this.value); }" style="margin:0; padding:0.4rem; font-size:0.8rem; border-radius:8px; border:1px solid #ccc;">
+          <select onclick="event.stopPropagation()" onchange="event.stopPropagation(); if(this.value==='_new'){ const n=prompt('${t.new_role_prompt}'); if(n) updateUserStatus('${u.id}', n); else this.value='${u.status||'Namizəd'}'; } else { updateUserStatus('${u.id}', this.value); }" style="margin:0; padding:0.4rem; font-size:0.8rem; border-radius:8px; border:1px solid #ccc;">
             ${userOptions}
-            <option value="_new" style="font-weight:bold; color:var(--green);">+ Yeni rol yarat</option>
+            <option value="_new" style="font-weight:bold; color:var(--green);">${t.create_new_role}</option>
           </select>
-          <button onclick="event.stopPropagation(); deleteUser('${u.id}', '${u.first_name} ${u.last_name}')" class="btn btn-red btn-sm" style="padding:0.4rem 0.8rem; font-size:0.85rem; border-radius:8px; border:none; margin:0;"><i class="ph ph-trash"></i> Sil</button>
+          <button onclick="event.stopPropagation(); deleteUser('${u.id}', '${u.first_name} ${u.last_name}')" class="btn btn-red btn-sm" style="padding:0.4rem 0.8rem; font-size:0.85rem; border-radius:8px; border:none; margin:0;"><i class="ph ph-trash"></i> ${t.btn_delete}</button>
         </div>
       </div>
     `}).join('');
-    if(filtered.length === 0) list.innerHTML = '<p style="padding:1rem; opacity:0.5;">İstifadəçi tapılmadı.</p>';
+    if(filtered.length === 0) list.innerHTML = `<p style="padding:1rem; opacity:0.5;">${t.no_users_found}</p>`;
   }
 
   // ── BULK SELECT & PRINT ──
@@ -1535,15 +2089,16 @@
   }
 
   function printSelectedCards(orientation) {
+    const t = translations[currentLang] || translations.az;
     const checkboxes = document.querySelectorAll('.user-select-cb:checked');
     if (checkboxes.length === 0) {
-      alert('Zəhmət olmasa ən azı bir istifadəçi seçin.');
+      alert(t.alert_select_at_least_one_user);
       return;
     }
 
     const users = Array.from(checkboxes).map(cb => ({
       name: cb.dataset.name,
-      status: cb.dataset.status,
+      status: formatUserStatus(cb.dataset.status),
       memberId: cb.dataset.memberId || '—'
     }));
 
@@ -1560,7 +2115,6 @@
     }
 
     const isH = orientation === 'horizontal';
-    // Horizontal: 2 per row | Vertical: 3 per row
     const cols = isH ? 2 : 3;
     const cardH = isH ? '54mm' : '85.6mm';
 
@@ -1608,12 +2162,13 @@
       }
     }).join('');
 
+    const printTitle = currentLang === 'en' ? 'Bulk Print — YES Member Cards' : 'Toplu Çap — YES Üzv Kartları';
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Toplu Çap — YES Üzv Kartları</title>
+        <title>${printTitle}</title>
         <style>
           @page { size: A4 portrait; margin: 12mm; }
           * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1651,7 +2206,7 @@
             border: 0.8mm solid white; box-shadow: 0 1mm 3mm rgba(0,0,0,0.2);
           }
 
-          /* ── HORIZONTAL CARD (dashboard style) ── */
+          /* ── HORIZONTAL CARD ── */
           .card-h {
             width: 100%;
             height: ${cardH};
@@ -1678,7 +2233,7 @@
           }
           .barcode-h { height: 8mm; max-width: 50%; }
 
-          /* ── VERTICAL CARD (dashboard style) ── */
+          /* ── VERTICAL CARD ── */
           .card-v {
             width: 100%;
             height: ${cardH};
@@ -1743,51 +2298,55 @@
   }
 
   async function updateUserStatus(id, status) {
+    const t = translations[currentLang] || translations.az;
     const { data, error } = await sb.from('profiles').update({ status }).eq('id', id).select();
     if (error) {
       console.error(error);
-      alert('Supabase xətası (yadda saxlanmadı): ' + error.message);
+      alert('Supabase error: ' + error.message);
       return;
     }
     if (!data || data.length === 0) {
-      alert('Supabase icazə (RLS) problemi: Yeniləmə uğurlu kimi göründü, amma bazada heç nə dəyişmədi. Zəhmət olmasa Supabase-də "profiles" cədvəlinin RLS (Row Level Security) Update icazələrini yoxlayın.');
+      alert('Supabase RLS error: Update could not be saved to database. Please check Row Level Security on profiles table.');
       return;
     }
-    notify('İstifadəçi statusu yeniləndi', 'success');
+    notify(t.notify_user_status_updated, 'success');
     loadUsers();
     loadUserStats();
   }
+
   async function deleteUser(id, name) {
-    if (!confirm(`${name} adlı istifadəçini tamamilə silmək istədiyinizə əminsiniz?`)) return;
+    const t = translations[currentLang] || translations.az;
+    if (!confirm(t.alert_delete_user_confirm.replace('{name}', name))) return;
     const { error } = await sb.from('profiles').delete().eq('id', id);
     if (error) {
-      notify('Profil silinərkən xəta: ' + error.message, 'error');
+      notify('Error deleting profile: ' + error.message, 'error');
     } else {
-      notify('İstifadəçi uğurla silindi', 'success');
+      notify(t.notify_user_deleted, 'success');
       loadUsers();
     }
   }
 
   // ── USER DETAIL MODAL ──
   async function openUserModal(userId, userName) {
+    const t = translations[currentLang] || translations.az;
     document.getElementById('udm-name').innerText = userName;
     document.getElementById('udm-id').innerText = 'ID: ' + userId;
-    document.getElementById('udm-certs').innerHTML = '<p style="opacity:0.45;font-size:0.9rem;">Yüklənir...</p>';
+    document.getElementById('udm-certs').innerHTML = `<p style="opacity:0.45;font-size:0.9rem;">${t.loading}</p>`;
     document.getElementById('user-detail-modal').classList.add('open');
 
     const { data, error } = await sb.from('documents').select('*').eq('user_id', userId).order('created_at', { ascending: false });
     const box = document.getElementById('udm-certs');
     if (!data || data.length === 0) {
-      box.innerHTML = '<p style="opacity:0.45;font-size:0.9rem;">Heç bir sənəd tapılmadı.</p>';
+      box.innerHTML = `<p style="opacity:0.45;font-size:0.9rem;">${t.no_docs_found}</p>`;
       return;
     }
     box.innerHTML = data.map(doc => `
       <div style="display:flex;align-items:center;justify-content:space-between;background:#f8fcf9;border:1px solid #e0efe6;border-radius:12px;padding:0.8rem 1rem;">
         <div>
           <p style="font-weight:600;font-size:0.9rem;margin-bottom:0.2rem;">${doc.title}</p>
-          <a href="${doc.file_url}" target="_blank" style="font-size:0.78rem;color:#2d6a4f;text-decoration:underline;">Linkə bax</a>
+          <a href="${doc.file_url}" target="_blank" style="font-size:0.78rem;color:#2d6a4f;text-decoration:underline;">${t.view_link}</a>
         </div>
-        <button onclick="deleteCert('${doc.id}', '${userId}', '${userName}')" title="Sil" style="background:rgba(231,76,60,0.1);color:#e74c3c;border:none;border-radius:8px;padding:0.5rem 0.8rem;cursor:pointer;font-size:0.85rem;"><i class="ph ph-trash"></i></button>
+        <button onclick="deleteCert('${doc.id}', '${userId}', '${userName}')" title="${t.btn_delete}" style="background:rgba(231,76,60,0.1);color:#e74c3c;border:none;border-radius:8px;padding:0.5rem 0.8rem;cursor:pointer;font-size:0.85rem;"><i class="ph ph-trash"></i></button>
       </div>
     `).join('');
   }
@@ -1797,60 +2356,75 @@
   }
 
   async function deleteCert(docId, userId, userName) {
-    if (!confirm('Bu sənədi silmək istədiyinizə əminsiniz?')) return;
+    const t = translations[currentLang] || translations.az;
+    if (!confirm(t.alert_delete_doc_confirm)) return;
     const { error } = await sb.from('documents').delete().eq('id', docId);
-    if (error) { notify('Xəta: ' + error.message, 'error'); return; }
-    notify('Sənəd silindi', 'success');
+    if (error) { notify('Error: ' + error.message, 'error'); return; }
+    notify(t.notify_cert_deleted, 'success');
     openUserModal(userId, userName);
   }
 
   // ── EVENTS ──
   async function loadEventsAdmin() {
+    const t = translations[currentLang] || translations.az;
     const { data } = await sb.from('events').select('*').order('created_at', { ascending: false });
     const list = document.getElementById('events-list');
+    if (!list) return;
     if (!data) return;
-    list.innerHTML = data.map(ev => `
+    list.innerHTML = data.map(ev => {
+      const title = currentLang === 'en' ? (ev.title_en || ev.title_az) : (ev.title_az || ev.title_en);
+      const dateStr = ev.event_date ? new Date(ev.event_date).toLocaleDateString(currentLang === 'az' ? 'az-AZ' : 'en-US') : t.event_not_specified;
+      const statusStr = ev.is_active ? t.event_active : t.event_passive;
+      const toggleBtnText = ev.is_active ? t.btn_close_event : t.btn_open_event;
+      return `
       <div class="article-item" style="border-left-color:${ev.is_active ? 'var(--lime)' : '#f39c12'}; display:flex; justify-content:space-between; align-items:center;">
         <div class="article-meta">
-          <h3>${ev.title_az || ev.title_en}</h3>
-          <p style="margin-top:0.3rem;">Tarix: ${ev.event_date ? new Date(ev.event_date).toLocaleDateString('az-AZ') : 'Göstərilməyib'} &nbsp;&bull;&nbsp; ${ev.is_active ? 'Aktiv' : 'Passiv'}</p>
+          <h3>${title}</h3>
+          <p style="margin-top:0.3rem;">${t.event_date_label} ${dateStr} &nbsp;&bull;&nbsp; ${statusStr}</p>
         </div>
         <div class="article-actions">
-          <button class="btn btn-ghost btn-sm" onclick="toggleEventStatus('${ev.id}', ${!ev.is_active})">${ev.is_active ? 'Bağla' : 'Aç'}</button>
-          <button class="btn btn-red btn-sm" onclick="deleteEvent('${ev.id}')">Sil</button>
+          <button class="btn btn-ghost btn-sm" onclick="toggleEventStatus('${ev.id}', ${!ev.is_active})">${toggleBtnText}</button>
+          <button class="btn btn-red btn-sm" onclick="deleteEvent('${ev.id}')">${t.btn_delete}</button>
         </div>
       </div>
-    `).join('');
-    if(data.length === 0) list.innerHTML = '<p style="padding:1rem; opacity:0.5;">Tədbir yoxdur.</p>';
+    `}).join('');
+    if(data.length === 0) list.innerHTML = `<p style="padding:1rem; opacity:0.5;">${t.no_events_yet}</p>`;
   }
+
   async function toggleEventStatus(id, isActive) {
+    const t = translations[currentLang] || translations.az;
     await sb.from('events').update({ is_active: isActive }).eq('id', id);
     loadEventsAdmin();
-    notify(isActive ? 'Tədbir qeydiyyata açıldı' : 'Tədbir bağlandı', 'success');
+    notify(isActive ? t.notify_event_opened : t.notify_event_closed, 'success');
   }
+
   async function deleteEvent(id) {
-    if(confirm('Tədbiri silmək istədiyinizə əminsiniz?')) {
+    const t = translations[currentLang] || translations.az;
+    if(confirm(t.alert_delete_event_confirm)) {
       await sb.from('events').delete().eq('id', id);
       loadEventsAdmin();
-      notify('Tədbir silindi', 'success');
+      notify(t.notify_event_deleted, 'success');
     }
   }
+
   function showEventModal() { document.getElementById('event-modal').classList.add('open'); }
   function closeEventModal() { document.getElementById('event-modal').classList.remove('open'); }
+  
   async function saveEvent() {
+    const t = translations[currentLang] || translations.az;
     const taz = document.getElementById('ev-title-az').value;
     const ten = document.getElementById('ev-title-en').value;
     const date = document.getElementById('ev-date').value;
     const link = document.getElementById('ev-link').value;
-    if(!taz && !ten) { notify('Zəhmət olmasa başlıq yazın', 'error'); return; }
-    if(!link) { notify('Zəhmət olmasa Qeydiyyat Linkini daxil edin', 'error'); return; }
+    if(!taz && !ten) { notify(t.notify_titles_required, 'error'); return; }
+    if(!link) { notify(t.notify_fill_all_fields, 'error'); return; }
     
     const eventData = { title_az: taz, title_en: ten, event_date: date || null, registration_link: link };
     
     const { error } = await sb.from('events').insert(eventData);
     if(error) { notify(error.message, 'error'); return; }
     closeEventModal();
-    notify('Yeni tədbir yaradıldı', 'success');
+    notify(t.notify_event_created, 'success');
     document.getElementById('ev-title-az').value = '';
     document.getElementById('ev-title-en').value = '';
     document.getElementById('ev-date').value = '';
@@ -1860,47 +2434,56 @@
 
   // ── RESOURCES & CERTS ──
   async function loadResourcesAdmin() {
+    const t = translations[currentLang] || translations.az;
     const { data } = await sb.from('resources').select('*').order('created_at', { ascending: false });
     const list = document.getElementById('resources-list');
+    if (!list) return;
     if (!data) return;
     list.innerHTML = data.map(r => `
       <div class="cat-row" style="margin-bottom:0.8rem;">
         <span style="font-weight:600;">${r.title}</span>
-        <button class="btn btn-red btn-sm" onclick="deleteResource('${r.id}')">Sil</button>
+        <button class="btn btn-red btn-sm" onclick="deleteResource('${r.id}')">${t.btn_delete}</button>
       </div>
     `).join('');
-    if(data.length === 0) list.innerHTML = '<p style="padding:1rem; opacity:0.5;">Resurs tapılmadı.</p>';
+    if(data.length === 0) list.innerHTML = `<p style="padding:1rem; opacity:0.5;">${t.no_resources_yet}</p>`;
   }
+
   async function deleteResource(id) {
-    if(confirm('Resursu silmək istədiyinizə əminsiniz?')){
+    const t = translations[currentLang] || translations.az;
+    if(confirm(t.alert_delete_res_confirm)){
       await sb.from('resources').delete().eq('id', id);
       loadResourcesAdmin();
     }
   }
+
   function showResourceModal() { document.getElementById('resource-modal').classList.add('open'); }
   function closeResourceModal() { document.getElementById('resource-modal').classList.remove('open'); }
+
   async function saveResource() {
+    const t = translations[currentLang] || translations.az;
     const title = document.getElementById('res-title').value;
     const desc = document.getElementById('res-desc').value;
     const url = document.getElementById('res-url').value;
-    if(!title || !url) { notify('Başlıq və Link mütləqdir', 'error'); return; }
+    if(!title || !url) { notify(t.notify_fill_all_fields, 'error'); return; }
     const { error } = await sb.from('resources').insert({ title, description: desc, file_url: url });
     if(error) { notify(error.message, 'error'); return; }
     closeResourceModal();
-    notify('Resurs əlavə edildi', 'success');
+    notify(t.notify_resource_added, 'success');
     document.getElementById('res-title').value = '';
     document.getElementById('res-desc').value = '';
     document.getElementById('res-url').value = '';
     loadResourcesAdmin();
   }
+
   async function assignCertificate() {
+    const t = translations[currentLang] || translations.az;
     const uid = document.getElementById('cert-user-select').value;
     const title = document.getElementById('cert-title').value;
     const url = document.getElementById('cert-url').value;
-    if(!uid || !title || !url) { notify('Bütün xanaları doldurun', 'error'); return; }
+    if(!uid || !title || !url) { notify(t.notify_fill_all_fields, 'error'); return; }
     const { error } = await sb.from('documents').insert({ user_id: uid, title, file_url: url });
     if(error) { notify(error.message, 'error'); return; }
-    notify('Sertifikat təyin edildi!', 'success');
+    notify(t.notify_cert_assigned, 'success');
     document.getElementById('cert-title').value = '';
     document.getElementById('cert-url').value = '';
   }
