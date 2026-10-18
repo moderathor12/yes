@@ -609,6 +609,9 @@
           <button class="btn btn-sm" onclick="printSelectedCards('vertical')" style="display:flex;align-items:center;gap:0.4rem;background:transparent;border:1.5px solid var(--green);color:var(--green);">
             <i class="ph ph-printer"></i> <span data-i18n="btn_print_v">Şaquli Çap</span>
           </button>
+          <button class="btn btn-sm" onclick="openRolesModal()" style="display:flex;align-items:center;gap:0.4rem;background:#f0f7f3;border:1.5px solid var(--green);color:var(--green);font-weight:600;">
+            <i class="ph ph-shield-check"></i> <span data-i18n="btn_manage_roles">Rollar</span>
+          </button>
           <div class="search-box">
             <input type="text" id="usr-search" placeholder="İstifadəçi axtar..." data-i18n-ph="search_users_ph" oninput="loadUsers()">
           </div>
@@ -869,6 +872,36 @@
   </div>
 </div>
 
+<!-- ── ROLES MODAL ── -->
+<div class="modal-overlay" id="roles-modal">
+  <div class="modal-box" style="max-width:540px;">
+    <div class="modal-header">
+      <h2 style="display:flex;align-items:center;gap:0.5rem;">
+        <i class="ph ph-shield-check" style="color:var(--green);"></i>
+        <span data-i18n="modal_roles_title">Rolların İdarə Edilməsi</span>
+      </h2>
+      <button class="modal-close" onclick="closeRolesModal()"><i class="ph ph-x"></i></button>
+    </div>
+
+    <!-- Quick Add Role -->
+    <div style="display:flex; gap:0.5rem; margin-bottom:1.2rem; background:#f8fcf9; padding:0.8rem; border-radius:12px; border:1px solid #e0efe6;">
+      <input type="text" id="new-custom-role-input" placeholder="Yeni rol adı..." data-i18n-ph="add_role_ph" style="flex:1; margin:0; padding:0.6rem 0.8rem; border-radius:8px; border:1px solid #ccc; font-size:0.9rem;" onkeydown="if(event.key==='Enter') createRoleFromModal()">
+      <button class="btn btn-green btn-sm" onclick="createRoleFromModal()" style="display:flex;align-items:center;gap:0.4rem;white-space:nowrap;">
+        <i class="ph ph-plus"></i> <span data-i18n="btn_add_role">Əlavə et</span>
+      </button>
+    </div>
+
+    <!-- Roles List -->
+    <div id="roles-list-container" style="display:flex; flex-direction:column; gap:0.6rem; max-height:360px; overflow-y:auto; padding-right:4px;">
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+    </div>
+
+    <div class="modal-footer" style="margin-top:1.5rem;">
+      <button class="btn" style="background:#eee;color:#333;" onclick="closeRolesModal()" data-i18n="btn_close">Bağla</button>
+    </div>
+  </div>
+</div>
+
 <script>
   // ── TRANSLATIONS ──────────────────────────────────────
   const translations = {
@@ -949,6 +982,20 @@
       create_new_role: "+ Yeni rol yarat",
       status_candidate: "Namizəd",
       status_active_volunteer: "Aktiv könüllü",
+      btn_manage_roles: "Rollar",
+      modal_roles_title: "Rolların İdarə Edilməsi",
+      add_role_ph: "Yeni rol adı...",
+      btn_add_role: "Əlavə et",
+      core_role_badge: "Əsas rol",
+      user_count_badge: "{n} istifadəçi",
+      delete_role_confirm: "\"{role}\" rolunu silmək istədiyinizə əminsiniz?\nBu rola sahib istifadəçilər avtomatik \"Namizəd\" statusuna keçiriləcək.",
+      notify_role_deleted: "\"{role}\" rolu uğurla silindi 🗑️",
+      notify_role_added: "Yeni rol əlavə edildi ✅",
+      notify_role_exists: "Bu rol artıq mövcuddur",
+      notify_role_name_empty: "Rol adı boş ola bilməz",
+      notify_core_role_no_delete: "Əsas rollar silinə bilməz!",
+      manage_roles_option: "Rolları idarə et / sil...",
+      no_custom_roles_desc: "Rol tapılmadı.",
       
       events_heading: "Tədbirlər",
       btn_new_event: "+ Yeni Tədbir",
@@ -1133,6 +1180,20 @@
       create_new_role: "+ Create new role",
       status_candidate: "Candidate",
       status_active_volunteer: "Active volunteer",
+      btn_manage_roles: "Roles",
+      modal_roles_title: "Role Management",
+      add_role_ph: "New role name...",
+      btn_add_role: "Add Role",
+      core_role_badge: "Core role",
+      user_count_badge: "{n} user(s)",
+      delete_role_confirm: "Are you sure you want to delete the \"{role}\" role?\nUsers with this role will be automatically reassigned to \"Candidate\".",
+      notify_role_deleted: "Role \"{role}\" successfully deleted 🗑️",
+      notify_role_added: "New role added ✅",
+      notify_role_exists: "This role already exists",
+      notify_role_name_empty: "Role name cannot be empty",
+      notify_core_role_no_delete: "Core roles cannot be deleted!",
+      manage_roles_option: "Manage / delete roles...",
+      no_custom_roles_desc: "No roles found.",
       
       events_heading: "Events",
       btn_new_event: "+ New Event",
@@ -2029,6 +2090,163 @@
     e.target.selectionStart = e.target.selectionEnd = start + finalStr.length;
   });
 
+  // ── ROLE MANAGEMENT ──
+  const CORE_ROLES = ['Namizəd', 'Aktiv könüllü'];
+
+  function getCustomRoles() {
+    try {
+      return JSON.parse(localStorage.getItem('yes_custom_roles') || '[]');
+    } catch(e) { return []; }
+  }
+
+  function saveCustomRoles(roles) {
+    const clean = Array.from(new Set(roles.filter(r => r && !CORE_ROLES.includes(r))));
+    localStorage.setItem('yes_custom_roles', JSON.stringify(clean));
+  }
+
+  function addCustomRole(roleName) {
+    const trimmed = (roleName || '').trim();
+    if (!trimmed || CORE_ROLES.includes(trimmed)) return false;
+    const existing = getCustomRoles();
+    if (!existing.includes(trimmed)) {
+      existing.push(trimmed);
+      saveCustomRoles(existing);
+    }
+    return true;
+  }
+
+  async function getAllRolesWithCounts() {
+    const { data } = await sb.from('profiles').select('status');
+    const profiles = data || [];
+    const counts = {};
+    profiles.forEach(u => {
+      const s = u.status || 'Namizəd';
+      counts[s] = (counts[s] || 0) + 1;
+    });
+
+    const customRoles = getCustomRoles();
+    profiles.forEach(u => {
+      if (u.status && !CORE_ROLES.includes(u.status) && !customRoles.includes(u.status)) {
+        customRoles.push(u.status);
+      }
+    });
+    saveCustomRoles(customRoles);
+
+    const allRoles = Array.from(new Set([...CORE_ROLES, ...customRoles]));
+    return { allRoles, counts, totalUsers: profiles.length };
+  }
+
+  async function openRolesModal() {
+    const m = document.getElementById('roles-modal');
+    if (m) m.classList.add('open');
+    renderRolesModalList();
+  }
+
+  function closeRolesModal() {
+    const m = document.getElementById('roles-modal');
+    if (m) m.classList.remove('open');
+    const inp = document.getElementById('new-custom-role-input');
+    if (inp) inp.value = '';
+  }
+
+  async function renderRolesModalList() {
+    const t = translations[currentLang] || translations.az;
+    const container = document.getElementById('roles-list-container');
+    if (!container) return;
+    container.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
+
+    const { allRoles, counts } = await getAllRolesWithCounts();
+
+    if (!allRoles || allRoles.length === 0) {
+      container.innerHTML = `<p style="opacity:0.5; padding:1rem; text-align:center;">${t.no_custom_roles_desc}</p>`;
+      return;
+    }
+
+    container.innerHTML = allRoles.map(role => {
+      const isCore = CORE_ROLES.includes(role);
+      const userCount = counts[role] || 0;
+      const countLabel = t.user_count_badge.replace('{n}', userCount);
+      const displayRole = formatUserStatus(role);
+      const escapedRole = role.replace(/'/g, "\\'");
+
+      return `
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:0.75rem 1rem; border-radius:10px; background:#fff; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(0,0,0,0.02); transition:all 0.2s;">
+          <div style="display:flex; align-items:center; gap:0.6rem;">
+            <div style="width:10px; height:10px; border-radius:50%; background:${isCore ? (role === 'Namizəd' ? '#74c69d' : '#f39c12') : 'var(--green)'};"></div>
+            <div>
+              <span style="font-weight:600; font-size:0.95rem; color:#222;">${displayRole}</span>
+              ${isCore ? `<span style="margin-left:0.4rem; font-size:0.72rem; background:#e8f5e9; color:#2e7d32; padding:2px 7px; border-radius:10px; font-weight:600;">${t.core_role_badge}</span>` : ''}
+              <div style="font-size:0.75rem; color:#888; margin-top:2px;">${countLabel}</div>
+            </div>
+          </div>
+          <div>
+            ${isCore ? `
+              <span style="font-size:0.78rem; color:#aaa; font-style:italic;">${t.core_role_badge}</span>
+            ` : `
+              <button class="btn btn-red btn-sm" onclick="deleteRole('${escapedRole}')" style="display:flex;align-items:center;gap:0.3rem;padding:0.35rem 0.75rem;font-size:0.8rem;border-radius:6px;border:none;">
+                <i class="ph ph-trash"></i> <span>${t.btn_delete}</span>
+              </button>
+            `}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function createRoleFromModal() {
+    const t = translations[currentLang] || translations.az;
+    const inp = document.getElementById('new-custom-role-input');
+    const name = inp ? inp.value.trim() : '';
+    if (!name) {
+      notify(t.notify_role_name_empty, 'error');
+      return;
+    }
+    const customRoles = getCustomRoles();
+    if (CORE_ROLES.includes(name) || customRoles.includes(name)) {
+      notify(t.notify_role_exists, 'error');
+      return;
+    }
+    addCustomRole(name);
+    if (inp) inp.value = '';
+    notify(t.notify_role_added, 'success');
+    renderRolesModalList();
+    loadUsers();
+  }
+
+  async function deleteRole(roleName) {
+    const t = translations[currentLang] || translations.az;
+    if (CORE_ROLES.includes(roleName)) {
+      notify(t.notify_core_role_no_delete, 'error');
+      return;
+    }
+    if (!confirm(t.delete_role_confirm.replace('{role}', roleName))) {
+      return;
+    }
+
+    // 1. Reassign any users who currently hold this role to 'Namizəd'
+    const { error: updateError } = await sb
+      .from('profiles')
+      .update({ status: 'Namizəd' })
+      .eq('status', roleName);
+
+    if (updateError) {
+      console.error('Error reassigning user roles:', updateError);
+      notify('Xəta baş verdi: ' + updateError.message, 'error');
+      return;
+    }
+
+    // 2. Remove role from custom roles storage
+    const customRoles = getCustomRoles().filter(r => r !== roleName);
+    saveCustomRoles(customRoles);
+
+    notify(t.notify_role_deleted.replace('{role}', roleName), 'success');
+
+    // 3. Re-render modal, users list and user statistics
+    renderRolesModalList();
+    loadUsers();
+    loadUserStats();
+  }
+
   // ── USERS ──
   async function loadUsers() {
     const t = translations[currentLang] || translations.az;
@@ -2041,7 +2259,15 @@
     
     const filtered = data.filter(u => ((u.first_name || '') + ' ' + (u.last_name || '')).toLowerCase().includes(q));
     
-    const allStatuses = new Set(['Namizəd', 'Aktiv könüllü']);
+    const customRoles = getCustomRoles();
+    data.forEach(u => {
+      if (u.status && !CORE_ROLES.includes(u.status) && !customRoles.includes(u.status)) {
+        customRoles.push(u.status);
+      }
+    });
+    saveCustomRoles(customRoles);
+
+    const allStatuses = new Set([...CORE_ROLES, ...customRoles]);
     data.forEach(u => { if (u.status) allStatuses.add(u.status); });
     
     const select = document.getElementById('cert-user-select');
@@ -2072,9 +2298,24 @@
           </div>
         </div>
         <div class="article-actions">
-          <select onclick="event.stopPropagation()" onchange="event.stopPropagation(); if(this.value==='_new'){ const n=prompt('${t.new_role_prompt}'); if(n) updateUserStatus('${u.id}', n); else this.value='${u.status||'Namizəd'}'; } else { updateUserStatus('${u.id}', this.value); }" style="margin:0; padding:0.4rem; font-size:0.8rem; border-radius:8px; border:1px solid #ccc;">
+          <select onclick="event.stopPropagation()" onchange="event.stopPropagation();
+            if(this.value==='_new'){
+              const n=prompt('${t.new_role_prompt}');
+              if(n && n.trim()){
+                addCustomRole(n.trim());
+                updateUserStatus('${u.id}', n.trim());
+              } else {
+                this.value='${u.status||'Namizəd'}';
+              }
+            } else if(this.value==='_manage'){
+              this.value='${u.status||'Namizəd'}';
+              openRolesModal();
+            } else {
+              updateUserStatus('${u.id}', this.value);
+            }" style="margin:0; padding:0.4rem; font-size:0.8rem; border-radius:8px; border:1px solid #ccc;">
             ${userOptions}
             <option value="_new" style="font-weight:bold; color:var(--green);">${t.create_new_role}</option>
+            <option value="_manage" style="color:#555; font-style:italic;">⚙ ${t.manage_roles_option}</option>
           </select>
           <button onclick="event.stopPropagation(); deleteUser('${u.id}', '${u.first_name} ${u.last_name}')" class="btn btn-red btn-sm" style="padding:0.4rem 0.8rem; font-size:0.85rem; border-radius:8px; border:none; margin:0;"><i class="ph ph-trash"></i> ${t.btn_delete}</button>
         </div>
@@ -2299,6 +2540,9 @@
 
   async function updateUserStatus(id, status) {
     const t = translations[currentLang] || translations.az;
+    if (status && !CORE_ROLES.includes(status)) {
+      addCustomRole(status);
+    }
     const { data, error } = await sb.from('profiles').update({ status }).eq('id', id).select();
     if (error) {
       console.error(error);
