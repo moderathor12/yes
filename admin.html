@@ -10,6 +10,7 @@
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
   <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <link rel="stylesheet" href="css/accessibility.css">
   <style>
     :root {
@@ -273,6 +274,43 @@
     }
     .status-option.selected-published { background: #d8f3dc; border-color: var(--lime); color: #1b4332; }
     .status-option.selected-draft { background: #fef3c7; border-color: #f39c12; color: #92400e; }
+
+    /* PDF Drop Zone */
+    .pdf-drop-zone {
+      border: 2px dashed rgba(45,106,79,0.35); border-radius: 14px;
+      padding: 1.4rem 1rem; text-align: center; cursor: pointer;
+      background: #f6fbf7; transition: 0.2s; margin-bottom: 1rem;
+    }
+    .pdf-drop-zone:hover, .pdf-drop-zone.dragover { border-color: var(--green); background: #e8f5e9; }
+    .pdf-drop-zone i { font-size: 2rem; color: var(--green); display: block; margin-bottom: 0.4rem; }
+    .pdf-drop-zone p { margin: 0; font-size: 0.85rem; color: rgba(26,46,26,0.6); }
+    .pdf-drop-zone strong { color: var(--green); }
+    .pdf-processing { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--green); padding: 0.6rem 0; }
+    .pdf-processing .spinner { width: 18px; height: 18px; border: 2px solid #d8f3dc; border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; }
+
+    /* Inline image upload button in MDE toolbar */
+    .mde-img-upload-btn { display: none; }
+    .img-upload-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .img-upload-box {
+      background: white; border-radius: 16px; padding: 2rem; max-width: 440px; width: 90%;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+    }
+    .img-upload-box h3 { margin: 0 0 1.2rem; font-family: 'Space Grotesk', sans-serif; }
+    .img-upload-drop {
+      border: 2px dashed rgba(45,106,79,0.35); border-radius: 12px;
+      padding: 2rem; text-align: center; cursor: pointer; background: #f6fbf7;
+      transition: 0.2s; margin-bottom: 1rem;
+    }
+    .img-upload-drop:hover, .img-upload-drop.dragover { border-color: var(--green); background: #e8f5e9; }
+    .img-upload-drop i { font-size: 2.4rem; color: var(--green); display: block; margin-bottom: 0.5rem; }
+    .img-upload-drop p { margin: 0.3rem 0 0; font-size: 0.85rem; color: rgba(26,46,26,0.55); }
+    .img-upload-preview { border-radius: 10px; overflow: hidden; max-height: 180px; background: #eee; margin-bottom: 1rem; display: none; }
+    .img-upload-preview img { width: 100%; height: 180px; object-fit: cover; display: block; }
+    .img-upload-footer { display: flex; gap: 0.8rem; justify-content: flex-end; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .modal-footer { display: flex; justify-content: flex-end; gap: 0.8rem; margin-top: 1.5rem; padding-top: 1.2rem; border-top: 1px solid rgba(0,0,0,0.07); }
 
     /* Tags input */
@@ -749,6 +787,26 @@
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
 
+    <!-- PDF Extract Zone -->
+    <div class="form-group">
+      <label style="display:flex; align-items:center; gap:0.5rem;">
+        <i class="ph ph-file-pdf" style="color:#e53e3e; font-size:1.1rem;"></i>
+        PDF-dən məqalə çıxar
+        <span style="font-weight:400; opacity:0.5; font-size:0.78rem;">(isteğe bağlı)</span>
+      </label>
+      <div class="pdf-drop-zone" id="pdf-drop-zone" onclick="document.getElementById('pdf-file-input').click()"
+        ondragover="pdfDragOver(event)" ondragleave="pdfDragLeave(event)" ondrop="pdfDrop(event)">
+        <i class="ph ph-upload-simple"></i>
+        <p><strong>PDF faylı sürükləyin</strong> və ya klikləyin</p>
+        <p style="margin-top:0.3rem; font-size:0.78rem;">Sistem mətni oxuyub EN/AZ sahələrini dolduracaq</p>
+      </div>
+      <div id="pdf-processing" class="pdf-processing" style="display:none;">
+        <div class="spinner"></div>
+        <span id="pdf-status-text">PDF emal olunur...</span>
+      </div>
+      <input type="file" id="pdf-file-input" accept=".pdf" style="display:none" onchange="handlePdfFile(this.files[0])">
+    </div>
+
     <div class="form-row">
       <div class="form-group">
         <label data-i18n="label_art_title_en">Başlıq (EN) *</label>
@@ -762,7 +820,12 @@
 
     <div class="form-group">
       <label data-i18n="label_art_image">Şəkil URL-i</label>
-      <input type="text" id="art-image" placeholder="https://example.com/image.jpg">
+      <div style="display:flex; gap:0.5rem; align-items:center;">
+        <input type="text" id="art-image" placeholder="https://example.com/image.jpg" style="flex:1;">
+        <button type="button" class="btn btn-ghost btn-sm" onclick="openCoverImgUpload()" style="white-space:nowrap; flex-shrink:0;">
+          <i class="ph ph-upload-simple"></i> Yüklə
+        </button>
+      </div>
     </div>
 
     <div class="form-row">
@@ -790,12 +853,22 @@
     </div>
 
     <div class="form-group">
-      <label data-i18n="label_art_desc_en">Məzmun (EN) — Markdown dəstəklənir *</label>
+      <label style="display:flex; align-items:center; justify-content:space-between;">
+        <span data-i18n="label_art_desc_en">Məzmun (EN) — Markdown dəstəklənir *</span>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="openInlineImgUpload('en')" style="font-size:0.78rem; padding:0.25rem 0.6rem;">
+          <i class="ph ph-image"></i> Şəkil əlavə et
+        </button>
+      </label>
       <textarea id="art-desc-en" rows="5"></textarea>
     </div>
 
     <div class="form-group">
-      <label data-i18n="label_art_desc_az">Məzmun (AZ) — Markdown dəstəklənir *</label>
+      <label style="display:flex; align-items:center; justify-content:space-between;">
+        <span data-i18n="label_art_desc_az">Məzmun (AZ) — Markdown dəstəklənir *</span>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="openInlineImgUpload('az')" style="font-size:0.78rem; padding:0.25rem 0.6rem;">
+          <i class="ph ph-image"></i> Şəkil əlavə et
+        </button>
+      </label>
       <textarea id="art-desc-az" rows="5"></textarea>
     </div>
 
@@ -805,6 +878,33 @@
       <button class="btn btn-green" id="save-btn" onclick="saveArticle()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
         <span data-i18n="btn_save">Yadda Saxla</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── IMAGE UPLOAD MODAL ─────────────────────────────── -->
+<div class="img-upload-overlay" id="img-upload-overlay" style="display:none;" onclick="if(event.target===this)closeImgUpload()">
+  <div class="img-upload-box">
+    <h3 id="img-upload-title"><i class="ph ph-image" style="color:var(--green);"></i> Şəkil Yüklə</h3>
+    <div class="img-upload-drop" id="img-upload-drop"
+      onclick="document.getElementById('img-file-input').click()"
+      ondragover="imgDragOver(event)" ondragleave="imgDragLeave(event)" ondrop="imgDropHandle(event)">
+      <i class="ph ph-upload-simple"></i>
+      <p><strong>Şəkli sürükləyin</strong> və ya klikləyin</p>
+      <p>PNG, JPG, WebP — maks. 5MB</p>
+    </div>
+    <div class="img-upload-preview" id="img-upload-preview">
+      <img id="img-preview-el" src="" alt="Preview">
+    </div>
+    <div id="img-upload-progress" style="display:none; font-size:0.85rem; color:var(--green); padding:0.5rem 0;">
+      <div class="pdf-processing"><div class="spinner"></div><span>Yüklənir...</span></div>
+    </div>
+    <input type="file" id="img-file-input" accept="image/*" style="display:none" onchange="handleImgFile(this.files[0])">
+    <div class="img-upload-footer">
+      <button class="btn btn-ghost" onclick="closeImgUpload()">Ləğv et</button>
+      <button class="btn btn-green" id="img-insert-btn" onclick="insertUploadedImage()" disabled>
+        <i class="ph ph-check"></i> Daxil et
       </button>
     </div>
   </div>
@@ -1845,6 +1945,186 @@
       status: false,
       toolbar: ['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','|','preview','guide'],
     });
+  }
+
+
+  // ══════════════════════════════════════════════════════
+  // PDF EXTRACTION
+  // ══════════════════════════════════════════════════════
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+
+  function pdfDragOver(e) {
+    e.preventDefault();
+    document.getElementById('pdf-drop-zone').classList.add('dragover');
+  }
+  function pdfDragLeave(e) {
+    document.getElementById('pdf-drop-zone').classList.remove('dragover');
+  }
+  function pdfDrop(e) {
+    e.preventDefault();
+    document.getElementById('pdf-drop-zone').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === 'application/pdf') handlePdfFile(file);
+    else notify('Yalnız PDF faylı qəbul edilir', 'error');
+  }
+
+  async function handlePdfFile(file) {
+    if (!file) return;
+    const zone = document.getElementById('pdf-drop-zone');
+    const proc = document.getElementById('pdf-processing');
+    const statusTxt = document.getElementById('pdf-status-text');
+
+    zone.style.display = 'none';
+    proc.style.display = 'flex';
+    statusTxt.textContent = 'PDF oxunur...';
+
+    try {
+      if (typeof pdfjsLib === 'undefined') throw new Error('PDF.js yüklənməyib');
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let fullText = '';
+      statusTxt.textContent = `0 / ${pdf.numPages} səhifə...`;
+      for (let p = 1; p <= pdf.numPages; p++) {
+        const page = await pdf.getPage(p);
+        const tc = await page.getTextContent();
+        const pageText = tc.items.map(i => i.str).join(' ');
+        fullText += pageText + '\n\n';
+        statusTxt.textContent = `${p} / ${pdf.numPages} səhifə...`;
+      }
+      fullText = fullText.trim();
+
+      // Extract title (first non-empty line)
+      const lines = fullText.split('\n').map(l => l.trim()).filter(Boolean);
+      const title = lines[0] || file.name.replace('.pdf','');
+
+      // Build markdown body (skip first line as it becomes the title)
+      const body = cleanPdfText(lines.slice(1).join('\n'));
+
+      // Fill in English fields (user can translate AZ manually or edit)
+      document.getElementById('art-title-en').value = title;
+      if (mdeEN) mdeEN.value(body);
+
+      notify('PDF uğurla oxundu! Məzmunu yoxlayın və lazım olursa düzəliş edin.', 'success');
+    } catch (err) {
+      console.error(err);
+      notify('PDF oxunarkən xəta: ' + err.message, 'error');
+    } finally {
+      zone.style.display = '';
+      proc.style.display = 'none';
+    }
+  }
+
+  function cleanPdfText(text) {
+    // Remove excessive whitespace, fix common PDF artifacts
+    return text
+      .replace(/[ \t]+/g, ' ')
+      .replace(/\n{3,}/g, '\n\n')
+      .replace(/([a-z,;])\n([A-Z])/g, '$1 $2')  // join broken lines
+      .replace(/([a-z])\n([a-z])/g, '$1 $2')
+      .replace(/\n([A-Z][A-Z ]{3,})/g, '\n\n## $1') // ALL CAPS → heading
+      .trim();
+  }
+
+  // ══════════════════════════════════════════════════════
+  // IMAGE UPLOAD (inline in article content + cover)
+  // ══════════════════════════════════════════════════════
+  let _imgUploadTarget = null; // 'en' | 'az' | 'cover'
+  let _uploadedImgUrl  = null;
+
+  function openCoverImgUpload() {
+    _imgUploadTarget = 'cover';
+    document.getElementById('img-upload-title').innerHTML = '<i class="ph ph-image" style="color:var(--green);"></i> Kapaq Şəkli Yüklə';
+    _openImgModal();
+  }
+
+  function openInlineImgUpload(lang) {
+    _imgUploadTarget = lang;
+    document.getElementById('img-upload-title').innerHTML = '<i class="ph ph-image" style="color:var(--green);"></i> Məqalə içinə Şəkil Əlavə et';
+    _openImgModal();
+  }
+
+  function _openImgModal() {
+    _uploadedImgUrl = null;
+    document.getElementById('img-upload-preview').style.display = 'none';
+    document.getElementById('img-preview-el').src = '';
+    document.getElementById('img-upload-progress').style.display = 'none';
+    document.getElementById('img-insert-btn').disabled = true;
+    document.getElementById('img-file-input').value = '';
+    document.getElementById('img-upload-drop').style.display = '';
+    document.getElementById('img-upload-overlay').style.display = 'flex';
+  }
+
+  function closeImgUpload() {
+    document.getElementById('img-upload-overlay').style.display = 'none';
+    _imgUploadTarget = null;
+    _uploadedImgUrl  = null;
+  }
+
+  function imgDragOver(e) {
+    e.preventDefault();
+    document.getElementById('img-upload-drop').classList.add('dragover');
+  }
+  function imgDragLeave(e) {
+    document.getElementById('img-upload-drop').classList.remove('dragover');
+  }
+  function imgDropHandle(e) {
+    e.preventDefault();
+    document.getElementById('img-upload-drop').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) handleImgFile(file);
+    else notify('Yalnız şəkil faylı qəbul edilir', 'error');
+  }
+
+  async function handleImgFile(file) {
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { notify('Şəkil 5MB-dan böyük ola bilməz', 'error'); return; }
+
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('img-preview-el').src = e.target.result;
+      document.getElementById('img-upload-preview').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+
+    // Upload to Supabase Storage
+    document.getElementById('img-upload-drop').style.display = 'none';
+    document.getElementById('img-upload-progress').style.display = 'block';
+
+    try {
+      const ext  = file.name.split('.').pop();
+      const path = `article-images/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { data, error } = await sb.storage.from('article-media').upload(path, file, { upsert: false });
+      if (error) throw error;
+      const { data: urlData } = sb.storage.from('article-media').getPublicUrl(path);
+      _uploadedImgUrl = urlData.publicUrl;
+      document.getElementById('img-insert-btn').disabled = false;
+      notify('Şəkil yükləndi ✅', 'success');
+    } catch (err) {
+      console.error(err);
+      notify('Yükləmə xətası: ' + err.message, 'error');
+      document.getElementById('img-upload-drop').style.display = '';
+    } finally {
+      document.getElementById('img-upload-progress').style.display = 'none';
+    }
+  }
+
+  function insertUploadedImage() {
+    if (!_uploadedImgUrl) return;
+    if (_imgUploadTarget === 'cover') {
+      document.getElementById('art-image').value = _uploadedImgUrl;
+    } else {
+      const mde = _imgUploadTarget === 'en' ? mdeEN : mdeAZ;
+      if (mde) {
+        const cm = mde.codemirror;
+        const cur = cm.getCursor();
+        cm.replaceRange(`\n![Şəkil](${_uploadedImgUrl})\n`, cur);
+        cm.focus();
+      }
+    }
+    closeImgUpload();
   }
 
   // ── STATUS TOGGLE ─────────────────────────────────────
