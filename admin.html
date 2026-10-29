@@ -884,26 +884,77 @@
 </div>
 
 <!-- ── IMAGE UPLOAD MODAL ─────────────────────────────── -->
+<!-- ── IMAGE UPLOAD / INSERT MODAL ─────────────────────── -->
 <div class="img-upload-overlay" id="img-upload-overlay" style="display:none;" onclick="if(event.target===this)closeImgUpload()">
-  <div class="img-upload-box">
-    <h3 id="img-upload-title"><i class="ph ph-image" style="color:var(--green);"></i> Şəkil Yüklə</h3>
-    <div class="img-upload-drop" id="img-upload-drop"
-      onclick="document.getElementById('img-file-input').click()"
-      ondragover="imgDragOver(event)" ondragleave="imgDragLeave(event)" ondrop="imgDropHandle(event)">
-      <i class="ph ph-upload-simple"></i>
-      <p><strong>Şəkli sürükləyin</strong> və ya klikləyin</p>
-      <p>PNG, JPG, WebP — maks. 5MB</p>
+  <div class="img-upload-box" style="max-width:520px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem;">
+      <h3 id="img-upload-title" style="margin:0;"><i class="ph ph-image" style="color:var(--green);"></i> Şəkil Əlavə Et</h3>
+      <button class="modal-close" onclick="closeImgUpload()" type="button">×</button>
     </div>
-    <div class="img-upload-preview" id="img-upload-preview">
-      <img id="img-preview-el" src="" alt="Preview">
+
+    <!-- Tabs: Upload or URL -->
+    <div style="display:flex; gap:0.5rem; margin-bottom:1rem; border-bottom:1px solid #e0e0e0; padding-bottom:0.5rem;">
+      <button type="button" id="tab-btn-file" class="btn btn-sm btn-green" onclick="switchImgTab('file')">Fayl Yüklə</button>
+      <button type="button" id="tab-btn-url" class="btn btn-sm btn-ghost" onclick="switchImgTab('url')">Link ilə (URL)</button>
     </div>
+
+    <div id="tab-content-file">
+      <div class="img-upload-drop" id="img-upload-drop"
+        onclick="document.getElementById('img-file-input').click()"
+        ondragover="imgDragOver(event)" ondragleave="imgDragLeave(event)" ondrop="imgDropHandle(event)">
+        <i class="ph ph-upload-simple"></i>
+        <p><strong>Şəkli sürükləyin</strong> və ya klikləyin</p>
+        <p>PNG, JPG, WebP — maks. 5MB</p>
+      </div>
+      <input type="file" id="img-file-input" accept="image/*" style="display:none" onchange="handleImgFile(this.files[0])">
+    </div>
+
+    <div id="tab-content-url" style="display:none;">
+      <div class="form-group">
+        <label>Şəklin İnternet Linki (URL):</label>
+        <input type="text" id="img-url-input" placeholder="https://example.com/image.jpg" oninput="previewUrlImage(this.value)">
+      </div>
+    </div>
+
+    <div class="img-upload-preview" id="img-upload-preview" style="display:none; margin-bottom:1rem;">
+      <img id="img-preview-el" src="" alt="Preview" style="max-height:160px; object-fit:contain; width:100%; border-radius:8px; background:#f9f9f9; border:1px solid #eee;">
+    </div>
+
     <div id="img-upload-progress" style="display:none; font-size:0.85rem; color:var(--green); padding:0.5rem 0;">
       <div class="pdf-processing"><div class="spinner"></div><span>Yüklənir...</span></div>
     </div>
-    <input type="file" id="img-file-input" accept="image/*" style="display:none" onchange="handleImgFile(this.files[0])">
+
+    <!-- Options for Inline images (alignment, width, caption) -->
+    <div id="inline-img-options" style="background:#f8faf8; padding:0.8rem; border-radius:10px; border:1px solid #e4ebe4; margin-bottom:1rem;">
+      <label style="font-size:0.82rem; font-weight:700; margin-bottom:0.4rem; display:block;">Düzülüş və Mövqe:</label>
+      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:0.4rem; margin-bottom:0.6rem;">
+        <label style="font-size:0.75rem; text-align:center; padding:0.4rem 0.2rem; border:1px solid #ccc; border-radius:6px; cursor:pointer; background:white;">
+          <input type="radio" name="img_align" value="center_full" checked>
+          <div>Tam En</div>
+        </label>
+        <label style="font-size:0.75rem; text-align:center; padding:0.4rem 0.2rem; border:1px solid #ccc; border-radius:6px; cursor:pointer; background:white;">
+          <input type="radio" name="img_align" value="center">
+          <div>Mərkəz</div>
+        </label>
+        <label style="font-size:0.75rem; text-align:center; padding:0.4rem 0.2rem; border:1px solid #ccc; border-radius:6px; cursor:pointer; background:white;">
+          <input type="radio" name="img_align" value="left">
+          <div>Sola (Wrap)</div>
+        </label>
+        <label style="font-size:0.75rem; text-align:center; padding:0.4rem 0.2rem; border:1px solid #ccc; border-radius:6px; cursor:pointer; background:white;">
+          <input type="radio" name="img_align" value="right">
+          <div>Sağa (Wrap)</div>
+        </label>
+      </div>
+
+      <div class="form-group" style="margin-bottom:0;">
+        <label style="font-size:0.8rem;">Şəkil Altyazısı (istəyə görə):</label>
+        <input type="text" id="img-caption-input" placeholder="Məsələn: Şəkil 1. Təbiət mənzərəsi" style="font-size:0.85rem; padding:0.4rem 0.6rem;">
+      </div>
+    </div>
+
     <div class="img-upload-footer">
-      <button class="btn btn-ghost" onclick="closeImgUpload()">Ləğv et</button>
-      <button class="btn btn-green" id="img-insert-btn" onclick="insertUploadedImage()" disabled>
+      <button class="btn btn-ghost" onclick="closeImgUpload()" type="button">Ləğv et</button>
+      <button class="btn btn-green" id="img-insert-btn" onclick="insertUploadedImage()" disabled type="button">
         <i class="ph ph-check"></i> Daxil et
       </button>
     </div>
@@ -1926,6 +1977,49 @@
   }
 
   // ── MARKDOWN EDITORS ──────────────────────────────────
+  function applyFontSize(lang, sizePx) {
+    const mde = lang === 'en' ? mdeEN : mdeAZ;
+    if (!mde) return;
+    const cm = mde.codemirror;
+    const selection = cm.getSelection();
+    if (selection) {
+      cm.replaceSelection(`<span style="font-size:${sizePx}px;">${selection}</span>`);
+    } else {
+      const cur = cm.getCursor();
+      cm.replaceRange(`<span style="font-size:${sizePx}px;">mətn</span>`, cur);
+    }
+    cm.focus();
+  }
+
+  function _buildToolbar(lang) {
+    return [
+      'bold', 'italic', '|',
+      'heading-1', 'heading-2', 'heading-3', '|',
+      {
+        name: 'font-large-' + lang,
+        action: function() { applyFontSize(lang, 22); },
+        title: 'Böyük Mətn (22px)',
+        text: 'A↑',
+      },
+      {
+        name: 'font-small-' + lang,
+        action: function() { applyFontSize(lang, 13); },
+        title: 'Kiçik Mətn (13px)',
+        text: 'A↓',
+      },
+      '|',
+      'quote', 'unordered-list', 'ordered-list', '|',
+      'link',
+      {
+        name: 'insert-image-' + lang,
+        action: function() { openInlineImgUpload(lang); },
+        title: 'Şəkil əlavə et (Fayl və ya Link, Sola/Sağa/Mərkəzə düzülüşlə)',
+        text: '🖼 Şəkil',
+      },
+      '|', 'preview', 'side-by-side', 'fullscreen', '|', 'guide'
+    ];
+  }
+
   function initMDE() {
     const t = translations[currentLang] || translations.az;
     if (mdeEN || mdeAZ) return; // already initialized
@@ -1935,7 +2029,7 @@
       spellChecker: false,
       autofocus: false,
       status: false,
-      toolbar: ['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','|','preview','guide'],
+      toolbar: _buildToolbar('en'),
     });
     mdeAZ = new EasyMDE({
       element: document.getElementById('art-desc-az'),
@@ -1943,7 +2037,7 @@
       spellChecker: false,
       autofocus: false,
       status: false,
-      toolbar: ['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','|','preview','guide'],
+      toolbar: _buildToolbar('az'),
     });
   }
 
@@ -1984,29 +2078,98 @@
       if (typeof pdfjsLib === 'undefined') throw new Error('PDF.js yüklənməyib');
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      let fullText = '';
+
+      // Səhifələri oxuyub hər elementi font ölçüsü və koordinatları ilə yığırıq
+      let allLines = [];
       statusTxt.textContent = `0 / ${pdf.numPages} səhifə...`;
+
       for (let p = 1; p <= pdf.numPages; p++) {
         const page = await pdf.getPage(p);
+        const vp = page.getViewport({ scale: 1 });
         const tc = await page.getTextContent();
-        const pageText = tc.items.map(i => i.str).join(' ');
-        fullText += pageText + '\n\n';
+
+        // Elementləri Y mövqeyinə görə qruplaşdıraq (sətirlər)
+        let linesMap = new Map();
+        tc.items.forEach(item => {
+          if (!item.str || !item.str.trim()) return;
+          // transform[3] font ölçüsüdür, transform[4]=x, transform[5]=y
+          const fontSize = Math.abs(item.transform[0] || item.transform[3] || 12);
+          const y = Math.round((vp.height - item.transform[5]) / 4) * 4; // 4px tolerantlıq
+          const x = item.transform[4];
+
+          if (!linesMap.has(y)) linesMap.set(y, []);
+          linesMap.get(y).push({ text: item.str, fontSize, x });
+        });
+
+        // Sətirləri yuxarıdan aşağıya sıralayaq
+        const sortedY = Array.from(linesMap.keys()).sort((a, b) => a - b);
+        for (const y of sortedY) {
+          const items = linesMap.get(y).sort((a, b) => a.x - b.x);
+          const lineText = items.map(it => it.text).join(' ').replace(/\s+/g, ' ').trim();
+          if (!lineText) continue;
+          const maxFs = Math.max(...items.map(it => it.fontSize));
+          allLines.push({ text: lineText, fontSize: maxFs, page: p });
+        }
         statusTxt.textContent = `${p} / ${pdf.numPages} səhifə...`;
       }
-      fullText = fullText.trim();
 
-      // Extract title (first non-empty line)
-      const lines = fullText.split('\n').map(l => l.trim()).filter(Boolean);
-      const title = lines[0] || file.name.replace('.pdf','');
+      if (allLines.length === 0) throw new Error('PDF-də oxunacaq mətn tapılmadı.');
 
-      // Build markdown body (skip first line as it becomes the title)
-      const body = cleanPdfText(lines.slice(1).join('\n'));
+      // Font ölçülərinin paylanmasını hesablayaq (əsas mətni təyin etmək üçün)
+      const fsCount = {};
+      allLines.forEach(l => {
+        const rounded = Math.round(l.fontSize);
+        fsCount[rounded] = (fsCount[rounded] || 0) + 1;
+      });
+      let baseFs = 12;
+      let maxOccur = 0;
+      for (const [fs, count] of Object.entries(fsCount)) {
+        if (count > maxOccur) {
+          maxOccur = count;
+          baseFs = parseFloat(fs);
+        }
+      }
 
-      // Fill in English fields (user can translate AZ manually or edit)
-      document.getElementById('art-title-en').value = title;
+      // Markdown generasiyası
+      let mdLines = [];
+      let detectedTitle = '';
+
+      for (let i = 0; i < allLines.length; i++) {
+        const line = allLines[i];
+        const ratio = line.fontSize / baseFs;
+
+        // Əgər ilk böyük başlıqdırsa, məqalə başlığı edək
+        if (!detectedTitle && ratio >= 1.3 && line.text.length < 150) {
+          detectedTitle = line.text;
+          continue;
+        }
+
+        if (ratio >= 1.6) {
+          // Çox böyük şrift: H1
+          mdLines.push('\n# ' + line.text + '\n');
+        } else if (ratio >= 1.25) {
+          // Orta-böyük şrift: H2
+          mdLines.push('\n## ' + line.text + '\n');
+        } else if (ratio >= 1.1) {
+          // Kiçik başlıq: H3
+          mdLines.push('\n### ' + line.text + '\n');
+        } else {
+          // Adi mətn abzasları
+          mdLines.push(line.text);
+        }
+      }
+
+      let body = mdLines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+
+      if (!detectedTitle && allLines.length > 0) {
+        detectedTitle = allLines[0].text;
+      }
+
+      // Sahələri doldururuq
+      if (detectedTitle) document.getElementById('art-title-en').value = detectedTitle;
       if (mdeEN) mdeEN.value(body);
 
-      notify('PDF uğurla oxundu! Məzmunu yoxlayın və lazım olursa düzəliş edin.', 'success');
+      notify('PDF səliqəli başlıq və mətn ölçüləri ilə çıxarıldı!', 'success');
     } catch (err) {
       console.error(err);
       notify('PDF oxunarkən xəta: ' + err.message, 'error');
@@ -2017,36 +2180,67 @@
   }
 
   function cleanPdfText(text) {
-    // Remove excessive whitespace, fix common PDF artifacts
-    return text
-      .replace(/[ \t]+/g, ' ')
-      .replace(/\n{3,}/g, '\n\n')
-      .replace(/([a-z,;])\n([A-Z])/g, '$1 $2')  // join broken lines
-      .replace(/([a-z])\n([a-z])/g, '$1 $2')
-      .replace(/\n([A-Z][A-Z ]{3,})/g, '\n\n## $1') // ALL CAPS → heading
-      .trim();
+    return text.replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
   }
 
   // ══════════════════════════════════════════════════════
-  // IMAGE UPLOAD (inline in article content + cover)
+  // IMAGE UPLOAD & INLINE INSERTION (Center, Left-wrap, Right-wrap, Caption)
   // ══════════════════════════════════════════════════════
   let _imgUploadTarget = null; // 'en' | 'az' | 'cover'
   let _uploadedImgUrl  = null;
 
+  function switchImgTab(tab) {
+    const btnFile = document.getElementById('tab-btn-file');
+    const btnUrl  = document.getElementById('tab-btn-url');
+    const tabFile = document.getElementById('tab-content-file');
+    const tabUrl  = document.getElementById('tab-content-url');
+
+    if (tab === 'file') {
+      btnFile.className = 'btn btn-sm btn-green';
+      btnUrl.className  = 'btn btn-sm btn-ghost';
+      tabFile.style.display = 'block';
+      tabUrl.style.display  = 'none';
+    } else {
+      btnFile.className = 'btn btn-sm btn-ghost';
+      btnUrl.className  = 'btn btn-sm btn-green';
+      tabFile.style.display = 'none';
+      tabUrl.style.display  = 'block';
+    }
+  }
+
+  function previewUrlImage(url) {
+    url = (url || '').trim();
+    if (url) {
+      _uploadedImgUrl = url;
+      document.getElementById('img-preview-el').src = url;
+      document.getElementById('img-upload-preview').style.display = 'block';
+      document.getElementById('img-insert-btn').disabled = false;
+    } else {
+      _uploadedImgUrl = null;
+      document.getElementById('img-upload-preview').style.display = 'none';
+      document.getElementById('img-insert-btn').disabled = true;
+    }
+  }
+
   function openCoverImgUpload() {
     _imgUploadTarget = 'cover';
     document.getElementById('img-upload-title').innerHTML = '<i class="ph ph-image" style="color:var(--green);"></i> Kapaq Şəkli Yüklə';
+    document.getElementById('inline-img-options').style.display = 'none';
     _openImgModal();
   }
 
   function openInlineImgUpload(lang) {
     _imgUploadTarget = lang;
-    document.getElementById('img-upload-title').innerHTML = '<i class="ph ph-image" style="color:var(--green);"></i> Məqalə içinə Şəkil Əlavə et';
+    document.getElementById('img-upload-title').innerHTML = '<i class="ph ph-image" style="color:var(--green);"></i> Məqalə içinə Şəkil Yerləşdir';
+    document.getElementById('inline-img-options').style.display = 'block';
     _openImgModal();
   }
 
   function _openImgModal() {
     _uploadedImgUrl = null;
+    switchImgTab('file');
+    document.getElementById('img-url-input').value = '';
+    document.getElementById('img-caption-input').value = '';
     document.getElementById('img-upload-preview').style.display = 'none';
     document.getElementById('img-preview-el').src = '';
     document.getElementById('img-upload-progress').style.display = 'none';
@@ -2081,7 +2275,6 @@
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) { notify('Şəkil 5MB-dan böyük ola bilməz', 'error'); return; }
 
-    // Show preview
     const reader = new FileReader();
     reader.onload = e => {
       document.getElementById('img-preview-el').src = e.target.result;
@@ -2089,7 +2282,6 @@
     };
     reader.readAsDataURL(file);
 
-    // Upload to Supabase Storage
     document.getElementById('img-upload-drop').style.display = 'none';
     document.getElementById('img-upload-progress').style.display = 'block';
 
@@ -2113,17 +2305,38 @@
 
   function insertUploadedImage() {
     if (!_uploadedImgUrl) return;
+
     if (_imgUploadTarget === 'cover') {
       document.getElementById('art-image').value = _uploadedImgUrl;
-    } else {
-      const mde = _imgUploadTarget === 'en' ? mdeEN : mdeAZ;
-      if (mde) {
-        const cm = mde.codemirror;
-        const cur = cm.getCursor();
-        cm.replaceRange(`\n![Şəkil](${_uploadedImgUrl})\n`, cur);
-        cm.focus();
-      }
+      closeImgUpload();
+      return;
     }
+
+    const mde = _imgUploadTarget === 'en' ? mdeEN : mdeAZ;
+    if (!mde) { closeImgUpload(); return; }
+
+    const caption = (document.getElementById('img-caption-input').value || '').trim();
+    const alignRadio = document.querySelector('input[name="img_align"]:checked');
+    const align = alignRadio ? alignRadio.value : 'center_full';
+
+    let snippet = '';
+    const captionHtml = caption ? `<figcaption style="text-align:center; font-size:0.85rem; color:#666; margin-top:6px; font-style:italic;">${caption}</figcaption>` : '';
+
+    if (align === 'center_full') {
+      snippet = `\n\n<figure style="margin:1.8rem 0; text-align:center;"><img src="${_uploadedImgUrl}" alt="${caption || 'Şəkil'}" style="max-width:100%; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.06);">${captionHtml}</figure>\n\n`;
+    } else if (align === 'center') {
+      snippet = `\n\n<figure style="margin:1.8rem auto; text-align:center; max-width:70%;"><img src="${_uploadedImgUrl}" alt="${caption || 'Şəkil'}" style="width:100%; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.06);">${captionHtml}</figure>\n\n`;
+    } else if (align === 'left') {
+      snippet = `\n\n<figure style="float:left; margin:0.8rem 1.5rem 1rem 0; max-width:45%; text-align:center;"><img src="${_uploadedImgUrl}" alt="${caption || 'Şəkil'}" style="width:100%; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.06);">${captionHtml}</figure>\n\n`;
+    } else if (align === 'right') {
+      snippet = `\n\n<figure style="float:right; margin:0.8rem 0 1rem 1.5rem; max-width:45%; text-align:center;"><img src="${_uploadedImgUrl}" alt="${caption || 'Şəkil'}" style="width:100%; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.06);">${captionHtml}</figure>\n\n`;
+    }
+
+    const cm = mde.codemirror;
+    const cur = cm.getCursor();
+    cm.replaceRange(snippet, cur);
+    cm.focus();
+
     closeImgUpload();
   }
 
