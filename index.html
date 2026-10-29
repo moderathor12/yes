@@ -4226,6 +4226,7 @@
         const { data, error } = await sbClient
           .from('articles')
           .select('*')
+          .eq('status', 'published')
           .order('created_at', { ascending: false })
           .limit(1);
         if (error) throw error;
