@@ -885,8 +885,9 @@
 
 <!-- ── IMAGE UPLOAD MODAL ─────────────────────────────── -->
 <div class="img-upload-overlay" id="img-upload-overlay" style="display:none;" onclick="if(event.target===this)closeImgUpload()">
-  <div class="img-upload-box">
-    <h3 id="img-upload-title"><i class="ph ph-image" style="color:var(--green);"></i> Şəkil Yüklə</h3>
+  <div class="img-upload-box" style="max-width:480px;">
+    <h3 id="img-upload-title" style="margin-top:0;"><i class="ph ph-image" style="color:var(--green);"></i> Şəkil Yüklə</h3>
+    
     <div class="img-upload-drop" id="img-upload-drop"
       onclick="document.getElementById('img-file-input').click()"
       ondragover="imgDragOver(event)" ondragleave="imgDragLeave(event)" ondrop="imgDropHandle(event)">
@@ -894,16 +895,63 @@
       <p><strong>Şəkli sürükləyin</strong> və ya klikləyin</p>
       <p>PNG, JPG, WebP — maks. 5MB</p>
     </div>
-    <div class="img-upload-preview" id="img-upload-preview">
-      <img id="img-preview-el" src="" alt="Preview">
+    
+    <div class="img-upload-preview" id="img-upload-preview" style="display:none; text-align:center; margin-bottom:1rem;">
+      <img id="img-preview-el" src="" alt="Preview" style="max-height:160px; object-fit:contain; border-radius:8px; border:1px solid #ddd; background:#fafafa;">
     </div>
+    
+    <!-- Şəkil Ölçüsü və Düzülüş Seçimləri (Yalnız məqalə içi şəkillər üçün) -->
+    <div id="img-size-controls" style="display:none; background:#f6fbf7; border:1px solid #d8ebd9; border-radius:10px; padding:0.8rem; margin-bottom:1rem;">
+      <label style="font-size:0.82rem; font-weight:700; color:var(--dark); display:block; margin-bottom:0.4rem;">
+        Şəkil Ölçüsü:
+      </label>
+      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:0.4rem; margin-bottom:0.8rem;">
+        <label style="font-size:0.75rem; text-align:center; padding:0.4rem 0.2rem; border:1px solid #ccc; border-radius:6px; cursor:pointer; background:white;">
+          <input type="radio" name="img_size" value="30%">
+          <div>Kiçik (30%)</div>
+        </label>
+        <label style="font-size:0.75rem; text-align:center; padding:0.4rem 0.2rem; border:1px solid #ccc; border-radius:6px; cursor:pointer; background:white;">
+          <input type="radio" name="img_size" value="50%" checked>
+          <div>Orta (50%)</div>
+        </label>
+        <label style="font-size:0.75rem; text-align:center; padding:0.4rem 0.2rem; border:1px solid #ccc; border-radius:6px; cursor:pointer; background:white;">
+          <input type="radio" name="img_size" value="75%">
+          <div>Böyük (75%)</div>
+        </label>
+        <label style="font-size:0.75rem; text-align:center; padding:0.4rem 0.2rem; border:1px solid #ccc; border-radius:6px; cursor:pointer; background:white;">
+          <input type="radio" name="img_size" value="100%">
+          <div>Tam (100%)</div>
+        </label>
+      </div>
+
+      <label style="font-size:0.82rem; font-weight:700; color:var(--dark); display:block; margin-bottom:0.4rem;">
+        Düzülüş (Mövqe):
+      </label>
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:0.4rem;">
+        <label style="font-size:0.75rem; text-align:center; padding:0.4rem 0.2rem; border:1px solid #ccc; border-radius:6px; cursor:pointer; background:white;">
+          <input type="radio" name="img_align" value="center" checked>
+          <div>Mərkəz</div>
+        </label>
+        <label style="font-size:0.75rem; text-align:center; padding:0.4rem 0.2rem; border:1px solid #ccc; border-radius:6px; cursor:pointer; background:white;">
+          <input type="radio" name="img_align" value="left">
+          <div>Sola</div>
+        </label>
+        <label style="font-size:0.75rem; text-align:center; padding:0.4rem 0.2rem; border:1px solid #ccc; border-radius:6px; cursor:pointer; background:white;">
+          <input type="radio" name="img_align" value="right">
+          <div>Sağa</div>
+        </label>
+      </div>
+    </div>
+
     <div id="img-upload-progress" style="display:none; font-size:0.85rem; color:var(--green); padding:0.5rem 0;">
       <div class="pdf-processing"><div class="spinner"></div><span>Yüklənir...</span></div>
     </div>
+    
     <input type="file" id="img-file-input" accept="image/*" style="display:none" onchange="handleImgFile(this.files[0])">
+    
     <div class="img-upload-footer">
-      <button class="btn btn-ghost" onclick="closeImgUpload()">Ləğv et</button>
-      <button class="btn btn-green" id="img-insert-btn" onclick="insertUploadedImage()" disabled>
+      <button class="btn btn-ghost" onclick="closeImgUpload()" type="button">Ləğv et</button>
+      <button class="btn btn-green" id="img-insert-btn" onclick="insertUploadedImage()" disabled type="button">
         <i class="ph ph-check"></i> Daxil et
       </button>
     </div>
@@ -2036,12 +2084,16 @@
   function openCoverImgUpload() {
     _imgUploadTarget = 'cover';
     document.getElementById('img-upload-title').innerHTML = '<i class="ph ph-image" style="color:var(--green);"></i> Kapaq Şəkli Yüklə';
+    const sizeBox = document.getElementById('img-size-controls');
+    if (sizeBox) sizeBox.style.display = 'none';
     _openImgModal();
   }
 
   function openInlineImgUpload(lang) {
     _imgUploadTarget = lang;
     document.getElementById('img-upload-title').innerHTML = '<i class="ph ph-image" style="color:var(--green);"></i> Məqalə içinə Şəkil Əlavə et';
+    const sizeBox = document.getElementById('img-size-controls');
+    if (sizeBox) sizeBox.style.display = 'block';
     _openImgModal();
   }
 
@@ -2120,7 +2172,23 @@
       if (mde) {
         const cm = mde.codemirror;
         const cur = cm.getCursor();
-        cm.replaceRange(`\n![Şəkil](${_uploadedImgUrl})\n`, cur);
+
+        // Seçilmiş ölçü və mövqe
+        const sizeRadio = document.querySelector('input[name="img_size"]:checked');
+        const sizeVal = sizeRadio ? sizeRadio.value : '50%';
+        const alignRadio = document.querySelector('input[name="img_align"]:checked');
+        const alignVal = alignRadio ? alignRadio.value : 'center';
+
+        let snippet = '';
+        if (alignVal === 'center') {
+          snippet = `\n\n<img src="${_uploadedImgUrl}" alt="Şəkil" style="width:${sizeVal}; max-width:100%; height:auto; border-radius:10px; display:block; margin:1.5rem auto; box-shadow:0 4px 15px rgba(0,0,0,0.06);">\n\n`;
+        } else if (alignVal === 'left') {
+          snippet = `\n\n<img src="${_uploadedImgUrl}" alt="Şəkil" style="width:${sizeVal}; max-width:100%; height:auto; border-radius:10px; float:left; margin:0.8rem 1.5rem 1rem 0; box-shadow:0 4px 12px rgba(0,0,0,0.06);">\n\n`;
+        } else if (alignVal === 'right') {
+          snippet = `\n\n<img src="${_uploadedImgUrl}" alt="Şəkil" style="width:${sizeVal}; max-width:100%; height:auto; border-radius:10px; float:right; margin:0.8rem 0 1rem 1.5rem; box-shadow:0 4px 12px rgba(0,0,0,0.06);">\n\n`;
+        }
+
+        cm.replaceRange(snippet, cur);
         cm.focus();
       }
     }
