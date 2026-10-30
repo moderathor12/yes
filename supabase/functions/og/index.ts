@@ -30,18 +30,32 @@ function cleanDescription(text: string): string {
   return cleaned.slice(0, 200) || DEFAULT_DESC;
 }
 
-// Botları (WhatsApp, Telegram, Instagram, Facebook və s.) aşkar edən funksiya
-function isSocialBot(userAgent: string): boolean {
+// YALNIZ və YALNIZ link preview çəkən server botları.
+// DİQQƏT: Instagram, Telegram və WhatsApp-ın daxili brauzerlərində (in-app webview)
+// klikləyən REAL İNSANLAR bura daxil deyil — onlar dərhal 302 ilə sayta yönlənir!
+function isPreviewCrawler(userAgent: string): boolean {
   if (!userAgent) return false;
-  const bots = [
-    'whatsapp', 'telegram', 'facebookexternalhit', 'facebot',
-    'twitterbot', 'linkedinbot', 'slackbot', 'discordbot',
-    'instagram', 'applebot', 'googlebot', 'bingbot', 'duckduckbot',
-    'vkshare', 'pinterest', 'skype', 'viber', 'redditbot', 'embedly',
-    'quora link preview', 'outbrain', 'yahoo', 'crawler', 'spider'
-  ];
   const ua = userAgent.toLowerCase();
-  return bots.some(b => ua.includes(b));
+
+  // Meta (həm Instagram, həm Facebook) preview botu: 'facebookexternalhit'
+  const crawlers = [
+    'facebookexternalhit',
+    'facebot',
+    'whatsapp',
+    'telegrambot',
+    'twitterbot',
+    'linkedinbot',
+    'slackbot',
+    'discordbot',
+    'applebot',
+    'skypeuripreview',
+    'vkshare',
+    'pinterestbot',
+    'redditbot',
+    'viber'
+  ];
+
+  return crawlers.some(c => ua.includes(c));
 }
 
 Deno.serve(async (req: Request) => {
@@ -98,12 +112,14 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  // Əgər daxil olan real istifadəçidirsə (brauzerdirsə) -> DƏRHAL 302 ilə SAYTA YÖNLƏNDİR
-  if (!isSocialBot(userAgent)) {
+  // 1. Əgər real istifadəçidirsə (Instagram, WhatsApp daxili brauzeri, Chrome, Safari və s.)
+  // DƏRHAL 302 ilə SAYTIN ÖZÜNƏ YÖNLƏNDİR
+  if (!isPreviewCrawler(userAgent)) {
     return Response.redirect(redirectUrl, 302);
   }
 
-  // Əgər WhatsApp, Telegram və s. botudursa -> Open Graph HTML qaytar
+  // 2. Əgər arxa planda preview çəkən botdursa (Meta crawler, WhatsApp crawler və s.)
+  // Onlara Open Graph teqlərini təqdim et
   const t = escapeHtml(title);
   const d = escapeHtml(description);
   const i = escapeHtml(image);
@@ -129,12 +145,11 @@ Deno.serve(async (req: Request) => {
 <body></body>
 </html>`;
 
-  const headers = new Headers();
-  headers.set('Content-Type', 'text/html; charset=utf-8');
-  headers.set('Cache-Control', 'public, max-age=300');
-
   return new Response(html, {
     status: 200,
-    headers: headers,
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'public, max-age=300',
+    },
   });
 });
