@@ -17,23 +17,38 @@ function escapeHtml(str: string): string {
 function cleanDescription(text: string): string {
   if (!text) return DEFAULT_DESC;
   const cleaned = text
-    .replace(/!\[.*?\]\(.*?\)/g, '')   // Şəkilləri sil
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Linklərin yalnız mətnini saxla
-    .replace(/#{1,6}\s+/g, '')        // Başlıq işarələrini sil
-    .replace(/\*\*([^*]+)\*\*/g, '$1') // Bold sil
-    .replace(/\*([^*]+)\*/g, '$1')    // Italic sil
-    .replace(/`([^`]+)`/g, '$1')      // Inline kod sil
-    .replace(/>\s+/g, '')             // Blok sitatları sil
-    .replace(/<[^>]+>/g, '')          // HTML teqləri sil
-    .replace(/\s+/g, ' ')             // Çoxsaylı boşluqları birləşdir
+    .replace(/!\[.*?\]\(.*?\)/g, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/#{1,6}\s+/g, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/>\s+/g, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ')
     .trim();
   return cleaned.slice(0, 200) || DEFAULT_DESC;
+}
+
+// Botları (WhatsApp, Telegram, Instagram, Facebook və s.) aşkar edən funksiya
+function isSocialBot(userAgent: string): boolean {
+  if (!userAgent) return false;
+  const bots = [
+    'whatsapp', 'telegram', 'facebookexternalhit', 'facebot',
+    'twitterbot', 'linkedinbot', 'slackbot', 'discordbot',
+    'instagram', 'applebot', 'googlebot', 'bingbot', 'duckduckbot',
+    'vkshare', 'pinterest', 'skype', 'viber', 'redditbot', 'embedly',
+    'quora link preview', 'outbrain', 'yahoo', 'crawler', 'spider'
+  ];
+  const ua = userAgent.toLowerCase();
+  return bots.some(b => ua.includes(b));
 }
 
 Deno.serve(async (req: Request) => {
   const url = new URL(req.url);
   const id = url.searchParams.get('id') || '';
   const type = url.searchParams.get('type') || 'article';
+  const userAgent = req.headers.get('user-agent') || '';
 
   const sb = createClient(
     Deno.env.get('SUPABASE_URL')!,
@@ -64,14 +79,13 @@ Deno.serve(async (req: Request) => {
         redirectUrl = `${SITE_URL}/events.html`;
       }
     } else {
-      // Articles üçün
+      // Articles
       const { data } = await sb
         .from('articles')
         .select('*')
         .eq('id', id)
         .maybeSingle();
 
-      // status draft deyilsə (yəni published və ya null) göstər
       if (data && data.status !== 'draft') {
         title = data.title_en || data.title_az || title;
         description = cleanDescription(data.desc_en || data.desc_az);
@@ -84,51 +98,43 @@ Deno.serve(async (req: Request) => {
     }
   }
 
+  // Əgər daxil olan real istifadəçidirsə (brauzerdirsə) -> DƏRHAL 302 ilə SAYTA YÖNLƏNDİR
+  if (!isSocialBot(userAgent)) {
+    return Response.redirect(redirectUrl, 302);
+  }
+
+  // Əgər WhatsApp, Telegram və s. botudursa -> Open Graph HTML qaytar
   const t = escapeHtml(title);
   const d = escapeHtml(description);
   const i = escapeHtml(image);
-  const r = escapeHtml(redirectUrl);
   const pageUrl = escapeHtml(req.url);
 
   const html = `<!DOCTYPE html>
 <html lang="en" prefix="og: https://ogp.me/ns#">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${t}</title>
-
-  <!-- Open Graph / Facebook / WhatsApp / Telegram / LinkedIn -->
   <meta property="og:type" content="${ogType}">
   <meta property="og:url" content="${pageUrl}">
   <meta property="og:title" content="${t}">
   <meta property="og:description" content="${d}">
   <meta property="og:image" content="${i}">
   <meta property="og:image:secure_url" content="${i}">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
   <meta property="og:site_name" content="Youth Environment Society — YES">
-
-  <!-- Twitter / X -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${t}">
   <meta name="twitter:description" content="${d}">
   <meta name="twitter:image" content="${i}">
-  <meta name="twitter:site" content="@youthensoc">
-
-  <!-- Instant Browser Redirect for Real Users -->
-  <meta http-equiv="refresh" content="0;url=${r}">
-  <script>window.location.replace("${redirectUrl}");</script>
 </head>
-<body style="font-family:sans-serif;text-align:center;padding:2rem;">
-  <p>Yönləndirilirsiniz... <a href="${r}">Davam etmək üçün bura klikləyin</a></p>
-</body>
+<body></body>
 </html>`;
+
+  const headers = new Headers();
+  headers.set('Content-Type', 'text/html; charset=utf-8');
+  headers.set('Cache-Control', 'public, max-age=300');
 
   return new Response(html, {
     status: 200,
-    headers: {
-      'Content-Type': 'text/html; charset=utf-8',
-      'Cache-Control': 'public, max-age=60',
-    },
+    headers: headers,
   });
 });
