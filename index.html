@@ -4052,13 +4052,36 @@
     function scrollToNewsletter(e) {
       if (e) e.preventDefault();
       const target = document.getElementById('join');
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-        setTimeout(() => {
-          const emailInput = document.getElementById('email-input');
-          if (emailInput) emailInput.focus();
-        }, 500);
+      if (!target) return;
+
+      const navOffset = 50;
+      const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - navOffset;
+      const startPosition = window.pageYOffset;
+      const distance = targetPosition - startPosition;
+      const duration = 1100; // Balanslı orta sürət (~1.1 saniyə)
+      let startTime = null;
+
+      function easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
       }
+
+      function animation(currentTime) {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        const ease = easeInOutCubic(progress);
+
+        window.scrollTo(0, startPosition + distance * ease);
+
+        if (timeElapsed < duration) {
+          requestAnimationFrame(animation);
+        } else {
+          const emailInput = document.getElementById('email-input');
+          if (emailInput) emailInput.focus({ preventScroll: true });
+        }
+      }
+
+      requestAnimationFrame(animation);
     }
 
     function handleAuthClick() {
