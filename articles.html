@@ -5,6 +5,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Articles — Youth Environment Society</title>
+  <!-- Open Graph: articles.html default -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://youthensoc.org/articles.html">
+  <meta property="og:title" content="Articles - Youth Environment Society">
+  <meta property="og:description" content="Read the latest articles on environmental activism, green energy, and sustainability from the YES community.">
+  <meta property="og:image" content="https://youthensoc.org/plant-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Youth Environment Society Articles">
+  <meta property="og:site_name" content="Youth Environment Society - YES">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Articles - Youth Environment Society">
+  <meta name="twitter:description" content="Read the latest articles on environmental activism and sustainability from YES.">
+  <meta name="twitter:image" content="https://youthensoc.org/plant-image.png">
+  <meta name="twitter:site" content="@youthensoc">
   <link rel="alternate" hreflang="az" href="https://youthensoc.org/az/articles.html" />
   <link rel="alternate" hreflang="en" href="https://youthensoc.org/articles.html" />
   <link rel="alternate" hreflang="x-default" href="https://youthensoc.org/articles.html" />
@@ -522,7 +538,12 @@
     }
 
     function copyShareLink() {
-      const shareUrl = window.location.origin + window.location.pathname + window.location.hash;
+      // Aciq olan meqalenin ID-sini hash-den oxu
+      const hash = window.location.hash;
+      const id = hash.startsWith('#article-') ? hash.replace('#article-', '') : null;
+      const shareUrl = id
+        ? 'https://wqcugmhjfuvnwxhspytw.supabase.co/functions/v1/og?id=' + id + '&type=article'
+        : window.location.origin + window.location.pathname;
       navigator.clipboard.writeText(shareUrl).then(() => {
         const btn = document.getElementById('modal-share-btn');
         const lang = localStorage.getItem('yes_lang') || 'en';
@@ -534,7 +555,7 @@
 
     function copyShareLinkById(id, event) {
       event.stopPropagation();
-      const shareUrl = window.location.origin + window.location.pathname + '#article-' + id;
+      const shareUrl = 'https://wqcugmhjfuvnwxhspytw.supabase.co/functions/v1/og?id=' + id + '&type=article';
       navigator.clipboard.writeText(shareUrl).then(() => {
         showPopup(translations[localStorage.getItem('yes_lang') || 'en'].link_copied || 'Link copied!');
       });

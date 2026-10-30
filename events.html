@@ -5,6 +5,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Events & Announcements — Youth Environment Society</title>
+  <!-- Open Graph: events.html default -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://youthensoc.org/events.html">
+  <meta property="og:title" content="Events and Announcements - Youth Environment Society">
+  <meta property="og:description" content="Discover upcoming environmental events, workshops, and announcements from the Youth Environment Society.">
+  <meta property="og:image" content="https://youthensoc.org/plant-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Youth Environment Society Events">
+  <meta property="og:site_name" content="Youth Environment Society - YES">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Events and Announcements - Youth Environment Society">
+  <meta name="twitter:description" content="Discover upcoming environmental events and announcements from YES.">
+  <meta name="twitter:image" content="https://youthensoc.org/plant-image.png">
+  <meta name="twitter:site" content="@youthensoc">
   <link rel="alternate" hreflang="az" href="https://youthensoc.org/az/events.html" />
   <link rel="alternate" hreflang="en" href="https://youthensoc.org/events.html" />
   <link rel="alternate" hreflang="x-default" href="https://youthensoc.org/events.html" />
@@ -549,12 +565,16 @@
 
     function copyShareLinkById(id, e) {
       if (e) e.stopPropagation();
-      const url = window.location.origin + window.location.pathname + '#event-' + id;
+      const url = 'https://wqcugmhjfuvnwxhspytw.supabase.co/functions/v1/og?id=' + id + '&type=event';
       navigator.clipboard.writeText(url).then(() => showToast());
     }
 
     function copyEventShareLink() {
-      const url = window.location.origin + window.location.pathname + window.location.hash;
+      const hash = window.location.hash;
+      const id = hash.startsWith('#event-') ? hash.replace('#event-', '') : null;
+      const url = id
+        ? 'https://wqcugmhjfuvnwxhspytw.supabase.co/functions/v1/og?id=' + id + '&type=event'
+        : window.location.origin + window.location.pathname;
       navigator.clipboard.writeText(url).then(() => showToast());
     }
 
