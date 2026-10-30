@@ -4452,7 +4452,7 @@
         event.stopPropagation();
         event.preventDefault();
       }
-      const shareUrl = window.location.origin + window.location.pathname.replace('index.html', '') + 'articles.html#article-' + id;
+      const shareUrl = 'https://wqcugmhjfuvnwxhspytw.supabase.co/functions/v1/og?id=' + id + '&type=article';
       navigator.clipboard.writeText(shareUrl).then(() => {
         showPopup(translations[localStorage.getItem('yes_lang') || 'en'].link_copied || 'Link copied!');
       });
@@ -4468,10 +4468,10 @@
 
     function copyShareLink() {
       const hash = window.location.hash;
-      if (!hash) return;
-
-      // Default to the clean site URL (No article-specific preview)
-      const shareUrl = window.location.origin + window.location.pathname + hash;
+      const id = hash && hash.startsWith('#article-') ? hash.replace('#article-', '') : null;
+      const shareUrl = id
+        ? 'https://wqcugmhjfuvnwxhspytw.supabase.co/functions/v1/og?id=' + id + '&type=article'
+        : window.location.origin + window.location.pathname;
 
       navigator.clipboard.writeText(shareUrl).then(() => {
         const btn = document.getElementById('modal-share-btn');
