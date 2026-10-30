@@ -2327,7 +2327,7 @@
         our environment and inspire the next generation of green leaders.</p>
       <div class="hero-btns">
         <span class="neo-btn-wrap">
-          <a href="javascript:void(0)" onclick="handleAuthClick()" class="btn-primary" data-i18n="btn_join">Join the Movement</a>
+          <a href="#join" onclick="scrollToNewsletter(event)" class="btn-primary" data-i18n="btn_join">Join the Movement</a>
         </span>
         <a href="wiki.html" class="btn-secondary">
           <span class="circle" aria-hidden="true">
@@ -2483,7 +2483,7 @@
           meaningful change in our
           communities while building the skills and networks that will shape a greener future.</p>
         <span class="neo-btn-wrap" style="margin-top: 1rem;">
-          <a href="javascript:void(0)" onclick="handleAuthClick()" class="btn-primary" data-i18n="who_btn">Join YES Today</a>
+          <a href="#join" onclick="scrollToNewsletter(event)" class="btn-primary" data-i18n="who_btn">Join YES Today</a>
         </span>
       </div>
     </div>
@@ -4046,6 +4046,18 @@
         btn.title = lang === 'az' ? 'Şəxsi Kabinet' : 'Dashboard';
       } else {
         btn.title = lang === 'az' ? 'Daxil ol' : 'Sign In';
+      }
+    }
+
+    function scrollToNewsletter(e) {
+      if (e) e.preventDefault();
+      const target = document.getElementById('join');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => {
+          const emailInput = document.getElementById('email-input');
+          if (emailInput) emailInput.focus();
+        }, 500);
       }
     }
 
