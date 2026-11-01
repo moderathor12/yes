@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel — YES Community</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Space+Grotesk:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
   <!-- Quill WYSIWYG Editor -->
   <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
@@ -431,59 +431,121 @@
     }
     .wysiwyg-lang-tab.active { background: var(--green); color: white; border-color: var(--green); }
     .wysiwyg-topbar-actions { display: flex; gap: 0.4rem; margin-left: auto; }
-    .autosave-indicator { font-size: 0.75rem; color: #aaa; white-space: nowrap; }
-    .autosave-indicator.saving { color: #f39c12; }
-    .autosave-indicator.saved  { color: var(--green); }
+    .autosave-indicator { font-size: 0.78rem; font-weight: 500; color: #888; white-space: nowrap; }
+    .autosave-indicator.saving { color: #d97706; }
+    .autosave-indicator.saved  { color: #16a34a; font-weight: 600; }
 
     /* Ribbon */
     .word-ribbon {
       background: #f8f8f8; border: 1px solid #d0cece; border-bottom: none;
+      user-select: none;
     }
-    .ribbon-tabs { display: flex; border-bottom: 1px solid #d0cece; }
+    .ribbon-tabs { display: flex; border-bottom: 1px solid #d0cece; background: #fafafa; }
     .ribbon-tab {
       background: none; border: none; padding: 0.45rem 1.1rem;
       font-size: 0.78rem; font-weight: 700; cursor: pointer; color: #555;
       border-bottom: 2px solid transparent; letter-spacing: 0.04em;
       transition: 0.15s;
     }
-    .ribbon-tab:hover { color: var(--green); }
-    .ribbon-tab.active { color: var(--green); border-bottom-color: var(--green); }
-    .ribbon-content { display: flex; flex-wrap: wrap; gap: 0.25rem; padding: 0.45rem 0.7rem; align-items: center; }
+    .ribbon-tab:hover { color: var(--green); background: #f0fdf4; }
+    .ribbon-tab.active { color: var(--green); border-bottom-color: var(--green); background: white; }
+    .ribbon-content { display: flex; flex-wrap: wrap; gap: 0.25rem; padding: 0.45rem 0.7rem; align-items: center; background: white; }
     .ribbon-group { display: flex; align-items: center; gap: 0.2rem; }
-    .ribbon-sep { width: 1px; background: #d8d8d8; height: 26px; margin: 0 0.3rem; }
+    .ribbon-sep { width: 1px; background: #e0e0e0; height: 26px; margin: 0 0.35rem; }
     .ribbon-btn {
-      background: white; border: 1px solid #ddd; border-radius: 5px;
-      padding: 0.28rem 0.55rem; font-size: 0.82rem; cursor: pointer;
-      transition: 0.12s; display: inline-flex; align-items: center; gap: 0.25rem;
-      font-family: inherit; color: #333; white-space: nowrap;
+      background: white; border: 1px solid #dcdcdc; border-radius: 5px;
+      padding: 0.3rem 0.55rem; font-size: 0.82rem; cursor: pointer;
+      transition: all 0.12s ease; display: inline-flex; align-items: center; justify-content: center;
+      gap: 0.25rem; font-family: inherit; color: #333; white-space: nowrap; min-height: 28px;
     }
     .ribbon-btn:hover { background: #e8f5e9; border-color: var(--green); color: var(--green); }
-    .ribbon-btn.active-fmt { background: #d8f3dc; border-color: var(--green); color: var(--green); }
+    .ribbon-btn.active-fmt {
+      background: #c8e6c9 !important;
+      border-color: #2e7d32 !important;
+      color: #1b5e20 !important;
+      font-weight: 700;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.12);
+    }
     .ribbon-select {
-      border: 1px solid #ddd; border-radius: 5px; padding: 0.28rem 0.4rem;
+      border: 1px solid #dcdcdc; border-radius: 5px; padding: 0.25rem 0.4rem;
       font-size: 0.8rem; cursor: pointer; background: white; font-family: inherit;
-      height: 30px;
+      height: 30px; outline: none;
     }
-    .ribbon-select:focus { outline: none; border-color: var(--green); }
-    .color-btn { position: relative; }
+    .ribbon-select:focus { border-color: var(--green); }
+    .color-btn { position: relative; flex-direction: column; padding: 0.2rem 0.5rem; cursor: pointer; }
 
-    /* Document workspace */
+    /* Word Workspace and Layout */
     .word-workspace {
-      background: #d8d8d8; padding: 1.5rem;
-      border: 1px solid #d0cece; border-radius: 0 0 10px 10px;
-      min-height: 400px; max-height: 580px;
-      overflow-y: auto;
+      background: #cfd4dc; padding: 1.5rem 1rem;
+      border: 1px solid #c0c4cc; border-radius: 0 0 10px 10px;
+      min-height: 480px; max-height: 640px;
+      overflow-y: auto; overflow-x: auto;
+      display: flex; flex-direction: column; align-items: center;
     }
+
+    /* RULERS (Word-style) */
+    .word-ruler-layout {
+      display: flex; flex-direction: column; align-items: flex-start;
+      margin: 0 auto;
+    }
+    .word-ruler-top-row {
+      display: flex; align-items: flex-end;
+    }
+    .word-ruler-corner {
+      width: 24px; height: 22px; background: #e8ebf0;
+      border: 1px solid #b8bcc4; border-right: none; border-bottom: none;
+      box-sizing: border-box; flex-shrink: 0;
+    }
+    .word-ruler-h {
+      width: 794px; height: 22px; background: #d2d6de;
+      border: 1px solid #b8bcc4; border-bottom: none;
+      box-sizing: border-box; position: relative;
+      overflow: hidden; user-select: none; flex-shrink: 0;
+    }
+    .word-ruler-body-row {
+      display: flex; align-items: flex-start;
+    }
+    .word-ruler-v {
+      width: 24px; min-height: 1000px; background: #d2d6de;
+      border: 1px solid #b8bcc4; border-right: none;
+      box-sizing: border-box; position: relative;
+      overflow: hidden; user-select: none; flex-shrink: 0;
+    }
+
+    /* White active page area on rulers */
+    .ruler-white-h {
+      position: absolute; top: 0; bottom: 0; left: 80px; width: 634px;
+      background: #ffffff;
+    }
+    .ruler-white-v {
+      position: absolute; left: 0; right: 0; top: 64px; height: 872px;
+      background: #ffffff;
+    }
+
+    /* Margin markers (triangles) */
+    .ruler-marker-left {
+      position: absolute; left: 80px; top: 11px; width: 0; height: 0;
+      border-left: 5px solid transparent; border-right: 5px solid transparent;
+      border-bottom: 7px solid #4a5568; transform: translateX(-50%); z-index: 2;
+    }
+    .ruler-marker-right {
+      position: absolute; left: 714px; top: 11px; width: 0; height: 0;
+      border-left: 5px solid transparent; border-right: 5px solid transparent;
+      border-bottom: 7px solid #4a5568; transform: translateX(-50%); z-index: 2;
+    }
+
+    /* A4 Document Page */
     .word-page {
-      background: white; width: 794px; max-width: 100%; margin: 0 auto;
-      padding: 64px 80px; min-height: 1000px;
+      background: white; width: 794px; min-height: 1000px;
+      padding: 64px 80px; box-sizing: border-box;
       box-shadow: 0 4px 20px rgba(0,0,0,0.18);
-      font-family: 'DM Sans', Georgia, serif; font-size: 11pt; line-height: 1.7;
-      color: #111; position: relative;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 11pt; line-height: 1.7; color: #111;
+      position: relative; flex-shrink: 0;
       transform-origin: top center;
     }
     .word-page .ql-container.ql-snow { border: none; font-size: 11pt; }
-    .word-page .ql-editor { padding: 0; min-height: 500px; }
+    .word-page .ql-editor { padding: 0; min-height: 872px; }
     .word-page .ql-editor:focus { outline: none; }
     .word-page .ql-editor h1 { font-size: 22pt; margin: 1rem 0 0.5rem; }
     .word-page .ql-editor h2 { font-size: 17pt; margin: 0.9rem 0 0.4rem; }
@@ -494,13 +556,57 @@
       background: #f8fffe; color: #555; border-radius: 0 6px 6px 0;
     }
     .word-page .ql-editor img { max-width: 100%; height: auto; border-radius: 6px; }
-    .word-page .ql-editor table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
-    .word-page .ql-editor td, .word-page .ql-editor th {
-      border: 1px solid #bbb; padding: 0.4rem 0.6rem;
+
+    /* Custom Divider HR */
+    .word-page hr, .ql-editor hr {
+      border: none !important;
+      border-top: 1.5px solid #777 !important;
+      margin: 1.5rem 0 !important;
+      display: block !important;
+      height: 0 !important;
     }
-    .word-page .ql-editor th { background: #f0f0f0; font-weight: bold; }
-    /* Hide Quill toolbar (we use our own ribbon) */
+
+    /* Custom Tables */
+    .word-table-wrapper {
+      margin: 1.2rem 0;
+      display: block;
+      overflow-x: auto;
+    }
+    .word-doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0;
+      font-size: 10pt;
+    }
+    .word-doc-table th, .word-doc-table td {
+      border: 1px solid #777 !important;
+      padding: 8px 10px !important;
+      min-width: 60px;
+      vertical-align: top;
+      outline: none;
+    }
+    .word-doc-table th {
+      background: #f1f3f5 !important;
+      font-weight: 700;
+      border-bottom: 2px solid #444 !important;
+    }
+    .word-doc-table td:focus, .word-doc-table th:focus {
+      background: #eef8f3 !important;
+      outline: 2px solid var(--green) !important;
+    }
+
+    /* Hide Quill default toolbar */
     .word-page .ql-toolbar { display: none !important; }
+
+    /* Font classes & styles support */
+    .word-page [style*="font-family: arial"] { font-family: Arial, sans-serif !important; }
+    .word-page [style*="font-family: calibri"] { font-family: Calibri, 'Segoe UI', sans-serif !important; }
+    .word-page [style*="font-family: times-new-roman"] { font-family: 'Times New Roman', Times, serif !important; }
+    .word-page [style*="font-family: georgia"] { font-family: Georgia, serif !important; }
+    .word-page [style*="font-family: roboto"] { font-family: 'Roboto', sans-serif !important; }
+    .word-page [style*="font-family: space-grotesk"] { font-family: 'Space Grotesk', sans-serif !important; }
+    .word-page [style*="font-family: dm-sans"] { font-family: 'DM Sans', sans-serif !important; }
+    .word-page [style*="font-family: courier-new"] { font-family: 'Courier New', Courier, monospace !important; }
 
     /* Find overlay */
     .find-overlay {
@@ -522,6 +628,11 @@
     /* Print / PDF export */
     @media print {
       body > *:not(#print-target) { display: none !important; }
+      #print-target { display: block !important; }
+      .word-ribbon, .wysiwyg-topbar, .wysiwyg-lang-tabs, .word-ruler-h, .word-ruler-v, .word-ruler-corner { display: none !important; }
+      .word-workspace { background: white; padding: 0; border: none; max-height: none; }
+      .word-page { box-shadow: none; margin: 0; padding: 1in; }
+    }
       #print-target { display: block !important; }
       .word-ribbon, .wysiwyg-topbar, .wysiwyg-lang-tabs { display: none !important; }
       .word-workspace { background: white; padding: 0; border: none; max-height: none; }
@@ -1016,74 +1127,90 @@
             <button type="button" class="ribbon-btn" onclick="wCmd('redo')" title="Yenidən (Ctrl+Y)"><i class="ph ph-arrow-clockwise"></i></button>
           </div>
           <div class="ribbon-sep"></div>
-          <!-- Font family -->
+
+          <!-- Font family & size -->
           <div class="ribbon-group">
-            <select class="ribbon-select" onchange="wFormat('font', this.value)" title="Font">
-              <option value="">Default Font</option>
-              <option value="serif">Serif</option>
-              <option value="monospace">Monospace</option>
+            <select class="ribbon-select" id="ribbon-font-select" onchange="wFormat('font', this.value)" title="Şrift (Font)">
+              <option value="">DM Sans (Varsayılan)</option>
+              <option value="arial">Arial</option>
+              <option value="calibri">Calibri</option>
+              <option value="times-new-roman">Times New Roman</option>
+              <option value="georgia">Georgia</option>
+              <option value="roboto">Roboto</option>
+              <option value="space-grotesk">Space Grotesk</option>
+              <option value="courier-new">Courier New</option>
             </select>
-            <select class="ribbon-select" onchange="wFormat('size', this.value)" title="Ölçü">
-              <option value="">Normal</option>
-              <option value="small">Small</option>
-              <option value="large">Large</option>
-              <option value="huge">Huge</option>
+            <select class="ribbon-select" id="ribbon-size-select" onchange="wFormat('size', this.value)" title="Ölçü">
+              <option value="">11pt (Normal)</option>
+              <option value="10pt">10pt</option>
+              <option value="12pt">12pt</option>
+              <option value="14pt">14pt</option>
+              <option value="16pt">16pt (Alt başlıq)</option>
+              <option value="18pt">18pt (Başlıq)</option>
+              <option value="24pt">24pt (Böyük)</option>
+              <option value="32pt">32pt (Nəhəng)</option>
             </select>
           </div>
           <div class="ribbon-sep"></div>
-          <!-- Text formatting -->
+
+          <!-- Text formatting (Bold, Italic, Underline, Strike) -->
           <div class="ribbon-group">
-            <button type="button" class="ribbon-btn" onclick="wFormat('bold')" title="Qalın (Ctrl+B)"><i class="ph ph-text-b"></i></button>
-            <button type="button" class="ribbon-btn" onclick="wFormat('italic')" title="Kursiv (Ctrl+I)"><i class="ph ph-text-italic"></i></button>
-            <button type="button" class="ribbon-btn" onclick="wFormat('underline')" title="Alt xətt (Ctrl+U)"><i class="ph ph-text-underline"></i></button>
-            <button type="button" class="ribbon-btn" onclick="wFormat('strike')" title="Üstü çizili"><i class="ph ph-text-strikethrough"></i></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-bold" onclick="wFormat('bold')" title="Qalın (Ctrl+B)"><i class="ph ph-text-b"></i></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-italic" onclick="wFormat('italic')" title="Kursiv (Ctrl+I)"><i class="ph ph-text-italic"></i></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-underline" onclick="wFormat('underline')" title="Alt xətt (Ctrl+U)"><i class="ph ph-text-underline"></i></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-strike" onclick="wFormat('strike')" title="Üstü xətli"><i class="ph ph-text-strikethrough"></i></button>
           </div>
           <div class="ribbon-sep"></div>
+
           <!-- Colors -->
           <div class="ribbon-group">
-            <label class="ribbon-btn color-btn" title="Mətn rəngi">
+            <label class="ribbon-btn color-btn" title="Mətn rəngi" onmousedown="rememberEditorSelection()">
               <i class="ph ph-paint-brush"></i>
-              <input type="color" style="width:0;height:0;opacity:0;position:absolute;" oninput="wFormat('color', this.value)">
+              <span id="text-color-indicator" style="display:block;width:14px;height:3px;background:#000;margin-top:-2px;border-radius:2px;"></span>
+              <input type="color" value="#000000" style="position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;left:0;top:0;"
+                oninput="applyEditorColor('color', this.value)" onchange="applyEditorColor('color', this.value)">
             </label>
-            <label class="ribbon-btn color-btn" title="Vurğu rəngi">
+            <label class="ribbon-btn color-btn" title="Vurğu (arxa fon) rəngi" onmousedown="rememberEditorSelection()">
               <i class="ph ph-highlighter"></i>
-              <input type="color" style="width:0;height:0;opacity:0;position:absolute;" oninput="wFormat('background', this.value)">
+              <span id="bg-color-indicator" style="display:block;width:14px;height:3px;background:#ffff00;margin-top:-2px;border-radius:2px;"></span>
+              <input type="color" value="#ffff00" style="position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;left:0;top:0;"
+                oninput="applyEditorColor('background', this.value)" onchange="applyEditorColor('background', this.value)">
             </label>
-            <button type="button" class="ribbon-btn" onclick="wClearFormat()" title="Formatı sil"><i class="ph ph-eraser"></i></button>
+            <button type="button" class="ribbon-btn" onclick="wClearFormat()" title="Formatı təmizlə"><i class="ph ph-eraser"></i></button>
           </div>
           <div class="ribbon-sep"></div>
+
           <!-- Headings -->
           <div class="ribbon-group">
-            <button type="button" class="ribbon-btn" onclick="wFormat('header',1)" title="Başlıq 1"><b>H1</b></button>
-            <button type="button" class="ribbon-btn" onclick="wFormat('header',2)" title="Başlıq 2"><b>H2</b></button>
-            <button type="button" class="ribbon-btn" onclick="wFormat('header',3)" title="Başlıq 3"><b>H3</b></button>
-            <button type="button" class="ribbon-btn" onclick="wFormat('header',false)" title="Normal mətn"><i class="ph ph-paragraph"></i></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-h1" onclick="wFormat('header',1)" title="Başlıq 1"><b>H1</b></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-h2" onclick="wFormat('header',2)" title="Başlıq 2"><b>H2</b></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-h3" onclick="wFormat('header',3)" title="Başlıq 3"><b>H3</b></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-p" onclick="wFormat('header',false)" title="Normal mətn"><i class="ph ph-paragraph"></i></button>
           </div>
           <div class="ribbon-sep"></div>
+
           <!-- Alignment -->
           <div class="ribbon-group">
-            <button type="button" class="ribbon-btn" onclick="wFormat('align','')" title="Sola"><i class="ph ph-text-align-left"></i></button>
-            <button type="button" class="ribbon-btn" onclick="wFormat('align','center')" title="Mərkəzə"><i class="ph ph-text-align-center"></i></button>
-            <button type="button" class="ribbon-btn" onclick="wFormat('align','right')" title="Sağa"><i class="ph ph-text-align-right"></i></button>
-            <button type="button" class="ribbon-btn" onclick="wFormat('align','justify')" title="Hər iki tərəf"><i class="ph ph-text-align-justify"></i></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-align-left" onclick="wFormat('align','')" title="Sola hizala"><i class="ph ph-text-align-left"></i></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-align-center" onclick="wFormat('align','center')" title="Mərkəzə"><i class="ph ph-text-align-center"></i></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-align-right" onclick="wFormat('align','right')" title="Sağa hizala"><i class="ph ph-text-align-right"></i></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-align-justify" onclick="wFormat('align','justify')" title="Hər iki tərəfə"><i class="ph ph-text-align-justify"></i></button>
           </div>
           <div class="ribbon-sep"></div>
+
           <!-- Lists -->
           <div class="ribbon-group">
-            <button type="button" class="ribbon-btn" onclick="wFormat('list','bullet')" title="Nişansız siyahı"><i class="ph ph-list-bullets"></i></button>
-            <button type="button" class="ribbon-btn" onclick="wFormat('list','ordered')" title="Nömrəli siyahı"><i class="ph ph-list-numbers"></i></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-list-bullet" onclick="wFormat('list','bullet')" title="Nişanlı siyahı"><i class="ph ph-list-bullets"></i></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-list-ordered" onclick="wFormat('list','ordered')" title="Nömrəli siyahı"><i class="ph ph-list-numbers"></i></button>
           </div>
           <div class="ribbon-sep"></div>
-          <!-- Indent -->
+
+          <!-- Indent & Quote -->
           <div class="ribbon-group">
-            <button type="button" class="ribbon-btn" onclick="wCmd('indent',-1)" title="Girinti azalt"><i class="ph ph-arrow-line-left"></i></button>
-            <button type="button" class="ribbon-btn" onclick="wCmd('indent',1)" title="Girinti artır"><i class="ph ph-arrow-line-right"></i></button>
-          </div>
-          <div class="ribbon-sep"></div>
-          <!-- Blockquote -->
-          <div class="ribbon-group">
-            <button type="button" class="ribbon-btn" onclick="wFormat('blockquote')" title="Sitat"><i class="ph ph-quotes"></i></button>
-            <button type="button" class="ribbon-btn" onclick="wFormat('code-block')" title="Kod bloku"><i class="ph ph-code-block"></i></button>
+            <button type="button" class="ribbon-btn" onclick="wCmd('indent',-1)" title="Girintini azalt"><i class="ph ph-arrow-line-left"></i></button>
+            <button type="button" class="ribbon-btn" onclick="wCmd('indent',1)" title="Girintini artır"><i class="ph ph-arrow-line-right"></i></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-quote" onclick="wFormat('blockquote')" title="Sitat"><i class="ph ph-quotes"></i></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-code" onclick="wFormat('code-block')" title="Kod bloku"><i class="ph ph-code-block"></i></button>
           </div>
         </div>
 
@@ -1099,8 +1226,8 @@
             <button type="button" class="ribbon-btn" onclick="wInsertLink()" title="Link əlavə et (Ctrl+K)">
               <i class="ph ph-link"></i> Link
             </button>
-            <button type="button" class="ribbon-btn" onclick="wInsertHR()" title="Üfüqi xətt">
-              <i class="ph ph-minus"></i> Xətt
+            <button type="button" class="ribbon-btn" onclick="wInsertHR()" title="Ayırıcı üfüqi xətt əlavə et">
+              <i class="ph ph-minus"></i> Üfüqi Xətt
             </button>
           </div>
         </div>
@@ -1108,11 +1235,11 @@
         <!-- REVIEW tab -->
         <div class="ribbon-content" id="ribbon-review" style="display:none">
           <div class="ribbon-group">
-            <button type="button" class="ribbon-btn" onclick="wWordCount()" title="Söz sayı">
-              <i class="ph ph-hash"></i> Söz sayı
+            <button type="button" class="ribbon-btn" onclick="wWordCount()" title="Söz və simvol sayı">
+              <i class="ph ph-hash"></i> Söz Sayı
             </button>
-            <button type="button" class="ribbon-btn" onclick="toggleFindReplace()" title="Tap/Əvəzlə (Ctrl+F)">
-              <i class="ph ph-magnifying-glass"></i> Tap
+            <button type="button" class="ribbon-btn" onclick="toggleFindReplace()" title="Axtar və Əvəzlə (Ctrl+F)">
+              <i class="ph ph-magnifying-glass"></i> Axtar / Əvəzlə
             </button>
           </div>
         </div>
@@ -1123,8 +1250,11 @@
             <button type="button" class="ribbon-btn" onclick="toggleFocusMode()" title="Fokus rejimi">
               <i class="ph ph-arrows-out"></i> Fokus
             </button>
-            <button type="button" class="ribbon-btn" onclick="togglePageBorders()" title="Səhifə kənarlarını göstər/gizlə">
-              <i class="ph ph-rectangle"></i> Səhifə
+            <button type="button" class="ribbon-btn" onclick="toggleRulers()" title="Xətkeşi göstər/gizlə" id="btn-toggle-ruler">
+              <i class="ph ph-ruler"></i> Xətkeş (Ruler)
+            </button>
+            <button type="button" class="ribbon-btn" onclick="togglePageBorders()" title="Səhifə kənarlıq kölgəsi">
+              <i class="ph ph-rectangle"></i> Səhifə Kölgəsi
             </button>
           </div>
           <div class="ribbon-sep"></div>
@@ -1142,29 +1272,51 @@
       <!-- Find & Replace overlay -->
       <div class="find-overlay" id="find-overlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
-          <strong style="font-size:0.85rem;">Tap / Əvəzlə</strong>
+          <strong style="font-size:0.85rem;">Axtar / Əvəzlə</strong>
           <button type="button" onclick="toggleFindReplace()" style="background:none;border:none;cursor:pointer;font-size:1.1rem;">&times;</button>
         </div>
-        <input type="text" id="find-input" placeholder="Tap..." style="margin-bottom:0.5rem; font-size:0.85rem; padding:0.4rem 0.6rem; border-radius:6px; border:1px solid #ddd;">
-        <input type="text" id="replace-input" placeholder="Əvəzlə..." style="margin-bottom:0.7rem; font-size:0.85rem; padding:0.4rem 0.6rem; border-radius:6px; border:1px solid #ddd;">
+        <input type="text" id="find-input" placeholder="Axtarılan söz..." style="margin-bottom:0.5rem; font-size:0.85rem; padding:0.4rem 0.6rem; border-radius:6px; border:1px solid #ddd;">
+        <input type="text" id="replace-input" placeholder="Yeni söz..." style="margin-bottom:0.7rem; font-size:0.85rem; padding:0.4rem 0.6rem; border-radius:6px; border:1px solid #ddd;">
         <div style="display:flex; gap:0.5rem;">
           <button type="button" class="btn btn-ghost btn-sm" onclick="doFind()">Tap</button>
           <button type="button" class="btn btn-green btn-sm" onclick="doReplace()">Əvəzlə</button>
-          <button type="button" class="btn btn-ghost btn-sm" onclick="doReplaceAll()">Hamısını əvəzlə</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="doReplaceAll()">Hamısını</button>
         </div>
       </div>
 
-      <!-- EN Editor Canvas -->
+      <!-- EN Editor Canvas with Word-like Rulers -->
       <div class="word-workspace" id="word-workspace-en">
-        <div class="word-page" id="word-page-en">
-          <div id="wysiwyg-editor-en"></div>
+        <div class="word-ruler-layout" id="ruler-layout-en">
+          <!-- Top ruler row -->
+          <div class="word-ruler-top-row">
+            <div class="word-ruler-corner"></div>
+            <div class="word-ruler-h" id="ruler-h-en"></div>
+          </div>
+          <!-- Body row: Vertical ruler + Page -->
+          <div class="word-ruler-body-row">
+            <div class="word-ruler-v" id="ruler-v-en"></div>
+            <div class="word-page" id="word-page-en">
+              <div id="wysiwyg-editor-en"></div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- AZ Editor Canvas -->
+      <!-- AZ Editor Canvas with Word-like Rulers -->
       <div class="word-workspace" id="word-workspace-az" style="display:none">
-        <div class="word-page" id="word-page-az">
-          <div id="wysiwyg-editor-az"></div>
+        <div class="word-ruler-layout" id="ruler-layout-az">
+          <!-- Top ruler row -->
+          <div class="word-ruler-top-row">
+            <div class="word-ruler-corner"></div>
+            <div class="word-ruler-h" id="ruler-h-az"></div>
+          </div>
+          <!-- Body row: Vertical ruler + Page -->
+          <div class="word-ruler-body-row">
+            <div class="word-ruler-v" id="ruler-v-az"></div>
+            <div class="word-page" id="word-page-az">
+              <div id="wysiwyg-editor-az"></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2283,19 +2435,93 @@
   // ── WYSIWYG QUILL EDITORS ─────────────────────────────
   function initMDE() { initWYSIWYG(); } // alias for backward compat
 
+  let _savedEditorRange = null;
+  let rulersVisible = true;
+
   function initWYSIWYG() {
     if (quillEN && quillAZ) return;
+
+    // Register Style Attributors for fonts, sizes, colors, alignment
+    const FontStyle = Quill.import('attributors/style/font');
+    FontStyle.whitelist = [
+      'arial',
+      'calibri',
+      'times-new-roman',
+      'georgia',
+      'roboto',
+      'space-grotesk',
+      'dm-sans',
+      'courier-new'
+    ];
+    Quill.register(FontStyle, true);
+
+    const SizeStyle = Quill.import('attributors/style/size');
+    SizeStyle.whitelist = ['10pt', '11pt', '12pt', '14pt', '16pt', '18pt', '24pt', '32pt'];
+    Quill.register(SizeStyle, true);
+
+    const ColorStyle = Quill.import('attributors/style/color');
+    Quill.register(ColorStyle, true);
+
+    const BackgroundStyle = Quill.import('attributors/style/background');
+    Quill.register(BackgroundStyle, true);
+
+    const AlignStyle = Quill.import('attributors/style/align');
+    Quill.register(AlignStyle, true);
+
+    // Custom Link to open target="_blank" and rel="noopener noreferrer"
+    const LinkFormat = Quill.import('formats/link');
+    class CustomLink extends LinkFormat {
+      static create(value) {
+        const node = super.create(value);
+        node.setAttribute('target', '_blank');
+        node.setAttribute('rel', 'noopener noreferrer');
+        return node;
+      }
+    }
+    Quill.register(CustomLink, true);
+
+    // Custom Divider Blot (<hr>)
+    const BlockEmbed = Quill.import('blots/block/embed');
+    class HrBlot extends BlockEmbed {}
+    HrBlot.blotName = 'divider';
+    HrBlot.tagName = 'hr';
+    Quill.register(HrBlot, true);
+
+    // Custom Table Blot (renders real editable HTML table)
+    class TableBlot extends BlockEmbed {
+      static create(value) {
+        const node = super.create();
+        node.setAttribute('contenteditable', 'false');
+        node.innerHTML = value;
+        node.querySelectorAll('td, th').forEach(cell => {
+          cell.setAttribute('contenteditable', 'true');
+        });
+        return node;
+      }
+      static value(node) {
+        return node.innerHTML;
+      }
+    }
+    TableBlot.blotName = 'customTable';
+    TableBlot.tagName = 'div';
+    TableBlot.className = 'word-table-wrapper';
+    Quill.register(TableBlot, true);
 
     const QUILL_OPTIONS = {
       theme: 'snow',
       modules: {
-        toolbar: false, // we use our own ribbon
+        toolbar: false,
         history: { delay: 500, maxStack: 200, userOnly: true },
         clipboard: { matchVisual: false },
       },
       placeholder: 'Məzmunu buraya yazın...',
-      formats: ['bold','italic','underline','strike','color','background','font','size',
-                'header','align','list','indent','blockquote','code-block','link','image'],
+      formats: [
+        'bold', 'italic', 'underline', 'strike',
+        'color', 'background', 'font', 'size',
+        'header', 'align', 'list', 'indent',
+        'blockquote', 'code-block', 'link', 'image',
+        'divider', 'customTable'
+      ],
     };
 
     quillEN = new Quill('#wysiwyg-editor-en', {
@@ -2304,18 +2530,36 @@
     });
     quillAZ = new Quill('#wysiwyg-editor-az', {
       ...QUILL_OPTIONS,
-      placeholder: 'Məqalə məzmununu Azərbaycan dilinde yazin...',
+      placeholder: 'Məqalə məzmununu Azərbaycan dilində yazın...',
     });
 
-    // Sync to hidden textareas + trigger autosave
+    // Sync to hidden textareas + trigger autosave + update ribbon
     quillEN.on('text-change', () => {
       document.getElementById('art-desc-en').value = quillEN.root.innerHTML;
       scheduleAutosave();
+      updateRibbonActiveStates();
     });
+    quillEN.on('selection-change', (range) => {
+      if (range) {
+        _savedEditorRange = range;
+        updateRibbonActiveStates();
+      }
+    });
+
     quillAZ.on('text-change', () => {
       document.getElementById('art-desc-az').value = quillAZ.root.innerHTML;
       scheduleAutosave();
+      updateRibbonActiveStates();
     });
+    quillAZ.on('selection-change', (range) => {
+      if (range) {
+        _savedEditorRange = range;
+        updateRibbonActiveStates();
+      }
+    });
+
+    // Render rulers
+    renderWordRulers();
   }
 
   function getActiveQuill() {
@@ -2324,11 +2568,12 @@
 
   function switchEditorLang(lang) {
     currentEditorLang = lang;
-    document.getElementById('word-workspace-en').style.display = lang === 'en' ? 'block' : 'none';
-    document.getElementById('word-workspace-az').style.display = lang === 'az' ? 'block' : 'none';
+    document.getElementById('word-workspace-en').style.display = lang === 'en' ? 'flex' : 'none';
+    document.getElementById('word-workspace-az').style.display = lang === 'az' ? 'flex' : 'none';
     document.querySelectorAll('.wysiwyg-lang-tab').forEach((t, i) => {
       t.classList.toggle('active', (i === 0 && lang === 'en') || (i === 1 && lang === 'az'));
     });
+    updateRibbonActiveStates();
   }
 
   function switchRibbonTab(tab, el) {
@@ -2336,6 +2581,54 @@
     document.getElementById('ribbon-' + tab).style.display = 'flex';
     document.querySelectorAll('.ribbon-tab').forEach(t => t.classList.remove('active'));
     if (el) el.classList.add('active');
+  }
+
+  // ── UPDATE RIBBON ACTIVE STATES ──────────────────────
+  function updateRibbonActiveStates() {
+    const q = getActiveQuill();
+    if (!q) return;
+    const range = q.getSelection();
+    const format = q.getFormat(range || undefined);
+
+    const toggle = (id, active) => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('active-fmt', !!active);
+    };
+
+    toggle('btn-fmt-bold', format.bold);
+    toggle('btn-fmt-italic', format.italic);
+    toggle('btn-fmt-underline', format.underline);
+    toggle('btn-fmt-strike', format.strike);
+
+    toggle('btn-fmt-h1', format.header === 1);
+    toggle('btn-fmt-h2', format.header === 2);
+    toggle('btn-fmt-h3', format.header === 3);
+    toggle('btn-fmt-p', !format.header);
+
+    const align = format.align || '';
+    toggle('btn-fmt-align-left', align === '');
+    toggle('btn-fmt-align-center', align === 'center');
+    toggle('btn-fmt-align-right', align === 'right');
+    toggle('btn-fmt-align-justify', align === 'justify');
+
+    toggle('btn-fmt-list-bullet', format.list === 'bullet');
+    toggle('btn-fmt-list-ordered', format.list === 'ordered');
+    toggle('btn-fmt-quote', format.blockquote);
+    toggle('btn-fmt-code', format['code-block']);
+
+    const fontSel = document.getElementById('ribbon-font-select');
+    if (fontSel) fontSel.value = format.font || '';
+    const sizeSel = document.getElementById('ribbon-size-select');
+    if (sizeSel) sizeSel.value = format.size || '';
+
+    if (format.color) {
+      const bar = document.getElementById('text-color-indicator');
+      if (bar) bar.style.backgroundColor = format.color;
+    }
+    if (format.background) {
+      const bar = document.getElementById('bg-color-indicator');
+      if (bar) bar.style.backgroundColor = format.background;
+    }
   }
 
   // ── RIBBON COMMANDS ───────────────────────────────────
@@ -2348,29 +2641,71 @@
     if (val === undefined) {
       q.format(fmt, !cur[fmt]);
     } else {
-      // Toggle: if already this value, unset; otherwise set
       q.format(fmt, cur[fmt] === val ? false : val);
     }
+    setTimeout(updateRibbonActiveStates, 10);
   }
 
   function wCmd(cmd, val) {
     const q = getActiveQuill();
     if (!q) return;
-    if (cmd === 'undo') { q.history.undo(); return; }
-    if (cmd === 'redo') { q.history.redo(); return; }
-    if (cmd === 'indent') {
+    q.focus();
+    if (cmd === 'undo') { q.history.undo(); }
+    else if (cmd === 'redo') { q.history.redo(); }
+    else if (cmd === 'indent') {
       const cur = q.getFormat();
       const lvl = (cur.indent || 0) + val;
       q.format('indent', lvl < 0 ? false : lvl);
-      return;
     }
+    setTimeout(updateRibbonActiveStates, 10);
+  }
+
+  function rememberEditorSelection() {
+    const q = getActiveQuill();
+    if (q) {
+      const sel = q.getSelection();
+      if (sel) _savedEditorRange = sel;
+    }
+  }
+
+  function applyEditorColor(type, colorVal) {
+    const q = getActiveQuill();
+    if (!q) return;
+    q.focus();
+    if (_savedEditorRange) {
+      q.setSelection(_savedEditorRange);
+    }
+    q.format(type, colorVal);
+    if (type === 'color') {
+      const bar = document.getElementById('text-color-indicator');
+      if (bar) bar.style.backgroundColor = colorVal;
+    } else if (type === 'background') {
+      const bar = document.getElementById('bg-color-indicator');
+      if (bar) bar.style.backgroundColor = colorVal;
+    }
+    setTimeout(updateRibbonActiveStates, 10);
   }
 
   function wClearFormat() {
     const q = getActiveQuill();
     if (!q) return;
+    q.focus();
     const sel = q.getSelection();
-    if (sel) q.removeFormat(sel.index, sel.length);
+    if (sel && sel.length > 0) {
+      q.removeFormat(sel.index, sel.length);
+    } else {
+      q.format('bold', false);
+      q.format('italic', false);
+      q.format('underline', false);
+      q.format('strike', false);
+      q.format('color', false);
+      q.format('background', false);
+      q.format('font', false);
+      q.format('size', false);
+      q.format('header', false);
+      q.format('align', false);
+    }
+    setTimeout(updateRibbonActiveStates, 10);
   }
 
   function wInsertImage() {
@@ -2378,14 +2713,22 @@
   }
 
   function wInsertLink() {
-    const url = prompt('Link URL daxil edin:');
+    let url = prompt('Link URL daxil edin (məs: https://google.com):');
     if (!url) return;
+    url = url.trim();
+    // Auto prepend https:// if missing protocol to prevent 404 relative links
+    if (!/^(https?:\/\/|mailto:|tel:)/i.test(url)) {
+      url = 'https://' + url;
+    }
     const q = getActiveQuill();
+    if (!q) return;
+    q.focus();
     const sel = q.getSelection();
     if (sel && sel.length > 0) {
       q.format('link', url);
     } else {
-      q.insertText(sel ? sel.index : 0, url, 'link', url);
+      const idx = sel ? sel.index : q.getLength();
+      q.insertText(idx, url, 'link', url);
     }
   }
 
@@ -2393,33 +2736,40 @@
     const q = getActiveQuill();
     if (!q) return;
     q.focus();
-    const sel = q.getSelection(true);
-    const idx = sel ? sel.index : q.getLength();
-    // Insert a visual separator via HTML
-    const delta = q.clipboard.convert('<p>---</p>');
-    q.updateContents(delta, 'user');
+    const range = q.getSelection(true);
+    const idx = range ? range.index : q.getLength();
+    q.insertEmbed(idx, 'divider', true, 'user');
+    q.insertText(idx + 1, '\n', 'user');
+    q.setSelection(idx + 2);
   }
 
   function wInsertTable() {
-    const rows = parseInt(prompt('Sıra sayı:', '3') || '3');
+    const rows = parseInt(prompt('Sətir sayı:', '3') || '3');
     const cols = parseInt(prompt('Sütun sayı:', '3') || '3');
-    if (!rows || !cols) return;
+    if (!rows || !cols || rows < 1 || cols < 1) return;
     const q = getActiveQuill();
-    const sel = q.getSelection(true);
-    let tableHTML = '<table><tbody>';
-    for (let r = 0; r < rows; r++) {
+    if (!q) return;
+    q.focus();
+
+    let tableHTML = '<table class="word-doc-table"><thead><tr>';
+    for (let c = 0; c < cols; c++) {
+      tableHTML += '<th contenteditable="true">Başlıq ' + (c + 1) + '</th>';
+    }
+    tableHTML += '</tr></thead><tbody>';
+    for (let r = 1; r < rows; r++) {
       tableHTML += '<tr>';
       for (let c = 0; c < cols; c++) {
-        tableHTML += r === 0
-          ? '<th style="border:1px solid #bbb;padding:0.4rem;background:#f0f0f0;">Başlıq</th>'
-          : '<td style="border:1px solid #bbb;padding:0.4rem;">Hücrə</td>';
+        tableHTML += '<td contenteditable="true">Mətn</td>';
       }
       tableHTML += '</tr>';
     }
-    tableHTML += '</tbody></table><p></p>';
-    const idx = sel ? sel.index : q.getLength();
-    const delta = q.clipboard.convert(tableHTML);
-    q.updateContents(delta, 'user');
+    tableHTML += '</tbody></table>';
+
+    const range = q.getSelection(true);
+    const idx = range ? range.index : q.getLength();
+    q.insertEmbed(idx, 'customTable', tableHTML, 'user');
+    q.insertText(idx + 1, '\n', 'user');
+    q.setSelection(idx + 2);
   }
 
   function wWordCount() {
@@ -2427,7 +2777,7 @@
     const text = q ? q.getText() : '';
     const words = text.trim().split(/\s+/).filter(Boolean).length;
     const chars = text.replace(/\n/g,'').length;
-    alert(`Sozler: ${words}\nSymvollar: ${chars}`);
+    alert(`Sözlər: ${words}\nSimvollar: ${chars}`);
   }
 
   function toggleFindReplace() {
@@ -2446,7 +2796,7 @@
     if (idx !== -1) {
       q.setSelection(idx, term.length);
     } else {
-      alert('Tapilmadi: ' + term);
+      alert('Tapılmadı: ' + term);
     }
   }
 
@@ -2477,13 +2827,12 @@
       positions.push(idx);
       idx = fullText.indexOf(term, idx + 1);
     }
-    // replace in reverse to preserve indices
     positions.reverse().forEach(pos => {
       q.deleteText(pos, term.length, 'user');
       q.insertText(pos, replacement, 'user');
       count++;
     });
-    alert(`${count} yer evez edildi.`);
+    alert(`${count} yer əvəzləndi.`);
   }
 
   function toggleFocusMode() {
@@ -2496,17 +2845,28 @@
     if (btn) btn.style.color = focusModeActive ? 'white' : '';
   }
 
+  function toggleRulers() {
+    rulersVisible = !rulersVisible;
+    const displayVal = rulersVisible ? 'flex' : 'none';
+    document.querySelectorAll('.word-ruler-top-row').forEach(r => r.style.display = displayVal);
+    document.querySelectorAll('.word-ruler-v').forEach(r => r.style.display = displayVal);
+    const btn = document.getElementById('btn-toggle-ruler');
+    if (btn) btn.classList.toggle('active-fmt', rulersVisible);
+  }
+
   function togglePageBorders() {
     pageBordersVisible = !pageBordersVisible;
     document.querySelectorAll('.word-page').forEach(p => {
       p.style.boxShadow = pageBordersVisible ? '' : 'none';
-      p.style.outline = pageBordersVisible ? '' : '1px dashed #ccc';
+      p.style.outline = pageBordersVisible ? '' : '1px dashed #bbb';
     });
   }
 
   function setEditorZoom(val) {
-    document.querySelectorAll('.word-page').forEach(p => {
-      p.style.transform = `scale(${val / 100})`;
+    const scale = val / 100;
+    document.querySelectorAll('.word-ruler-layout').forEach(l => {
+      l.style.transform = `scale(${scale})`;
+      l.style.transformOrigin = 'top center';
     });
     const lbl = document.getElementById('zoom-label');
     if (lbl) lbl.textContent = val + '%';
@@ -2516,7 +2876,7 @@
     const q = getActiveQuill();
     if (!q) return;
     const content = q.root.innerHTML;
-    const blob = new Blob([`<!DOCTYPE html><html><body>${content}</body></html>`], { type: 'text/html' });
+    const blob = new Blob([`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:sans-serif;max-width:800px;margin:2rem auto;padding:0 1rem;line-height:1.6;}table{width:100%;border-collapse:collapse;}th,td{border:1px solid #777;padding:8px;}hr{border:none;border-top:1.5px solid #888;margin:1.5rem 0;}</style></head><body>${content}</body></html>`], { type: 'text/html;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = 'article.html';
@@ -2527,15 +2887,96 @@
     window.print();
   }
 
-  // ── AUTOSAVE ──────────────────────────────────────────
+  // ── RULER GENERATOR (Word-inspired SVG) ────────────────
+  function renderWordRulers() {
+    const renderH = () => {
+      // 794px width, left margin 80px, right margin 80px, active 634px
+      // 16 cm in active area -> ~39.6px per cm
+      let ticks = '';
+      const leftMargin = 80;
+      const rightMargin = 714;
+      const cmWidth = (rightMargin - leftMargin) / 16; // 39.625px per cm
+
+      // Left margin ticks (2 cm)
+      for (let i = 1; i <= 2; i++) {
+        const x = leftMargin - i * cmWidth;
+        if (x >= 0) {
+          ticks += `<line x1="${x}" y1="12" x2="${x}" y2="22" stroke="#888" stroke-width="1"/>`;
+          ticks += `<text x="${x}" y="10" font-size="9" fill="#555" text-anchor="middle" font-family="sans-serif">${i}</text>`;
+        }
+      }
+      // Active area ticks (1 to 16 cm)
+      for (let i = 1; i <= 16; i++) {
+        const x = leftMargin + i * cmWidth;
+        // Half cm
+        const halfX = x - cmWidth / 2;
+        ticks += `<line x1="${halfX}" y1="15" x2="${halfX}" y2="22" stroke="#aaa" stroke-width="1"/>`;
+        // Full cm
+        ticks += `<line x1="${x}" y1="11" x2="${x}" y2="22" stroke="#555" stroke-width="1"/>`;
+        if (i < 16) {
+          ticks += `<text x="${x}" y="10" font-size="9" fill="#333" font-weight="600" text-anchor="middle" font-family="sans-serif">${i}</text>`;
+        }
+      }
+
+      return `
+        <div class="ruler-white-h"></div>
+        <div class="ruler-marker-left" title="Sol kənar (Margin)"></div>
+        <div class="ruler-marker-right" title="Sağ kənar (Margin)"></div>
+        <svg width="794" height="22" style="position:absolute;top:0;left:0;pointer-events:none;">
+          ${ticks}
+        </svg>
+      `;
+    };
+
+    const renderV = () => {
+      // 1000px height, top margin 64px, active 872px
+      // 22 cm active -> ~39.6px per cm
+      let ticks = '';
+      const topMargin = 64;
+      const cmHeight = 39.625;
+
+      for (let i = 1; i <= 22; i++) {
+        const y = topMargin + i * cmHeight;
+        const halfY = y - cmHeight / 2;
+        ticks += `<line x1="15" y1="${halfY}" x2="24" y2="${halfY}" stroke="#aaa" stroke-width="1"/>`;
+        ticks += `<line x1="11" y1="${y}" x2="24" y2="${y}" stroke="#555" stroke-width="1"/>`;
+        ticks += `<text x="7" y="${y + 3}" font-size="8.5" fill="#333" font-weight="600" text-anchor="middle" font-family="sans-serif">${i}</text>`;
+      }
+
+      return `
+        <div class="ruler-white-v"></div>
+        <svg width="24" height="1000" style="position:absolute;top:0;left:0;pointer-events:none;">
+          ${ticks}
+        </svg>
+      `;
+    };
+
+    const hEN = document.getElementById('ruler-h-en');
+    const vEN = document.getElementById('ruler-v-en');
+    const hAZ = document.getElementById('ruler-h-az');
+    const vAZ = document.getElementById('ruler-v-az');
+    if (hEN) hEN.innerHTML = renderH();
+    if (vEN) vEN.innerHTML = renderV();
+    if (hAZ) hAZ.innerHTML = renderH();
+    if (vAZ) vAZ.innerHTML = renderV();
+  }
+
+  // ── AUTOSAVE (Correct wording) ─────────────────────────
   function scheduleAutosave() {
     const indicator = document.getElementById('autosave-indicator');
-    if (indicator) { indicator.textContent = 'Saxlanilir...'; indicator.className = 'autosave-indicator saving'; }
+    if (indicator) {
+      indicator.textContent = 'Saxlanılır...';
+      indicator.className = 'autosave-indicator saving';
+    }
     clearTimeout(autosaveTimer);
     autosaveTimer = setTimeout(async () => {
       const id = document.getElementById('art-id').value;
-      if (!id) { // no existing article id — just mark saved visually
-        if (indicator) { indicator.textContent = ''; indicator.className = 'autosave-indicator'; }
+      if (!id) {
+        if (indicator) {
+          indicator.textContent = 'Yadda saxlanıldı ✓';
+          indicator.className = 'autosave-indicator saved';
+        }
+        setTimeout(() => { if (indicator) indicator.textContent = ''; }, 3500);
         return;
       }
       const update = {
@@ -2543,8 +2984,11 @@
         desc_az: quillAZ ? quillAZ.root.innerHTML : '',
       };
       await sb.from('articles').update(update).eq('id', id);
-      if (indicator) { indicator.textContent = 'Yadda saxlandi'; indicator.className = 'autosave-indicator saved'; }
-      setTimeout(() => { if (indicator) indicator.textContent = ''; }, 3000);
+      if (indicator) {
+        indicator.textContent = 'Yadda saxlanıldı ✓';
+        indicator.className = 'autosave-indicator saved';
+      }
+      setTimeout(() => { if (indicator) indicator.textContent = ''; }, 3500);
     }, 3000);
   }
 

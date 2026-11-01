@@ -235,6 +235,43 @@
                   radial-gradient(ellipse at 20% 80%, #b7e4c7 0%, transparent 50%);
       text-align: center;
     }
+  
+    /* Article Content Typography & Elements (Tables, HR, Links) */
+    #sa-desc table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+    #sa-desc th, #sa-desc td {
+      border: 1px solid rgba(0,0,0,0.18);
+      padding: 0.6rem 0.9rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    #sa-desc th {
+      background: rgba(45, 106, 79, 0.08);
+      font-weight: 700;
+      color: var(--dark);
+      border-bottom: 2px solid var(--green);
+    }
+    #sa-desc tr:nth-child(even) td {
+      background: rgba(0,0,0,0.02);
+    }
+    #sa-desc hr {
+      border: none;
+      border-top: 1.5px solid rgba(0,0,0,0.15);
+      margin: 2rem 0;
+    }
+    #sa-desc a {
+      color: var(--green);
+      text-decoration: underline;
+      font-weight: 500;
+      word-break: break-all;
+    }
+    #sa-desc a:hover {
+      opacity: 0.8;
+    }
   </style>
 </head>
 
@@ -363,7 +400,17 @@
           document.getElementById('sa-title').innerText = lang === 'az' ? ev.title_az : ev.title_en;
           // Support both new HTML content (from WYSIWYG) and legacy Markdown
           const _rawContent1 = lang === 'az' ? (ev.desc_az || '') : (ev.desc_en || '');
-          document.getElementById('sa-desc').innerHTML = _rawContent1.trim().startsWith('<')
+          const _finalHtml1 = _rawContent1.trim().startsWith('<') ? _rawContent1 : marked.parse(_rawContent1);
+          document.getElementById('sa-desc').innerHTML = _finalHtml1;
+          document.querySelectorAll('#sa-desc a').forEach(a => {
+            let href = a.getAttribute('href') || '';
+            if (href && !/^(https?:\/\/|mailto:|tel:|#)/i.test(href)) {
+              a.setAttribute('href', 'https://' + href.replace(/^\/+/,''));
+            }
+            a.setAttribute('target', '_blank');
+            a.setAttribute('rel', 'noopener noreferrer');
+          });
+          if (false) document.getElementById('sa-desc').innerHTML = _rawContent1.trim().startsWith('<')
             ? _rawContent1
             : marked.parse(_rawContent1);
         }
@@ -515,7 +562,19 @@
       document.getElementById('sa-title').innerText = lang === 'az' ? ev.title_az : ev.title_en;
       // Support both new HTML content (from WYSIWYG) and legacy Markdown
       const _rawContent2 = lang === 'az' ? (ev.desc_az || '') : (ev.desc_en || '');
-      document.getElementById('sa-desc').innerHTML = _rawContent2.trim().startsWith('<')
+      const _finalHtml = _rawContent2.trim().startsWith('<') ? _rawContent2 : marked.parse(_rawContent2);
+      document.getElementById('sa-desc').innerHTML = _finalHtml;
+      // Fix relative / missing protocol links & force target _blank
+      document.querySelectorAll('#sa-desc a').forEach(a => {
+        let href = a.getAttribute('href') || '';
+        if (href && !/^(https?:\/\/|mailto:|tel:|#)/i.test(href)) {
+          a.setAttribute('href', 'https://' + href.replace(/^\/+/,''));
+        }
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      });
+      // Skip original assignment:
+      if (false) document.getElementById('sa-desc').innerHTML = _rawContent2.trim().startsWith('<')
         ? _rawContent2
         : marked.parse(_rawContent2);
       window.location.hash = 'article-' + ev.id;
