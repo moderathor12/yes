@@ -688,6 +688,76 @@
     }
     .word-workspace.focus-mode .word-page { min-height: 90vh; }
 
+    
+    /* Special Characters Modal / Popover */
+    .special-chars-modal {
+      display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: white; border-radius: 12px; padding: 1.2rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.25); z-index: 10000;
+      width: 360px; max-width: 90vw;
+    }
+    .special-chars-grid {
+      display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 1rem 0;
+    }
+    .special-char-btn {
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+      font-size: 1.2rem; padding: 0.4rem; cursor: pointer; text-align: center;
+      transition: all 0.12s;
+    }
+    .special-char-btn:hover {
+      background: #d8f3dc; border-color: var(--green); transform: scale(1.1);
+    }
+
+    /* Document Outline Sidebar */
+    .doc-outline-panel {
+      display: none; width: 220px; background: #ffffff; border-right: 1px solid #d0cece;
+      padding: 1rem; overflow-y: auto; max-height: 600px; flex-shrink: 0;
+      font-size: 0.85rem;
+    }
+    .doc-outline-panel.open { display: block; }
+    .outline-item {
+      padding: 0.35rem 0.5rem; margin-bottom: 2px; border-radius: 4px;
+      cursor: pointer; color: #333; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .outline-item:hover { background: #e8f5e9; color: var(--green); }
+    .outline-item.h1 { font-weight: 700; padding-left: 0.4rem; }
+    .outline-item.h2 { font-weight: 500; padding-left: 1.2rem; color: #555; }
+    .outline-item.h3 { font-size: 0.8rem; padding-left: 1.8rem; color: #777; }
+
+    /* Page Break Blot in Editor */
+    .word-page-break {
+      margin: 2rem 0; padding: 0.5rem 0; text-align: center; color: #94a3b8;
+      font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em;
+      border-top: 1px dashed #cbd5e1; border-bottom: 1px dashed #cbd5e1;
+      background: #f8fafc; user-select: none;
+    }
+    @media print {
+      .word-page-break { page-break-after: always; break-after: page; visibility: hidden; height: 0; margin: 0; padding: 0; }
+    }
+
+    /* Table of Contents in Document */
+    .word-toc-block {
+      background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid var(--green);
+      padding: 1rem 1.4rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0;
+    }
+    .word-toc-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.6rem; color: #1e293b; }
+    .word-toc-list { list-style: none; padding-left: 0; margin: 0; }
+    .word-toc-list li { margin: 0.3rem 0; font-size: 0.9rem; }
+    .word-toc-list li a { color: var(--green); text-decoration: none; }
+    .word-toc-list li a:hover { text-decoration: underline; }
+
+    /* Header & Footer in Document Page */
+    .word-page-header {
+      font-size: 0.78rem; color: #888; border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 0.3rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between;
+      outline: none; user-select: text;
+    }
+    .word-page-footer {
+      font-size: 0.78rem; color: #888; border-top: 1px solid #e5e7eb;
+      padding-top: 0.3rem; margin-top: 2rem; display: flex; justify-content: space-between;
+      outline: none; user-select: text;
+    }
+
     /* Print / PDF export */
     @media print {
       body > *:not(#print-target) { display: none !important; }
@@ -1174,15 +1244,16 @@
 
       <!-- RIBBON TOOLBAR -->
       <div class="word-ribbon" id="word-ribbon">
-        <!-- Tab buttons -->
+        <!-- Tab buttons: 5 Complete Word Tabs -->
         <div class="ribbon-tabs">
           <button type="button" class="ribbon-tab active" onclick="switchRibbonTab('home',this)">HOME</button>
           <button type="button" class="ribbon-tab" onclick="switchRibbonTab('insert',this)">INSERT</button>
+          <button type="button" class="ribbon-tab" onclick="switchRibbonTab('layout',this)">LAYOUT</button>
           <button type="button" class="ribbon-tab" onclick="switchRibbonTab('review',this)">REVIEW</button>
           <button type="button" class="ribbon-tab" onclick="switchRibbonTab('view',this)">VIEW</button>
         </div>
 
-        <!-- HOME tab -->
+        <!-- 1. HOME TAB -->
         <div class="ribbon-content" id="ribbon-home">
           <!-- Undo / Redo -->
           <div class="ribbon-group">
@@ -1216,6 +1287,17 @@
           </div>
           <div class="ribbon-sep"></div>
 
+          <!-- Styles Presets (Title, Subtitle, Normal) -->
+          <div class="ribbon-group">
+            <button type="button" class="ribbon-btn" id="btn-fmt-p" onclick="wApplyStylePreset('normal')" title="Normal Mətn"><i class="ph ph-paragraph"></i> Normal</button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-title" onclick="wApplyStylePreset('title')" title="Sənəd Başlığı"><b>Title</b></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-subtitle" onclick="wApplyStylePreset('subtitle')" title="Alt Başlıq"><i>Subtitle</i></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-h1" onclick="wFormat('header',1)" title="Başlıq 1"><b>H1</b></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-h2" onclick="wFormat('header',2)" title="Başlıq 2"><b>H2</b></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-h3" onclick="wFormat('header',3)" title="Başlıq 3"><b>H3</b></button>
+          </div>
+          <div class="ribbon-sep"></div>
+
           <!-- Text formatting (Bold, Italic, Underline, Strike) -->
           <div class="ribbon-group">
             <button type="button" class="ribbon-btn" id="btn-fmt-bold" onclick="wFormat('bold')" title="Qalın (Ctrl+B)"><i class="ph ph-text-b"></i></button>
@@ -1225,7 +1307,7 @@
           </div>
           <div class="ribbon-sep"></div>
 
-          <!-- Colors -->
+          <!-- Colors & Clear -->
           <div class="ribbon-group">
             <label class="ribbon-btn color-btn" title="Mətn rəngi" onmousedown="rememberEditorSelection()">
               <i class="ph ph-paint-brush"></i>
@@ -1243,15 +1325,6 @@
           </div>
           <div class="ribbon-sep"></div>
 
-          <!-- Headings -->
-          <div class="ribbon-group">
-            <button type="button" class="ribbon-btn" id="btn-fmt-h1" onclick="wFormat('header',1)" title="Başlıq 1"><b>H1</b></button>
-            <button type="button" class="ribbon-btn" id="btn-fmt-h2" onclick="wFormat('header',2)" title="Başlıq 2"><b>H2</b></button>
-            <button type="button" class="ribbon-btn" id="btn-fmt-h3" onclick="wFormat('header',3)" title="Başlıq 3"><b>H3</b></button>
-            <button type="button" class="ribbon-btn" id="btn-fmt-p" onclick="wFormat('header',false)" title="Normal mətn"><i class="ph ph-paragraph"></i></button>
-          </div>
-          <div class="ribbon-sep"></div>
-
           <!-- Alignment -->
           <div class="ribbon-group">
             <button type="button" class="ribbon-btn" id="btn-fmt-align-left" onclick="wFormat('align','')" title="Sola hizala"><i class="ph ph-text-align-left"></i></button>
@@ -1261,15 +1334,27 @@
           </div>
           <div class="ribbon-sep"></div>
 
-          <!-- Lists -->
+          <!-- Line spacing & Spacing -->
           <div class="ribbon-group">
-            <button type="button" class="ribbon-btn" id="btn-fmt-list-bullet" onclick="wFormat('list','bullet')" title="Nişanlı siyahı"><i class="ph ph-list-bullets"></i></button>
-            <button type="button" class="ribbon-btn" id="btn-fmt-list-ordered" onclick="wFormat('list','ordered')" title="Nömrəli siyahı"><i class="ph ph-list-numbers"></i></button>
+            <select class="ribbon-select" id="ribbon-line-spacing" onchange="wSetLineSpacing(this.value)" title="Sətir aralığı (Line spacing)">
+              <option value="1.7">Sətir: 1.7</option>
+              <option value="1.0">Sətir: 1.0</option>
+              <option value="1.15">Sətir: 1.15</option>
+              <option value="1.5">Sətir: 1.5</option>
+              <option value="2.0">Sətir: 2.0</option>
+            </select>
+            <select class="ribbon-select" id="ribbon-para-spacing" onchange="wSetParaSpacing(this.value)" title="Abzas aralığı">
+              <option value="0.75rem">Abzas: Normal</option>
+              <option value="0.3rem">Abzas: Sıx</option>
+              <option value="1.2rem">Abzas: Geniş</option>
+            </select>
           </div>
           <div class="ribbon-sep"></div>
 
-          <!-- Indent & Quote -->
+          <!-- Lists & Indent & Quote -->
           <div class="ribbon-group">
+            <button type="button" class="ribbon-btn" id="btn-fmt-list-bullet" onclick="wFormat('list','bullet')" title="Nişanlı siyahı"><i class="ph ph-list-bullets"></i></button>
+            <button type="button" class="ribbon-btn" id="btn-fmt-list-ordered" onclick="wFormat('list','ordered')" title="Nömrəli siyahı"><i class="ph ph-list-numbers"></i></button>
             <button type="button" class="ribbon-btn" onclick="wCmd('indent',-1)" title="Girintini azalt"><i class="ph ph-arrow-line-left"></i></button>
             <button type="button" class="ribbon-btn" onclick="wCmd('indent',1)" title="Girintini artır"><i class="ph ph-arrow-line-right"></i></button>
             <button type="button" class="ribbon-btn" id="btn-fmt-quote" onclick="wFormat('blockquote')" title="Sitat"><i class="ph ph-quotes"></i></button>
@@ -1277,10 +1362,10 @@
           </div>
         </div>
 
-        <!-- INSERT tab -->
+        <!-- 2. INSERT TAB -->
         <div class="ribbon-content" id="ribbon-insert" style="display:none">
           <div class="ribbon-group">
-            <button type="button" class="ribbon-btn" onclick="wInsertImage()" title="Şəkil əlavə et">
+            <button type="button" class="ribbon-btn" onclick="wInsertImage()" title="Kompüterdən şəkil əlavə et">
               <i class="ph ph-image"></i> Şəkil
             </button>
             <button type="button" class="ribbon-btn" onclick="wInsertTable()" title="Cədvəl əlavə et">
@@ -1292,45 +1377,168 @@
             <button type="button" class="ribbon-btn" onclick="wInsertHR()" title="Ayırıcı üfüqi xətt əlavə et">
               <i class="ph ph-minus"></i> Üfüqi Xətt
             </button>
+            <button type="button" class="ribbon-btn" onclick="wFormat('blockquote')" title="Sitat bloku daxil et">
+              <i class="ph ph-quotes"></i> Sitat Bloku
+            </button>
+            <button type="button" class="ribbon-btn" onclick="toggleSpecialCharsModal()" title="Xüsusi simvollar daxil et">
+              <i class="ph ph-trademark"></i> Xüsusi Simvollar
+            </button>
+            <button type="button" class="ribbon-btn" onclick="wInsertPageBreak()" title="Səhifə qırılması (Ctrl+Enter)">
+              <i class="ph ph-file-dashed"></i> Səhifə Qırılması
+            </button>
+            <button type="button" class="ribbon-btn" onclick="wInsertTableOfContents()" title="Avtomatik Məzmun Cədvəli yarad">
+              <i class="ph ph-list-dashes"></i> Məzmun Cədvəli
+            </button>
           </div>
         </div>
 
-        <!-- REVIEW tab -->
+        <!-- 3. LAYOUT TAB -->
+        <div class="ribbon-content" id="ribbon-layout" style="display:none">
+          <!-- Page sizes -->
+          <div class="ribbon-group">
+            <label style="font-size:0.78rem; font-weight:600; color:#555;">Ölçü:</label>
+            <select class="ribbon-select" id="ribbon-page-size" onchange="wSetPageSize(this.value)">
+              <option value="a4">A4 (210 × 297 mm)</option>
+              <option value="a5">A5 (148 × 210 mm)</option>
+              <option value="letter">Letter (8.5 × 11 in)</option>
+            </select>
+          </div>
+          <div class="ribbon-sep"></div>
+
+          <!-- Orientation -->
+          <div class="ribbon-group">
+            <button type="button" class="ribbon-btn active-fmt" id="btn-orient-portrait" onclick="wSetOrientation('portrait')" title="Kitab formatı (Şaquli)">
+              <i class="ph ph-file"></i> Şaquli (Portrait)
+            </button>
+            <button type="button" class="ribbon-btn" id="btn-orient-landscape" onclick="wSetOrientation('landscape')" title="Albom formatı (Üfüqi)">
+              <i class="ph ph-file-text"></i> Üfüqi (Landscape)
+            </button>
+          </div>
+          <div class="ribbon-sep"></div>
+
+          <!-- Margins presets -->
+          <div class="ribbon-group">
+            <label style="font-size:0.78rem; font-weight:600; color:#555;">Kənarlar:</label>
+            <select class="ribbon-select" id="ribbon-margin-preset" onchange="wSetMarginPreset(this.value)">
+              <option value="normal">Normal (2.5 sm)</option>
+              <option value="narrow">Dar (1.27 sm)</option>
+              <option value="wide">Geniş (3.8 sm)</option>
+            </select>
+          </div>
+          <div class="ribbon-sep"></div>
+
+          <!-- Header & Footer Toggle -->
+          <div class="ribbon-group">
+            <button type="button" class="ribbon-btn" id="btn-toggle-hf" onclick="toggleHeaderFooter()" title="Yuxarı və aşağı kolontitul">
+              <i class="ph ph-note"></i> Kolontitullar (Header/Footer)
+            </button>
+            <button type="button" class="ribbon-btn" onclick="wInsertPageBreak()" title="Səhifə qırılması">
+              <i class="ph ph-file-dashed"></i> Səhifə Sonu
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. REVIEW TAB -->
         <div class="ribbon-content" id="ribbon-review" style="display:none">
           <div class="ribbon-group">
             <button type="button" class="ribbon-btn" onclick="wWordCount()" title="Söz və simvol sayı">
-              <i class="ph ph-hash"></i> Söz Sayı
+              <i class="ph ph-hash"></i> Söz və Simvol Sayı
             </button>
-            <button type="button" class="ribbon-btn" onclick="toggleFindReplace()" title="Axtar və Əvəzlə (Ctrl+F)">
+            <button type="button" class="ribbon-btn" onclick="toggleFindReplace()" title="Axtar və Əvəzlə (Ctrl+F / Ctrl+H)">
               <i class="ph ph-magnifying-glass"></i> Axtar / Əvəzlə
+            </button>
+            <button type="button" class="ribbon-btn" id="btn-toggle-spellcheck" onclick="toggleSpellcheck()" title="İmla yoxlaması">
+              <i class="ph ph-check-square-offset"></i> İmla Yoxlaması (Spellcheck)
             </button>
           </div>
         </div>
 
-        <!-- VIEW tab -->
+        <!-- 5. VIEW TAB -->
         <div class="ribbon-content" id="ribbon-view" style="display:none">
           <div class="ribbon-group">
-            <button type="button" class="ribbon-btn" onclick="toggleFocusMode()" title="Fokus rejimi">
-              <i class="ph ph-arrows-out"></i> Fokus
+            <button type="button" class="ribbon-btn" onclick="toggleFocusMode()" title="Diqqət yayındırmayan fokus rejimi">
+              <i class="ph ph-arrows-out"></i> Fokus Rejimi
             </button>
-            <button type="button" class="ribbon-btn" onclick="toggleRulers()" title="Xətkeşi göstər/gizlə" id="btn-toggle-ruler">
+            <button type="button" class="ribbon-btn" onclick="toggleFullscreen()" title="Tam ekran rejimi">
+              <i class="ph ph-corners-out"></i> Tam Ekran
+            </button>
+            <button type="button" class="ribbon-btn active-fmt" onclick="toggleRulers()" title="Xətkeşi göstər/gizlə" id="btn-toggle-ruler">
               <i class="ph ph-ruler"></i> Xətkeş (Ruler)
             </button>
-            <button type="button" class="ribbon-btn" onclick="togglePageBorders()" title="Səhifə kənarlıq kölgəsi">
+            <button type="button" class="ribbon-btn" onclick="toggleDocOutline()" title="Sənəd xülasəsini (başlıqları) göstər" id="btn-toggle-outline">
+              <i class="ph ph-sidebar"></i> Sənəd Xülasəsi (Outline)
+            </button>
+            <button type="button" class="ribbon-btn active-fmt" onclick="togglePageBorders()" title="Səhifə kənarlıq kölgəsi" id="btn-toggle-borders">
               <i class="ph ph-rectangle"></i> Səhifə Kölgəsi
             </button>
           </div>
           <div class="ribbon-sep"></div>
+
+          <!-- Zoom controls -->
           <div class="ribbon-group">
-            <label style="font-size:0.78rem; color:#666; display:flex; align-items:center; gap:0.4rem;">
-              Zoom:
-              <input type="range" min="60" max="150" value="100" style="width:80px;"
-                oninput="setEditorZoom(this.value)" id="zoom-slider">
-              <span id="zoom-label">100%</span>
-            </label>
+            <button type="button" class="ribbon-btn btn-sm" onclick="setEditorZoom(75)">75%</button>
+            <button type="button" class="ribbon-btn btn-sm" onclick="setEditorZoom(100)">100%</button>
+            <button type="button" class="ribbon-btn btn-sm" onclick="setEditorZoom(125)">125%</button>
+            <button type="button" class="ribbon-btn btn-sm" onclick="setEditorZoom(150)">150%</button>
+            <input type="range" min="60" max="150" value="100" style="width:75px;margin-left:0.3rem;"
+              oninput="setEditorZoom(this.value)" id="zoom-slider">
+            <span id="zoom-label" style="font-size:0.78rem;font-weight:600;min-width:35px;">100%</span>
           </div>
         </div>
       </div>
+
+      <!-- Special Characters Modal -->
+      <div class="special-chars-modal" id="special-chars-modal">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="font-size:0.9rem;">Xüsusi Simvollar</strong>
+          <button type="button" onclick="toggleSpecialCharsModal()" style="background:none;border:none;cursor:pointer;font-size:1.2rem;">&times;</button>
+        </div>
+        <div class="special-chars-grid">
+          <button type="button" class="special-char-btn" onclick="wInsertChar('©')">©</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('®')">®</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('™')">™</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('€')">€</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('$')">$</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('£')">£</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('¥')">¥</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('°')">°</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('±')">±</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('≠')">≠</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('≤')">≤</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('≥')">≥</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('×')">×</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('÷')">÷</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('∞')">∞</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('π')">π</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('√')">√</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('✓')">✓</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('✗')">✗</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('★')">★</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('•')">•</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('—')">—</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('–')">–</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('…')">…</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('←')">←</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('→')">→</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('↑')">↑</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('↓')">↓</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('§')">§</button>
+          <button type="button" class="special-char-btn" onclick="wInsertChar('¶')">¶</button>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" style="width:100%;" onclick="toggleSpecialCharsModal()">Bağla</button>
+      </div>
+
+      <!-- Document Outline Sidebar (Collapsible) -->
+      <div style="display:flex; position:relative;">
+        <div class="doc-outline-panel" id="doc-outline-panel">
+          <div style="font-weight:700; margin-bottom:0.6rem; color:var(--green); display:flex; justify-content:space-between; align-items:center;">
+            <span>Sənəd Strukturu</span>
+            <button type="button" onclick="toggleDocOutline()" style="background:none;border:none;cursor:pointer;font-size:1.1rem;">&times;</button>
+          </div>
+          <div id="outline-items-container">
+            <p style="color:#888; font-size:0.8rem;">Başlıq əlavə etdikcə burada görünəcək.</p>
+          </div>
+        </div>
 
       <!-- Find & Replace overlay -->
       <div class="find-overlay" id="find-overlay">
@@ -1359,7 +1567,9 @@
           <div class="word-ruler-body-row">
             <div class="word-ruler-v" id="ruler-v-en"></div>
             <div class="word-page" id="word-page-en">
+              <div class="word-page-header" id="header-en" style="display:none;" contenteditable="true"><span>Sənəd Başlığı</span><span>YES Community</span></div>
               <div id="wysiwyg-editor-en"></div>
+              <div class="word-page-footer" id="footer-en" style="display:none;" contenteditable="true"><span>Səhifə 1</span><span>youthensoc.org</span></div>
             </div>
           </div>
         </div>
@@ -1377,12 +1587,15 @@
           <div class="word-ruler-body-row">
             <div class="word-ruler-v" id="ruler-v-az"></div>
             <div class="word-page" id="word-page-az">
+              <div class="word-page-header" id="header-az" style="display:none;" contenteditable="true"><span>Məqalə Başlığı</span><span>YES Community</span></div>
               <div id="wysiwyg-editor-az"></div>
+              <div class="word-page-footer" id="footer-az" style="display:none;" contenteditable="true"><span>Səhifə 1</span><span>youthensoc.org</span></div>
             </div>
           </div>
         </div>
       </div>
 
+    </div><!-- /outline-wrapper -->
     </div><!-- /.wysiwyg-section -->
 
     <!-- Hidden textareas — still read by saveArticle() -->
@@ -2570,6 +2783,21 @@
     TableBlot.className = 'word-table-wrapper';
     Quill.register(TableBlot, true);
 
+    // Custom Page Break Blot
+    class PageBreakBlot extends BlockEmbed {
+      static create() {
+        const node = super.create();
+        node.setAttribute('contenteditable', 'false');
+        node.innerHTML = '<span>───────── Səhifə Qırılması (Page Break) ─────────</span>';
+        return node;
+      }
+    }
+    PageBreakBlot.blotName = 'pageBreak';
+    PageBreakBlot.tagName = 'div';
+    PageBreakBlot.className = 'word-page-break';
+    Quill.register(PageBreakBlot, true);
+
+
     const QUILL_OPTIONS = {
       theme: 'snow',
       modules: {
@@ -2637,6 +2865,229 @@
       t.classList.toggle('active', (i === 0 && lang === 'en') || (i === 1 && lang === 'az'));
     });
     updateRibbonActiveStates();
+  }
+
+  
+  // ── PRESETS & ADVANCED FORMATTING ───────────────────────
+  function wApplyStylePreset(preset) {
+    const q = getActiveQuill();
+    if (!q) return;
+    q.focus();
+    if (preset === 'normal') {
+      q.format('header', false);
+      q.format('size', false);
+      q.format('bold', false);
+      q.format('italic', false);
+    } else if (preset === 'title') {
+      q.format('header', false);
+      q.format('size', '32pt');
+      q.format('bold', true);
+    } else if (preset === 'subtitle') {
+      q.format('header', false);
+      q.format('size', '16pt');
+      q.format('italic', true);
+    }
+    setTimeout(updateRibbonActiveStates, 10);
+  }
+
+  function wSetLineSpacing(val) {
+    const pageId = currentEditorLang === 'en' ? 'word-page-en' : 'word-page-az';
+    const page = document.getElementById(pageId);
+    if (page) {
+      const editor = page.querySelector('.ql-editor');
+      if (editor) editor.style.lineHeight = val;
+    }
+  }
+
+  function wSetParaSpacing(val) {
+    const pageId = currentEditorLang === 'en' ? 'word-page-en' : 'word-page-az';
+    const page = document.getElementById(pageId);
+    if (page) {
+      const ps = page.querySelectorAll('.ql-editor p');
+      ps.forEach(p => p.style.marginBottom = val);
+    }
+  }
+
+  function toggleSpecialCharsModal() {
+    const modal = document.getElementById('special-chars-modal');
+    if (modal) {
+      modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+    }
+  }
+
+  function wInsertChar(ch) {
+    const q = getActiveQuill();
+    if (!q) return;
+    q.focus();
+    const range = q.getSelection(true);
+    const idx = range ? range.index : q.getLength();
+    q.insertText(idx, ch, 'user');
+    q.setSelection(idx + ch.length);
+    toggleSpecialCharsModal();
+  }
+
+  function wInsertPageBreak() {
+    const q = getActiveQuill();
+    if (!q) return;
+    q.focus();
+    const range = q.getSelection(true);
+    const idx = range ? range.index : q.getLength();
+    q.insertEmbed(idx, 'pageBreak', true, 'user');
+    q.insertText(idx + 1, '\n', 'user');
+    q.setSelection(idx + 2);
+  }
+
+  function wInsertTableOfContents() {
+    const q = getActiveQuill();
+    if (!q) return;
+    const pageId = currentEditorLang === 'en' ? 'word-page-en' : 'word-page-az';
+    const page = document.getElementById(pageId);
+    if (!page) return;
+
+    const headings = page.querySelectorAll('.ql-editor h1, .ql-editor h2, .ql-editor h3');
+    if (headings.length === 0) {
+      alert('Məqalədə heç bir başlıq (H1, H2 və ya H3) tapılmadı. Əvvəlcə başlıqlar əlavə edin.');
+      return;
+    }
+
+    let tocHTML = '<div class="word-toc-block" contenteditable="false"><div class="word-toc-title">Məzmun Cədvəli</div><ul class="word-toc-list">';
+    headings.forEach((h, i) => {
+      const text = h.textContent.trim();
+      const level = h.tagName.toLowerCase();
+      const indent = level === 'h1' ? '' : (level === 'h2' ? '&nbsp;&nbsp;•&nbsp;' : '&nbsp;&nbsp;&nbsp;&nbsp;–&nbsp;');
+      tocHTML += `<li>${indent}${text}</li>`;
+    });
+    tocHTML += '</ul></div><p></p>';
+
+    q.focus();
+    const delta = q.clipboard.convert(tocHTML);
+    q.updateContents(delta, 'user');
+  }
+
+  // ── LAYOUT & PAGE SIZE CONTROLS ─────────────────────────
+  let currentPageOrientation = 'portrait';
+  let currentPageSize = 'a4';
+
+  function wSetPageSize(size) {
+    currentPageSize = size;
+    applyPageDimensions();
+  }
+
+  function wSetOrientation(orient) {
+    currentPageOrientation = orient;
+    document.getElementById('btn-orient-portrait').classList.toggle('active-fmt', orient === 'portrait');
+    document.getElementById('btn-orient-landscape').classList.toggle('active-fmt', orient === 'landscape');
+    applyPageDimensions();
+  }
+
+  function applyPageDimensions() {
+    let w = 794;
+    let h = 1000;
+
+    if (currentPageSize === 'a4') {
+      w = currentPageOrientation === 'portrait' ? 794 : 1123;
+      h = currentPageOrientation === 'portrait' ? 1000 : 794;
+    } else if (currentPageSize === 'a5') {
+      w = currentPageOrientation === 'portrait' ? 559 : 794;
+      h = currentPageOrientation === 'portrait' ? 794 : 559;
+    } else if (currentPageSize === 'letter') {
+      w = currentPageOrientation === 'portrait' ? 816 : 1056;
+      h = currentPageOrientation === 'portrait' ? 1056 : 816;
+    }
+
+    document.querySelectorAll('.word-page').forEach(page => {
+      page.style.width = w + 'px';
+      page.style.minHeight = h + 'px';
+    });
+    document.querySelectorAll('.word-ruler-h').forEach(r => r.style.width = w + 'px');
+    document.querySelectorAll('.word-ruler-v').forEach(r => r.style.minHeight = h + 'px');
+
+    applyDocMargins();
+  }
+
+  function wSetMarginPreset(preset) {
+    if (preset === 'normal') {
+      docMargins = { left: 80, right: 80, top: 64, bottom: 64 };
+    } else if (preset === 'narrow') {
+      docMargins = { left: 40, right: 40, top: 40, bottom: 40 };
+    } else if (preset === 'wide') {
+      docMargins = { left: 120, right: 120, top: 80, bottom: 80 };
+    }
+    applyDocMargins();
+  }
+
+  let headerFooterActive = false;
+  function toggleHeaderFooter() {
+    headerFooterActive = !headerFooterActive;
+    const disp = headerFooterActive ? 'flex' : 'none';
+    const h1 = document.getElementById('header-en');
+    const f1 = document.getElementById('footer-en');
+    const h2 = document.getElementById('header-az');
+    const f2 = document.getElementById('footer-az');
+    if (h1) h1.style.display = disp;
+    if (f1) f1.style.display = disp;
+    if (h2) h2.style.display = disp;
+    if (f2) f2.style.display = disp;
+    const btn = document.getElementById('btn-toggle-hf');
+    if (btn) btn.classList.toggle('active-fmt', headerFooterActive);
+  }
+
+  // ── REVIEW & SPELLCHECK ─────────────────────────────────
+  let spellcheckActive = true;
+  function toggleSpellcheck() {
+    spellcheckActive = !spellcheckActive;
+    document.querySelectorAll('.ql-editor').forEach(ed => {
+      ed.setAttribute('spellcheck', spellcheckActive ? 'true' : 'false');
+    });
+    const btn = document.getElementById('btn-toggle-spellcheck');
+    if (btn) btn.classList.toggle('active-fmt', spellcheckActive);
+    alert(spellcheckActive ? 'İmla yoxlaması aktivləşdirildi.' : 'İmla yoxlaması söndürüldü.');
+  }
+
+  // ── VIEW & OUTLINE CONTROLS ─────────────────────────────
+  let docOutlineOpen = false;
+  function toggleDocOutline() {
+    docOutlineOpen = !docOutlineOpen;
+    const panel = document.getElementById('doc-outline-panel');
+    const btn = document.getElementById('btn-toggle-outline');
+    if (panel) panel.classList.toggle('open', docOutlineOpen);
+    if (btn) btn.classList.toggle('active-fmt', docOutlineOpen);
+    if (docOutlineOpen) updateDocOutline();
+  }
+
+  function updateDocOutline() {
+    const container = document.getElementById('outline-items-container');
+    if (!container) return;
+    const pageId = currentEditorLang === 'en' ? 'word-page-en' : 'word-page-az';
+    const page = document.getElementById(pageId);
+    if (!page) return;
+
+    const headings = page.querySelectorAll('.ql-editor h1, .ql-editor h2, .ql-editor h3');
+    if (headings.length === 0) {
+      container.innerHTML = '<p style="color:#888; font-size:0.8rem;">Heç bir başlıq tapılmadı.</p>';
+      return;
+    }
+    container.innerHTML = '';
+    headings.forEach((h, idx) => {
+      const tag = h.tagName.toLowerCase();
+      const item = document.createElement('div');
+      item.className = 'outline-item ' + tag;
+      item.textContent = h.textContent.trim() || `Başlıq ${idx + 1}`;
+      item.onclick = () => {
+        h.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        h.style.background = '#d8f3dc';
+        setTimeout(() => h.style.background = '', 1200);
+      };
+      container.appendChild(item);
+    });
+  }
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      if (document.exitFullscreen) document.exitFullscreen();
+    }
   }
 
   function switchRibbonTab(tab, el) {
@@ -3154,6 +3605,8 @@
       switch (e.key.toLowerCase()) {
         case 'k': e.preventDefault(); wInsertLink(); break;
         case 'f': e.preventDefault(); toggleFindReplace(); break;
+        case 'h': e.preventDefault(); toggleFindReplace(); break;
+        case 'enter': e.preventDefault(); wInsertPageBreak(); break;
       }
     }
     if (e.key === 'Escape') {
