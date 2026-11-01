@@ -5,10 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel — YES Community</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+  <!-- Quill WYSIWYG Editor -->
+  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+  <!-- marked.js for backward-compat Markdown -> HTML conversion -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
-  <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <link rel="stylesheet" href="css/accessibility.css">
@@ -264,8 +268,6 @@
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .form-group { margin-bottom: 1rem; }
     .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; opacity: 0.8; }
-    .form-group .EasyMDEContainer { margin-bottom: 0; }
-    .EasyMDEContainer .CodeMirror { border-radius: 0 0 10px 10px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; }
     .editor-toolbar { border-radius: 10px 10px 0 0; }
     .status-toggle { display: flex; gap: 0.5rem; }
     .status-option {
@@ -407,6 +409,123 @@
     }
     @media (max-width: 400px) {
       .stats-grid { grid-template-columns: 1fr; }
+    }
+  
+    /* ══════════════════════════════════════════════
+       WYSIWYG WORD-LIKE EDITOR STYLES
+    ══════════════════════════════════════════════ */
+    .wysiwyg-section { margin-top: 0.5rem; position: relative; }
+
+    /* Top bar */
+    .wysiwyg-topbar {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 0.8rem; background: #f0f0f0;
+      border: 1px solid #d0cece; border-bottom: none;
+      border-radius: 10px 10px 0 0;
+    }
+    .wysiwyg-lang-tabs { display: flex; gap: 0.4rem; }
+    .wysiwyg-lang-tab {
+      padding: 0.35rem 1rem; border: 1.5px solid #ccc; border-radius: 6px;
+      cursor: pointer; font-size: 0.8rem; font-weight: 600; background: white;
+      transition: 0.15s; display: flex; align-items: center; gap: 0.3rem;
+    }
+    .wysiwyg-lang-tab.active { background: var(--green); color: white; border-color: var(--green); }
+    .wysiwyg-topbar-actions { display: flex; gap: 0.4rem; margin-left: auto; }
+    .autosave-indicator { font-size: 0.75rem; color: #aaa; white-space: nowrap; }
+    .autosave-indicator.saving { color: #f39c12; }
+    .autosave-indicator.saved  { color: var(--green); }
+
+    /* Ribbon */
+    .word-ribbon {
+      background: #f8f8f8; border: 1px solid #d0cece; border-bottom: none;
+    }
+    .ribbon-tabs { display: flex; border-bottom: 1px solid #d0cece; }
+    .ribbon-tab {
+      background: none; border: none; padding: 0.45rem 1.1rem;
+      font-size: 0.78rem; font-weight: 700; cursor: pointer; color: #555;
+      border-bottom: 2px solid transparent; letter-spacing: 0.04em;
+      transition: 0.15s;
+    }
+    .ribbon-tab:hover { color: var(--green); }
+    .ribbon-tab.active { color: var(--green); border-bottom-color: var(--green); }
+    .ribbon-content { display: flex; flex-wrap: wrap; gap: 0.25rem; padding: 0.45rem 0.7rem; align-items: center; }
+    .ribbon-group { display: flex; align-items: center; gap: 0.2rem; }
+    .ribbon-sep { width: 1px; background: #d8d8d8; height: 26px; margin: 0 0.3rem; }
+    .ribbon-btn {
+      background: white; border: 1px solid #ddd; border-radius: 5px;
+      padding: 0.28rem 0.55rem; font-size: 0.82rem; cursor: pointer;
+      transition: 0.12s; display: inline-flex; align-items: center; gap: 0.25rem;
+      font-family: inherit; color: #333; white-space: nowrap;
+    }
+    .ribbon-btn:hover { background: #e8f5e9; border-color: var(--green); color: var(--green); }
+    .ribbon-btn.active-fmt { background: #d8f3dc; border-color: var(--green); color: var(--green); }
+    .ribbon-select {
+      border: 1px solid #ddd; border-radius: 5px; padding: 0.28rem 0.4rem;
+      font-size: 0.8rem; cursor: pointer; background: white; font-family: inherit;
+      height: 30px;
+    }
+    .ribbon-select:focus { outline: none; border-color: var(--green); }
+    .color-btn { position: relative; }
+
+    /* Document workspace */
+    .word-workspace {
+      background: #d8d8d8; padding: 1.5rem;
+      border: 1px solid #d0cece; border-radius: 0 0 10px 10px;
+      min-height: 400px; max-height: 580px;
+      overflow-y: auto;
+    }
+    .word-page {
+      background: white; width: 794px; max-width: 100%; margin: 0 auto;
+      padding: 64px 80px; min-height: 1000px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+      font-family: 'DM Sans', Georgia, serif; font-size: 11pt; line-height: 1.7;
+      color: #111; position: relative;
+      transform-origin: top center;
+    }
+    .word-page .ql-container.ql-snow { border: none; font-size: 11pt; }
+    .word-page .ql-editor { padding: 0; min-height: 500px; }
+    .word-page .ql-editor:focus { outline: none; }
+    .word-page .ql-editor h1 { font-size: 22pt; margin: 1rem 0 0.5rem; }
+    .word-page .ql-editor h2 { font-size: 17pt; margin: 0.9rem 0 0.4rem; }
+    .word-page .ql-editor h3 { font-size: 13pt; margin: 0.7rem 0 0.3rem; }
+    .word-page .ql-editor p { margin: 0 0 0.75rem; }
+    .word-page .ql-editor blockquote {
+      border-left: 4px solid var(--lime); margin: 1rem 0; padding: 0.5rem 1rem;
+      background: #f8fffe; color: #555; border-radius: 0 6px 6px 0;
+    }
+    .word-page .ql-editor img { max-width: 100%; height: auto; border-radius: 6px; }
+    .word-page .ql-editor table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    .word-page .ql-editor td, .word-page .ql-editor th {
+      border: 1px solid #bbb; padding: 0.4rem 0.6rem;
+    }
+    .word-page .ql-editor th { background: #f0f0f0; font-weight: bold; }
+    /* Hide Quill toolbar (we use our own ribbon) */
+    .word-page .ql-toolbar { display: none !important; }
+
+    /* Find overlay */
+    .find-overlay {
+      display: none; position: absolute; top: 100px; right: 1.5rem;
+      background: white; border: 1px solid #ddd; border-radius: 10px;
+      padding: 1rem; box-shadow: 0 6px 24px rgba(0,0,0,0.14);
+      z-index: 999; width: 300px;
+    }
+    .find-overlay.open { display: block; }
+    .find-overlay input { width: 100%; }
+
+    /* Focus mode */
+    .word-workspace.focus-mode {
+      position: fixed; inset: 0; z-index: 2000; max-height: 100vh;
+      border-radius: 0; padding: 2rem;
+    }
+    .word-workspace.focus-mode .word-page { min-height: 90vh; }
+
+    /* Print / PDF export */
+    @media print {
+      body > *:not(#print-target) { display: none !important; }
+      #print-target { display: block !important; }
+      .word-ribbon, .wysiwyg-topbar, .wysiwyg-lang-tabs { display: none !important; }
+      .word-workspace { background: white; padding: 0; border: none; max-height: none; }
+      .word-page { box-shadow: none; margin: 0; padding: 1in; }
     }
   </style>
 </head>
@@ -852,25 +971,208 @@
       </div>
     </div>
 
-    <div class="form-group">
-      <label style="display:flex; align-items:center; justify-content:space-between;">
-        <span data-i18n="label_art_desc_en">Məzmun (EN) — Markdown dəstəklənir *</span>
-        <button type="button" class="btn btn-ghost btn-sm" onclick="openInlineImgUpload('en')" style="font-size:0.78rem; padding:0.25rem 0.6rem;">
-          <i class="ph ph-image"></i> Şəkil əlavə et
-        </button>
-      </label>
-      <textarea id="art-desc-en" rows="5"></textarea>
-    </div>
+    <!-- ── WYSIWYG EDITOR ── -->
+    <div class="wysiwyg-section">
 
-    <div class="form-group">
-      <label style="display:flex; align-items:center; justify-content:space-between;">
-        <span data-i18n="label_art_desc_az">Məzmun (AZ) — Markdown dəstəklənir *</span>
-        <button type="button" class="btn btn-ghost btn-sm" onclick="openInlineImgUpload('az')" style="font-size:0.78rem; padding:0.25rem 0.6rem;">
-          <i class="ph ph-image"></i> Şəkil əlavə et
-        </button>
-      </label>
-      <textarea id="art-desc-az" rows="5"></textarea>
-    </div>
+      <!-- Language + autosave bar -->
+      <div class="wysiwyg-topbar">
+        <div class="wysiwyg-lang-tabs">
+          <button type="button" class="wysiwyg-lang-tab active" onclick="switchEditorLang('en')">
+            <i class="ph ph-flag"></i> EN Content
+          </button>
+          <button type="button" class="wysiwyg-lang-tab" onclick="switchEditorLang('az')">
+            <i class="ph ph-flag"></i> AZ Content
+          </button>
+        </div>
+        <span class="autosave-indicator" id="autosave-indicator"></span>
+        <div class="wysiwyg-topbar-actions">
+          <button type="button" class="ribbon-btn" onclick="exportArticleHTML()" title="HTML ixrac et">
+            <i class="ph ph-code"></i> HTML
+          </button>
+          <button type="button" class="ribbon-btn" onclick="exportArticlePDF()" title="PDF ixrac et">
+            <i class="ph ph-file-pdf"></i> PDF
+          </button>
+          <button type="button" class="ribbon-btn" onclick="toggleFocusMode()" title="Fokus rejimi" id="focus-mode-btn">
+            <i class="ph ph-arrows-out"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- RIBBON TOOLBAR -->
+      <div class="word-ribbon" id="word-ribbon">
+        <!-- Tab buttons -->
+        <div class="ribbon-tabs">
+          <button type="button" class="ribbon-tab active" onclick="switchRibbonTab('home',this)">HOME</button>
+          <button type="button" class="ribbon-tab" onclick="switchRibbonTab('insert',this)">INSERT</button>
+          <button type="button" class="ribbon-tab" onclick="switchRibbonTab('review',this)">REVIEW</button>
+          <button type="button" class="ribbon-tab" onclick="switchRibbonTab('view',this)">VIEW</button>
+        </div>
+
+        <!-- HOME tab -->
+        <div class="ribbon-content" id="ribbon-home">
+          <!-- Undo / Redo -->
+          <div class="ribbon-group">
+            <button type="button" class="ribbon-btn" onclick="wCmd('undo')" title="Geri al (Ctrl+Z)"><i class="ph ph-arrow-counter-clockwise"></i></button>
+            <button type="button" class="ribbon-btn" onclick="wCmd('redo')" title="Yenidən (Ctrl+Y)"><i class="ph ph-arrow-clockwise"></i></button>
+          </div>
+          <div class="ribbon-sep"></div>
+          <!-- Font family -->
+          <div class="ribbon-group">
+            <select class="ribbon-select" onchange="wFormat('font', this.value)" title="Font">
+              <option value="">Default Font</option>
+              <option value="serif">Serif</option>
+              <option value="monospace">Monospace</option>
+            </select>
+            <select class="ribbon-select" onchange="wFormat('size', this.value)" title="Ölçü">
+              <option value="">Normal</option>
+              <option value="small">Small</option>
+              <option value="large">Large</option>
+              <option value="huge">Huge</option>
+            </select>
+          </div>
+          <div class="ribbon-sep"></div>
+          <!-- Text formatting -->
+          <div class="ribbon-group">
+            <button type="button" class="ribbon-btn" onclick="wFormat('bold')" title="Qalın (Ctrl+B)"><i class="ph ph-text-b"></i></button>
+            <button type="button" class="ribbon-btn" onclick="wFormat('italic')" title="Kursiv (Ctrl+I)"><i class="ph ph-text-italic"></i></button>
+            <button type="button" class="ribbon-btn" onclick="wFormat('underline')" title="Alt xətt (Ctrl+U)"><i class="ph ph-text-underline"></i></button>
+            <button type="button" class="ribbon-btn" onclick="wFormat('strike')" title="Üstü çizili"><i class="ph ph-text-strikethrough"></i></button>
+          </div>
+          <div class="ribbon-sep"></div>
+          <!-- Colors -->
+          <div class="ribbon-group">
+            <label class="ribbon-btn color-btn" title="Mətn rəngi">
+              <i class="ph ph-paint-brush"></i>
+              <input type="color" style="width:0;height:0;opacity:0;position:absolute;" oninput="wFormat('color', this.value)">
+            </label>
+            <label class="ribbon-btn color-btn" title="Vurğu rəngi">
+              <i class="ph ph-highlighter"></i>
+              <input type="color" style="width:0;height:0;opacity:0;position:absolute;" oninput="wFormat('background', this.value)">
+            </label>
+            <button type="button" class="ribbon-btn" onclick="wClearFormat()" title="Formatı sil"><i class="ph ph-eraser"></i></button>
+          </div>
+          <div class="ribbon-sep"></div>
+          <!-- Headings -->
+          <div class="ribbon-group">
+            <button type="button" class="ribbon-btn" onclick="wFormat('header',1)" title="Başlıq 1"><b>H1</b></button>
+            <button type="button" class="ribbon-btn" onclick="wFormat('header',2)" title="Başlıq 2"><b>H2</b></button>
+            <button type="button" class="ribbon-btn" onclick="wFormat('header',3)" title="Başlıq 3"><b>H3</b></button>
+            <button type="button" class="ribbon-btn" onclick="wFormat('header',false)" title="Normal mətn"><i class="ph ph-paragraph"></i></button>
+          </div>
+          <div class="ribbon-sep"></div>
+          <!-- Alignment -->
+          <div class="ribbon-group">
+            <button type="button" class="ribbon-btn" onclick="wFormat('align','')" title="Sola"><i class="ph ph-text-align-left"></i></button>
+            <button type="button" class="ribbon-btn" onclick="wFormat('align','center')" title="Mərkəzə"><i class="ph ph-text-align-center"></i></button>
+            <button type="button" class="ribbon-btn" onclick="wFormat('align','right')" title="Sağa"><i class="ph ph-text-align-right"></i></button>
+            <button type="button" class="ribbon-btn" onclick="wFormat('align','justify')" title="Hər iki tərəf"><i class="ph ph-text-align-justify"></i></button>
+          </div>
+          <div class="ribbon-sep"></div>
+          <!-- Lists -->
+          <div class="ribbon-group">
+            <button type="button" class="ribbon-btn" onclick="wFormat('list','bullet')" title="Nişansız siyahı"><i class="ph ph-list-bullets"></i></button>
+            <button type="button" class="ribbon-btn" onclick="wFormat('list','ordered')" title="Nömrəli siyahı"><i class="ph ph-list-numbers"></i></button>
+          </div>
+          <div class="ribbon-sep"></div>
+          <!-- Indent -->
+          <div class="ribbon-group">
+            <button type="button" class="ribbon-btn" onclick="wCmd('indent',-1)" title="Girinti azalt"><i class="ph ph-arrow-line-left"></i></button>
+            <button type="button" class="ribbon-btn" onclick="wCmd('indent',1)" title="Girinti artır"><i class="ph ph-arrow-line-right"></i></button>
+          </div>
+          <div class="ribbon-sep"></div>
+          <!-- Blockquote -->
+          <div class="ribbon-group">
+            <button type="button" class="ribbon-btn" onclick="wFormat('blockquote')" title="Sitat"><i class="ph ph-quotes"></i></button>
+            <button type="button" class="ribbon-btn" onclick="wFormat('code-block')" title="Kod bloku"><i class="ph ph-code-block"></i></button>
+          </div>
+        </div>
+
+        <!-- INSERT tab -->
+        <div class="ribbon-content" id="ribbon-insert" style="display:none">
+          <div class="ribbon-group">
+            <button type="button" class="ribbon-btn" onclick="wInsertImage()" title="Şəkil əlavə et">
+              <i class="ph ph-image"></i> Şəkil
+            </button>
+            <button type="button" class="ribbon-btn" onclick="wInsertTable()" title="Cədvəl əlavə et">
+              <i class="ph ph-table"></i> Cədvəl
+            </button>
+            <button type="button" class="ribbon-btn" onclick="wInsertLink()" title="Link əlavə et (Ctrl+K)">
+              <i class="ph ph-link"></i> Link
+            </button>
+            <button type="button" class="ribbon-btn" onclick="wInsertHR()" title="Üfüqi xətt">
+              <i class="ph ph-minus"></i> Xətt
+            </button>
+          </div>
+        </div>
+
+        <!-- REVIEW tab -->
+        <div class="ribbon-content" id="ribbon-review" style="display:none">
+          <div class="ribbon-group">
+            <button type="button" class="ribbon-btn" onclick="wWordCount()" title="Söz sayı">
+              <i class="ph ph-hash"></i> Söz sayı
+            </button>
+            <button type="button" class="ribbon-btn" onclick="toggleFindReplace()" title="Tap/Əvəzlə (Ctrl+F)">
+              <i class="ph ph-magnifying-glass"></i> Tap
+            </button>
+          </div>
+        </div>
+
+        <!-- VIEW tab -->
+        <div class="ribbon-content" id="ribbon-view" style="display:none">
+          <div class="ribbon-group">
+            <button type="button" class="ribbon-btn" onclick="toggleFocusMode()" title="Fokus rejimi">
+              <i class="ph ph-arrows-out"></i> Fokus
+            </button>
+            <button type="button" class="ribbon-btn" onclick="togglePageBorders()" title="Səhifə kənarlarını göstər/gizlə">
+              <i class="ph ph-rectangle"></i> Səhifə
+            </button>
+          </div>
+          <div class="ribbon-sep"></div>
+          <div class="ribbon-group">
+            <label style="font-size:0.78rem; color:#666; display:flex; align-items:center; gap:0.4rem;">
+              Zoom:
+              <input type="range" min="60" max="150" value="100" style="width:80px;"
+                oninput="setEditorZoom(this.value)" id="zoom-slider">
+              <span id="zoom-label">100%</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Find & Replace overlay -->
+      <div class="find-overlay" id="find-overlay">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+          <strong style="font-size:0.85rem;">Tap / Əvəzlə</strong>
+          <button type="button" onclick="toggleFindReplace()" style="background:none;border:none;cursor:pointer;font-size:1.1rem;">&times;</button>
+        </div>
+        <input type="text" id="find-input" placeholder="Tap..." style="margin-bottom:0.5rem; font-size:0.85rem; padding:0.4rem 0.6rem; border-radius:6px; border:1px solid #ddd;">
+        <input type="text" id="replace-input" placeholder="Əvəzlə..." style="margin-bottom:0.7rem; font-size:0.85rem; padding:0.4rem 0.6rem; border-radius:6px; border:1px solid #ddd;">
+        <div style="display:flex; gap:0.5rem;">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="doFind()">Tap</button>
+          <button type="button" class="btn btn-green btn-sm" onclick="doReplace()">Əvəzlə</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="doReplaceAll()">Hamısını əvəzlə</button>
+        </div>
+      </div>
+
+      <!-- EN Editor Canvas -->
+      <div class="word-workspace" id="word-workspace-en">
+        <div class="word-page" id="word-page-en">
+          <div id="wysiwyg-editor-en"></div>
+        </div>
+      </div>
+
+      <!-- AZ Editor Canvas -->
+      <div class="word-workspace" id="word-workspace-az" style="display:none">
+        <div class="word-page" id="word-page-az">
+          <div id="wysiwyg-editor-az"></div>
+        </div>
+      </div>
+
+    </div><!-- /.wysiwyg-section -->
+
+    <!-- Hidden textareas — still read by saveArticle() -->
+    <textarea id="art-desc-en" style="display:none"></textarea>
+    <textarea id="art-desc-az" style="display:none"></textarea>
 
     <input type="hidden" id="art-id">
     <div class="modal-footer">
@@ -1548,7 +1850,12 @@
   let filteredArticles = [];
   let currentStatusFilter = 'all';
   let currentTags = [];
-  let mdeEN = null, mdeAZ = null;
+  let mdeEN = null, mdeAZ = null; // kept for any legacy references
+  let quillEN = null, quillAZ = null;
+  let currentEditorLang = 'en';
+  let autosaveTimer = null;
+  let focusModeActive = false;
+  let pageBordersVisible = true;
 
   // Categories stored in localStorage (since no separate table)
   let categories = JSON.parse(localStorage.getItem('yes_categories') || '[]');
@@ -1619,7 +1926,7 @@
   function showApp() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
-    initMDE();
+    initWYSIWYG();
     loadArticles();
     renderCategoryUI();
     applyLanguage(currentLang);
@@ -1973,27 +2280,283 @@
     });
   }
 
-  // ── MARKDOWN EDITORS ──────────────────────────────────
-  function initMDE() {
-    const t = translations[currentLang] || translations.az;
-    if (mdeEN || mdeAZ) return; // already initialized
-    mdeEN = new EasyMDE({
-      element: document.getElementById('art-desc-en'),
-      placeholder: t.mde_ph_en,
-      spellChecker: false,
-      autofocus: false,
-      status: false,
-      toolbar: ['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','|','preview','guide'],
+  // ── WYSIWYG QUILL EDITORS ─────────────────────────────
+  function initMDE() { initWYSIWYG(); } // alias for backward compat
+
+  function initWYSIWYG() {
+    if (quillEN && quillAZ) return;
+
+    const QUILL_OPTIONS = {
+      theme: 'snow',
+      modules: {
+        toolbar: false, // we use our own ribbon
+        history: { delay: 500, maxStack: 200, userOnly: true },
+        clipboard: { matchVisual: false },
+      },
+      placeholder: 'Məzmunu buraya yazın...',
+      formats: ['bold','italic','underline','strike','color','background','font','size',
+                'header','align','list','indent','blockquote','code-block','link','image'],
+    };
+
+    quillEN = new Quill('#wysiwyg-editor-en', {
+      ...QUILL_OPTIONS,
+      placeholder: 'Write article content in English...',
     });
-    mdeAZ = new EasyMDE({
-      element: document.getElementById('art-desc-az'),
-      placeholder: t.mde_ph_az,
-      spellChecker: false,
-      autofocus: false,
-      status: false,
-      toolbar: ['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','|','preview','guide'],
+    quillAZ = new Quill('#wysiwyg-editor-az', {
+      ...QUILL_OPTIONS,
+      placeholder: 'Məqalə məzmununu Azərbaycan dilinde yazin...',
+    });
+
+    // Sync to hidden textareas + trigger autosave
+    quillEN.on('text-change', () => {
+      document.getElementById('art-desc-en').value = quillEN.root.innerHTML;
+      scheduleAutosave();
+    });
+    quillAZ.on('text-change', () => {
+      document.getElementById('art-desc-az').value = quillAZ.root.innerHTML;
+      scheduleAutosave();
     });
   }
+
+  function getActiveQuill() {
+    return currentEditorLang === 'en' ? quillEN : quillAZ;
+  }
+
+  function switchEditorLang(lang) {
+    currentEditorLang = lang;
+    document.getElementById('word-workspace-en').style.display = lang === 'en' ? 'block' : 'none';
+    document.getElementById('word-workspace-az').style.display = lang === 'az' ? 'block' : 'none';
+    document.querySelectorAll('.wysiwyg-lang-tab').forEach((t, i) => {
+      t.classList.toggle('active', (i === 0 && lang === 'en') || (i === 1 && lang === 'az'));
+    });
+  }
+
+  function switchRibbonTab(tab, el) {
+    document.querySelectorAll('.ribbon-content').forEach(c => c.style.display = 'none');
+    document.getElementById('ribbon-' + tab).style.display = 'flex';
+    document.querySelectorAll('.ribbon-tab').forEach(t => t.classList.remove('active'));
+    if (el) el.classList.add('active');
+  }
+
+  // ── RIBBON COMMANDS ───────────────────────────────────
+  function wFormat(fmt, val) {
+    const q = getActiveQuill();
+    if (!q) return;
+    const cur = q.getFormat();
+    if (val === undefined) {
+      q.format(fmt, !cur[fmt]);
+    } else {
+      q.format(fmt, cur[fmt] === val ? false : val);
+    }
+  }
+
+  function wCmd(cmd, val) {
+    const q = getActiveQuill();
+    if (!q) return;
+    if (cmd === 'undo') { q.history.undo(); return; }
+    if (cmd === 'redo') { q.history.redo(); return; }
+    if (cmd === 'indent') {
+      const cur = q.getFormat();
+      const lvl = (cur.indent || 0) + val;
+      q.format('indent', lvl < 0 ? false : lvl);
+      return;
+    }
+  }
+
+  function wClearFormat() {
+    const q = getActiveQuill();
+    if (!q) return;
+    const sel = q.getSelection();
+    if (sel) q.removeFormat(sel.index, sel.length);
+  }
+
+  function wInsertImage() {
+    openInlineImgUpload(currentEditorLang);
+  }
+
+  function wInsertLink() {
+    const url = prompt('Link URL daxil edin:');
+    if (!url) return;
+    const q = getActiveQuill();
+    const sel = q.getSelection();
+    if (sel && sel.length > 0) {
+      q.format('link', url);
+    } else {
+      q.insertText(sel ? sel.index : 0, url, 'link', url);
+    }
+  }
+
+  function wInsertHR() {
+    const q = getActiveQuill();
+    if (!q) return;
+    const sel = q.getSelection(true);
+    q.insertText(sel.index, '\n', 'user');
+    q.insertEmbed(sel.index, 'block', true, 'user');
+  }
+
+  function wInsertTable() {
+    const rows = parseInt(prompt('Sıra sayı:', '3') || '3');
+    const cols = parseInt(prompt('Sütun sayı:', '3') || '3');
+    if (!rows || !cols) return;
+    const q = getActiveQuill();
+    const sel = q.getSelection(true);
+    let tableHTML = '<table><tbody>';
+    for (let r = 0; r < rows; r++) {
+      tableHTML += '<tr>';
+      for (let c = 0; c < cols; c++) {
+        tableHTML += r === 0
+          ? '<th style="border:1px solid #bbb;padding:0.4rem;background:#f0f0f0;">Başlıq</th>'
+          : '<td style="border:1px solid #bbb;padding:0.4rem;">Hücrə</td>';
+      }
+      tableHTML += '</tr>';
+    }
+    tableHTML += '</tbody></table><p></p>';
+    const idx = sel ? sel.index : q.getLength();
+    const delta = q.clipboard.convert(tableHTML);
+    q.updateContents(delta, 'user');
+  }
+
+  function wWordCount() {
+    const q = getActiveQuill();
+    const text = q ? q.getText() : '';
+    const words = text.trim().split(/\s+/).filter(Boolean).length;
+    const chars = text.replace(/\n/g,'').length;
+    alert(`Sozler: ${words}\nSymvollar: ${chars}`);
+  }
+
+  function toggleFindReplace() {
+    document.getElementById('find-overlay').classList.toggle('open');
+    if (document.getElementById('find-overlay').classList.contains('open')) {
+      document.getElementById('find-input').focus();
+    }
+  }
+
+  function doFind() {
+    const term = document.getElementById('find-input').value;
+    if (!term) return;
+    const q = getActiveQuill();
+    const text = q.getText();
+    const idx = text.indexOf(term);
+    if (idx !== -1) {
+      q.setSelection(idx, term.length);
+    } else {
+      alert('Tapilmadi: ' + term);
+    }
+  }
+
+  function doReplace() {
+    const term = document.getElementById('find-input').value;
+    const replacement = document.getElementById('replace-input').value;
+    if (!term) return;
+    const q = getActiveQuill();
+    const sel = q.getSelection();
+    if (sel && sel.length > 0) {
+      q.deleteText(sel.index, sel.length);
+      q.insertText(sel.index, replacement);
+    } else {
+      doFind();
+    }
+  }
+
+  function doReplaceAll() {
+    const term = document.getElementById('find-input').value;
+    const replacement = document.getElementById('replace-input').value;
+    if (!term) return;
+    const q = getActiveQuill();
+    const fullText = q.getText();
+    let idx = fullText.indexOf(term);
+    let count = 0;
+    const positions = [];
+    while (idx !== -1) {
+      positions.push(idx);
+      idx = fullText.indexOf(term, idx + 1);
+    }
+    // replace in reverse to preserve indices
+    positions.reverse().forEach(pos => {
+      q.deleteText(pos, term.length, 'user');
+      q.insertText(pos, replacement, 'user');
+      count++;
+    });
+    alert(`${count} yer evez edildi.`);
+  }
+
+  function toggleFocusMode() {
+    focusModeActive = !focusModeActive;
+    const wsEN = document.getElementById('word-workspace-en');
+    const wsAZ = document.getElementById('word-workspace-az');
+    const btn = document.getElementById('focus-mode-btn');
+    [wsEN, wsAZ].forEach(ws => ws.classList.toggle('focus-mode', focusModeActive));
+    if (btn) btn.style.background = focusModeActive ? 'var(--green)' : '';
+    if (btn) btn.style.color = focusModeActive ? 'white' : '';
+  }
+
+  function togglePageBorders() {
+    pageBordersVisible = !pageBordersVisible;
+    document.querySelectorAll('.word-page').forEach(p => {
+      p.style.boxShadow = pageBordersVisible ? '' : 'none';
+      p.style.outline = pageBordersVisible ? '' : '1px dashed #ccc';
+    });
+  }
+
+  function setEditorZoom(val) {
+    document.querySelectorAll('.word-page').forEach(p => {
+      p.style.transform = `scale(${val / 100})`;
+    });
+    const lbl = document.getElementById('zoom-label');
+    if (lbl) lbl.textContent = val + '%';
+  }
+
+  function exportArticleHTML() {
+    const q = getActiveQuill();
+    if (!q) return;
+    const content = q.root.innerHTML;
+    const blob = new Blob([`<!DOCTYPE html><html><body>${content}</body></html>`], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'article.html';
+    a.click();
+  }
+
+  function exportArticlePDF() {
+    window.print();
+  }
+
+  // ── AUTOSAVE ──────────────────────────────────────────
+  function scheduleAutosave() {
+    const indicator = document.getElementById('autosave-indicator');
+    if (indicator) { indicator.textContent = 'Saxlanilir...'; indicator.className = 'autosave-indicator saving'; }
+    clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(async () => {
+      const id = document.getElementById('art-id').value;
+      if (!id) { // no existing article id — just mark saved visually
+        if (indicator) { indicator.textContent = ''; indicator.className = 'autosave-indicator'; }
+        return;
+      }
+      const update = {
+        desc_en: quillEN ? quillEN.root.innerHTML : '',
+        desc_az: quillAZ ? quillAZ.root.innerHTML : '',
+      };
+      await sb.from('articles').update(update).eq('id', id);
+      if (indicator) { indicator.textContent = 'Yadda saxlandi'; indicator.className = 'autosave-indicator saved'; }
+      setTimeout(() => { if (indicator) indicator.textContent = ''; }, 3000);
+    }, 3000);
+  }
+
+  // ── KEYBOARD SHORTCUTS ────────────────────────────────
+  document.addEventListener('keydown', function(e) {
+    const modal = document.getElementById('article-modal');
+    if (!modal || !modal.classList.contains('open')) return;
+    if (e.ctrlKey || e.metaKey) {
+      switch (e.key.toLowerCase()) {
+        case 'k': e.preventDefault(); wInsertLink(); break;
+        case 'f': e.preventDefault(); toggleFindReplace(); break;
+      }
+    }
+    if (e.key === 'Escape') {
+      const fo = document.getElementById('find-overlay');
+      if (fo && fo.classList.contains('open')) { fo.classList.remove('open'); e.stopPropagation(); }
+    }
+  });
 
 
   // ══════════════════════════════════════════════════════
@@ -2052,7 +2615,9 @@
 
       // Fill in English fields (user can translate AZ manually or edit)
       document.getElementById('art-title-en').value = title;
-      if (mdeEN) mdeEN.value(body);
+      if (quillEN) {
+        quillEN.root.innerHTML = '<p>' + body.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>') + '</p>';
+      }
 
       notify('PDF uğurla oxundu! Məzmunu yoxlayın və lazım olursa düzəliş edin.', 'success');
     } catch (err) {
@@ -2168,28 +2733,32 @@
     if (_imgUploadTarget === 'cover') {
       document.getElementById('art-image').value = _uploadedImgUrl;
     } else {
-      const mde = _imgUploadTarget === 'en' ? mdeEN : mdeAZ;
-      if (mde) {
-        const cm = mde.codemirror;
-        const cur = cm.getCursor();
-
-        // Seçilmiş ölçü və mövqe
+      const q = _imgUploadTarget === 'en' ? quillEN : quillAZ;
+      if (q) {
         const sizeRadio = document.querySelector('input[name="img_size"]:checked');
         const sizeVal = sizeRadio ? sizeRadio.value : '50%';
         const alignRadio = document.querySelector('input[name="img_align"]:checked');
         const alignVal = alignRadio ? alignRadio.value : 'center';
 
-        let snippet = '';
-        if (alignVal === 'center') {
-          snippet = `\n\n<img src="${_uploadedImgUrl}" alt="Şəkil" style="width:${sizeVal}; max-width:100%; height:auto; border-radius:10px; display:block; margin:1.5rem auto; box-shadow:0 4px 15px rgba(0,0,0,0.06);">\n\n`;
-        } else if (alignVal === 'left') {
-          snippet = `\n\n<img src="${_uploadedImgUrl}" alt="Şəkil" style="width:${sizeVal}; max-width:100%; height:auto; border-radius:10px; float:left; margin:0.8rem 1.5rem 1rem 0; box-shadow:0 4px 12px rgba(0,0,0,0.06);">\n\n`;
-        } else if (alignVal === 'right') {
-          snippet = `\n\n<img src="${_uploadedImgUrl}" alt="Şəkil" style="width:${sizeVal}; max-width:100%; height:auto; border-radius:10px; float:right; margin:0.8rem 0 1rem 1.5rem; box-shadow:0 4px 12px rgba(0,0,0,0.06);">\n\n`;
-        }
+        const marginMap = {
+          center: '1.5rem auto',
+          left:   '0.8rem 1.5rem 1rem 0',
+          right:  '0.8rem 0 1rem 1.5rem'
+        };
+        const floatMap = { center: 'none', left: 'left', right: 'right' };
+        const displayVal = alignVal === 'center' ? 'block' : 'inline';
+        const imgStyle = `width:${sizeVal}; max-width:100%; height:auto; border-radius:8px; ` +
+          `float:${floatMap[alignVal] || 'none'}; display:${displayVal}; ` +
+          `margin:${marginMap[alignVal] || '1rem auto'}; box-shadow:0 4px 12px rgba(0,0,0,0.08);`;
 
-        cm.replaceRange(snippet, cur);
-        cm.focus();
+        const sel = q.getSelection(true);
+        const idx = sel ? sel.index : q.getLength();
+        // Insert image as HTML via clipboard delta
+        const delta = q.clipboard.convert(
+          `<img src="${_uploadedImgUrl}" alt="Sekil" style="${imgStyle}">`
+        );
+        q.updateContents(delta, 'user');
+        q.setSelection(idx + 1);
       }
     }
     closeImgUpload();
@@ -2248,15 +2817,15 @@
     document.getElementById('art-title-az').value = '';
     document.getElementById('art-image').value = '';
     document.getElementById('art-category').value = '';
-    if (mdeEN) mdeEN.value(''); if (mdeAZ) mdeAZ.value('');
+    if (quillEN) quillEN.setContents([]);
+    if (quillAZ) quillAZ.setContents([]);
+    document.getElementById('art-desc-en').value = '';
+    document.getElementById('art-desc-az').value = '';
     currentTags = []; renderTagChips();
     selectStatus('published');
     populateCategorySelect();
     document.getElementById('article-modal').classList.add('open');
-    setTimeout(() => {
-      if (mdeEN) mdeEN.codemirror.refresh();
-      if (mdeAZ) mdeAZ.codemirror.refresh();
-    }, 10);
+    switchEditorLang('en');
   }
 
   function showEditModal(idx) {
@@ -2267,16 +2836,32 @@
     document.getElementById('art-title-en').value = art.title_en || '';
     document.getElementById('art-title-az').value = art.title_az || '';
     document.getElementById('art-image').value = art.image || '';
-    if (mdeEN) mdeEN.value(art.desc_en || ''); if (mdeAZ) mdeAZ.value(art.desc_az || '');
+    // Load content — handle both legacy Markdown and new HTML
+    const loadContent = (editor, raw) => {
+      if (!editor || raw === undefined) return;
+      const content = raw || '';
+      if (content.trim().startsWith('<') || content.trim() === '') {
+        // Already HTML (new format) or empty
+        editor.root.innerHTML = content;
+      } else {
+        // Legacy Markdown — convert to HTML using marked.js
+        try {
+          editor.root.innerHTML = typeof marked !== 'undefined' ? marked.parse(content) : content;
+        } catch(e) {
+          editor.root.innerHTML = content;
+        }
+      }
+    };
+    loadContent(quillEN, art.desc_en);
+    loadContent(quillAZ, art.desc_az);
+    document.getElementById('art-desc-en').value = quillEN ? quillEN.root.innerHTML : (art.desc_en || '');
+    document.getElementById('art-desc-az').value = quillAZ ? quillAZ.root.innerHTML : (art.desc_az || '');
     currentTags = art.tags ? art.tags.split(',').map(t=>t.trim()).filter(Boolean) : [];
     renderTagChips();
     selectStatus(art.status || 'published');
     populateCategorySelect(art.category);
     document.getElementById('article-modal').classList.add('open');
-    setTimeout(() => {
-      if (mdeEN) mdeEN.codemirror.refresh();
-      if (mdeAZ) mdeAZ.codemirror.refresh();
-    }, 10);
+    switchEditorLang('en');
   }
 
   function closeModal() {
@@ -2309,8 +2894,8 @@
       title_en:  titleEN,
       title_az:  titleAZ,
       image:     document.getElementById('art-image').value.trim(),
-      desc_en:   mdeEN ? mdeEN.value() : '',
-      desc_az:   mdeAZ ? mdeAZ.value() : '',
+      desc_en:   quillEN ? quillEN.root.innerHTML : document.getElementById('art-desc-en').value,
+      desc_az:   quillAZ ? quillAZ.root.innerHTML : document.getElementById('art-desc-az').value,
       category:  document.getElementById('art-category').value,
       tags:      currentTags.join(', '),
       status:    selectedStatus,

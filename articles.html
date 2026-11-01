@@ -361,7 +361,11 @@
         var ev = allEvents[currentArticleIndex];
         if (ev) {
           document.getElementById('sa-title').innerText = lang === 'az' ? ev.title_az : ev.title_en;
-          document.getElementById('sa-desc').innerHTML = marked.parse(lang === 'az' ? (ev.desc_az || '') : (ev.desc_en || ''));
+          // Support both new HTML content (from WYSIWYG) and legacy Markdown
+          const _rawContent1 = lang === 'az' ? (ev.desc_az || '') : (ev.desc_en || '');
+          document.getElementById('sa-desc').innerHTML = _rawContent1.trim().startsWith('<')
+            ? _rawContent1
+            : marked.parse(_rawContent1);
         }
         showLangToast(lang);
       }
@@ -509,7 +513,11 @@
       currentArticleIndex = index;
       document.getElementById('sa-img').src = ev.image || '';
       document.getElementById('sa-title').innerText = lang === 'az' ? ev.title_az : ev.title_en;
-      document.getElementById('sa-desc').innerHTML = marked.parse(lang === 'az' ? (ev.desc_az || '') : (ev.desc_en || ''));
+      // Support both new HTML content (from WYSIWYG) and legacy Markdown
+      const _rawContent2 = lang === 'az' ? (ev.desc_az || '') : (ev.desc_en || '');
+      document.getElementById('sa-desc').innerHTML = _rawContent2.trim().startsWith('<')
+        ? _rawContent2
+        : marked.parse(_rawContent2);
       window.location.hash = 'article-' + ev.id;
       
       document.getElementById('gallery').style.display = 'none';
