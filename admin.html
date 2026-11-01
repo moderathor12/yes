@@ -522,16 +522,79 @@
       background: #ffffff;
     }
 
-    /* Margin markers (triangles) */
+    /* Margin markers (Interactive Draggable) */
     .ruler-marker-left {
-      position: absolute; left: 80px; top: 11px; width: 0; height: 0;
-      border-left: 5px solid transparent; border-right: 5px solid transparent;
-      border-bottom: 7px solid #4a5568; transform: translateX(-50%); z-index: 2;
+      position: absolute; left: 80px; top: 0; width: 14px; height: 22px;
+      transform: translateX(-50%); z-index: 10; cursor: ew-resize;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
     }
-    .ruler-marker-right {
-      position: absolute; left: 714px; top: 11px; width: 0; height: 0;
+    .ruler-marker-left::before {
+      content: ''; display: block; width: 10px; height: 6px; background: #374151;
+      border: 1px solid #1f2937; box-sizing: border-box; margin-bottom: 1px;
+    }
+    .ruler-marker-left::after {
+      content: ''; display: block; width: 0; height: 0;
       border-left: 5px solid transparent; border-right: 5px solid transparent;
-      border-bottom: 7px solid #4a5568; transform: translateX(-50%); z-index: 2;
+      border-bottom: 7px solid #374151;
+    }
+    .ruler-marker-left:hover::after, .ruler-marker-left.dragging::after {
+      border-bottom-color: var(--green);
+    }
+    .ruler-marker-left:hover::before, .ruler-marker-left.dragging::before {
+      background: var(--green);
+    }
+
+    .ruler-marker-right {
+      position: absolute; left: 714px; top: 0; width: 14px; height: 22px;
+      transform: translateX(-50%); z-index: 10; cursor: ew-resize;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    }
+    .ruler-marker-right::after {
+      content: ''; display: block; width: 0; height: 0;
+      border-left: 6px solid transparent; border-right: 6px solid transparent;
+      border-bottom: 9px solid #374151;
+    }
+    .ruler-marker-right:hover::after, .ruler-marker-right.dragging::after {
+      border-bottom-color: var(--green);
+    }
+
+    /* Vertical Ruler Markers */
+    .ruler-marker-top {
+      position: absolute; top: 64px; left: 0; width: 22px; height: 14px;
+      transform: translateY(-50%); z-index: 10; cursor: ns-resize;
+      display: flex; align-items: center; justify-content: flex-end;
+    }
+    .ruler-marker-top::after {
+      content: ''; display: block; width: 0; height: 0;
+      border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+      border-left: 7px solid #374151; margin-right: 2px;
+    }
+    .ruler-marker-top:hover::after, .ruler-marker-top.dragging::after {
+      border-left-color: var(--green);
+    }
+
+    .ruler-marker-bottom {
+      position: absolute; top: 936px; left: 0; width: 22px; height: 14px;
+      transform: translateY(-50%); z-index: 10; cursor: ns-resize;
+      display: flex; align-items: center; justify-content: flex-end;
+    }
+    .ruler-marker-bottom::after {
+      content: ''; display: block; width: 0; height: 0;
+      border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+      border-left: 7px solid #374151; margin-right: 2px;
+    }
+    .ruler-marker-bottom:hover::after, .ruler-marker-bottom.dragging::after {
+      border-left-color: var(--green);
+    }
+
+    /* Guidelines during drag */
+    .ruler-guide-v {
+      display: none; position: absolute; top: 0; bottom: 0; width: 1px;
+      border-left: 1px dashed var(--green); pointer-events: none; z-index: 99;
+    }
+    .ruler-guide-h {
+      display: none; position: absolute; left: 0; right: 0; height: 1px;
+      border-top: 1px dashed var(--green); pointer-events: none; z-index: 99;
     }
 
     /* A4 Document Page */
@@ -2887,41 +2950,72 @@
     window.print();
   }
 
-  // ── RULER GENERATOR (Word-inspired SVG) ────────────────
+  // ── INTERACTIVE RULERS & DRAGGABLE MARGINS ─────────────
+  let docMargins = { left: 80, right: 80, top: 64, bottom: 64 };
+  let isDraggingRuler = false;
+  let activeDragType = null; // 'left' | 'right' | 'top' | 'bottom'
+
+  function applyDocMargins() {
+    document.querySelectorAll('.word-page').forEach(page => {
+      page.style.paddingLeft = docMargins.left + 'px';
+      page.style.paddingRight = docMargins.right + 'px';
+      page.style.paddingTop = docMargins.top + 'px';
+      page.style.paddingBottom = docMargins.bottom + 'px';
+    });
+    updateRulerVisuals();
+  }
+
+  function updateRulerVisuals() {
+    const activeW = 794 - docMargins.left - docMargins.right;
+    const activeH = 1000 - docMargins.top - docMargins.bottom;
+
+    // Horizontal white area
+    document.querySelectorAll('.ruler-white-h').forEach(el => {
+      el.style.left = docMargins.left + 'px';
+      el.style.width = Math.max(0, activeW) + 'px';
+    });
+    // Vertical white area
+    document.querySelectorAll('.ruler-white-v').forEach(el => {
+      el.style.top = docMargins.top + 'px';
+      el.style.height = Math.max(0, activeH) + 'px';
+    });
+
+    // Markers position
+    document.querySelectorAll('.ruler-marker-left').forEach(el => {
+      el.style.left = docMargins.left + 'px';
+    });
+    document.querySelectorAll('.ruler-marker-right').forEach(el => {
+      el.style.left = (794 - docMargins.right) + 'px';
+    });
+    document.querySelectorAll('.ruler-marker-top').forEach(el => {
+      el.style.top = docMargins.top + 'px';
+    });
+    document.querySelectorAll('.ruler-marker-bottom').forEach(el => {
+      el.style.top = (1000 - docMargins.bottom) + 'px';
+    });
+  }
+
   function renderWordRulers() {
     const renderH = () => {
-      // 794px width, left margin 80px, right margin 80px, active 634px
-      // 16 cm in active area -> ~39.6px per cm
       let ticks = '';
-      const leftMargin = 80;
-      const rightMargin = 714;
-      const cmWidth = (rightMargin - leftMargin) / 16; // 39.625px per cm
+      const cmWidth = 39.625; // 794px / ~20cm
 
-      // Left margin ticks (2 cm)
-      for (let i = 1; i <= 2; i++) {
-        const x = leftMargin - i * cmWidth;
-        if (x >= 0) {
-          ticks += `<line x1="${x}" y1="12" x2="${x}" y2="22" stroke="#888" stroke-width="1"/>`;
-          ticks += `<text x="${x}" y="10" font-size="9" fill="#555" text-anchor="middle" font-family="sans-serif">${i}</text>`;
-        }
-      }
-      // Active area ticks (1 to 16 cm)
-      for (let i = 1; i <= 16; i++) {
-        const x = leftMargin + i * cmWidth;
-        // Half cm
+      for (let i = 1; i <= 20; i++) {
+        const x = i * cmWidth;
         const halfX = x - cmWidth / 2;
         ticks += `<line x1="${halfX}" y1="15" x2="${halfX}" y2="22" stroke="#aaa" stroke-width="1"/>`;
-        // Full cm
         ticks += `<line x1="${x}" y1="11" x2="${x}" y2="22" stroke="#555" stroke-width="1"/>`;
-        if (i < 16) {
+        if (i < 20) {
           ticks += `<text x="${x}" y="10" font-size="9" fill="#333" font-weight="600" text-anchor="middle" font-family="sans-serif">${i}</text>`;
         }
       }
 
       return `
-        <div class="ruler-white-h"></div>
-        <div class="ruler-marker-left" title="Sol kənar (Margin)"></div>
-        <div class="ruler-marker-right" title="Sağ kənar (Margin)"></div>
+        <div class="ruler-white-h" style="left:${docMargins.left}px;width:${794 - docMargins.left - docMargins.right}px;"></div>
+        <div class="ruler-marker-left" style="left:${docMargins.left}px;" title="Sol kənar (Sol margin - sağa/sola sürüşdür)" onmousedown="startRulerDrag(event, 'left')"></div>
+        <div class="ruler-marker-right" style="left:${794 - docMargins.right}px;" title="Sağ kənar (Sağ margin - sağa/sola sürüşdür)" onmousedown="startRulerDrag(event, 'right')"></div>
+        <div class="ruler-guide-v" id="ruler-guide-v-left"></div>
+        <div class="ruler-guide-v" id="ruler-guide-v-right"></div>
         <svg width="794" height="22" style="position:absolute;top:0;left:0;pointer-events:none;">
           ${ticks}
         </svg>
@@ -2929,14 +3023,11 @@
     };
 
     const renderV = () => {
-      // 1000px height, top margin 64px, active 872px
-      // 22 cm active -> ~39.6px per cm
       let ticks = '';
-      const topMargin = 64;
       const cmHeight = 39.625;
 
-      for (let i = 1; i <= 22; i++) {
-        const y = topMargin + i * cmHeight;
+      for (let i = 1; i <= 25; i++) {
+        const y = i * cmHeight;
         const halfY = y - cmHeight / 2;
         ticks += `<line x1="15" y1="${halfY}" x2="24" y2="${halfY}" stroke="#aaa" stroke-width="1"/>`;
         ticks += `<line x1="11" y1="${y}" x2="24" y2="${y}" stroke="#555" stroke-width="1"/>`;
@@ -2944,7 +3035,11 @@
       }
 
       return `
-        <div class="ruler-white-v"></div>
+        <div class="ruler-white-v" style="top:${docMargins.top}px;height:${1000 - docMargins.top - docMargins.bottom}px;"></div>
+        <div class="ruler-marker-top" style="top:${docMargins.top}px;" title="Üst kənar (Üst margin - aşağı/yuxarı sürüşdür)" onmousedown="startRulerDrag(event, 'top')"></div>
+        <div class="ruler-marker-bottom" style="top:${1000 - docMargins.bottom}px;" title="Alt kənar (Alt margin - aşağı/yuxarı sürüşdür)" onmousedown="startRulerDrag(event, 'bottom')"></div>
+        <div class="ruler-guide-h" id="ruler-guide-h-top"></div>
+        <div class="ruler-guide-h" id="ruler-guide-h-bottom"></div>
         <svg width="24" height="1000" style="position:absolute;top:0;left:0;pointer-events:none;">
           ${ticks}
         </svg>
@@ -2959,7 +3054,66 @@
     if (vEN) vEN.innerHTML = renderV();
     if (hAZ) hAZ.innerHTML = renderH();
     if (vAZ) vAZ.innerHTML = renderV();
+
+    applyDocMargins();
   }
+
+  function startRulerDrag(e, type) {
+    e.preventDefault();
+    e.stopPropagation();
+    isDraggingRuler = true;
+    activeDragType = type;
+    document.body.style.userSelect = 'none';
+
+    if (type === 'left' || type === 'right') {
+      document.body.style.cursor = 'ew-resize';
+    } else {
+      document.body.style.cursor = 'ns-resize';
+    }
+  }
+
+  // Global mousemove and mouseup listeners for ruler dragging
+  document.addEventListener('mousemove', function(e) {
+    if (!isDraggingRuler || !activeDragType) return;
+
+    const zoom = (parseFloat(document.getElementById('zoom-slider') ? document.getElementById('zoom-slider').value : 100) || 100) / 100;
+    const pageId = currentEditorLang === 'en' ? 'word-page-en' : 'word-page-az';
+    const pageEl = document.getElementById(pageId);
+    if (!pageEl) return;
+
+    const pageRect = pageEl.getBoundingClientRect();
+
+    if (activeDragType === 'left') {
+      let mouseX = (e.clientX - pageRect.left) / zoom;
+      mouseX = Math.max(20, Math.min(250, Math.round(mouseX)));
+      docMargins.left = mouseX;
+      applyDocMargins();
+    } else if (activeDragType === 'right') {
+      let mouseX = (pageRect.right - e.clientX) / zoom;
+      mouseX = Math.max(20, Math.min(250, Math.round(mouseX)));
+      docMargins.right = mouseX;
+      applyDocMargins();
+    } else if (activeDragType === 'top') {
+      let mouseY = (e.clientY - pageRect.top) / zoom;
+      mouseY = Math.max(20, Math.min(250, Math.round(mouseY)));
+      docMargins.top = mouseY;
+      applyDocMargins();
+    } else if (activeDragType === 'bottom') {
+      let mouseY = (pageRect.bottom - e.clientY) / zoom;
+      mouseY = Math.max(20, Math.min(250, Math.round(mouseY)));
+      docMargins.bottom = mouseY;
+      applyDocMargins();
+    }
+  });
+
+  document.addEventListener('mouseup', function() {
+    if (isDraggingRuler) {
+      isDraggingRuler = false;
+      activeDragType = null;
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+    }
+  });
 
   // ── AUTOSAVE (Correct wording) ─────────────────────────
   function scheduleAutosave() {
