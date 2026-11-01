@@ -2342,10 +2342,13 @@
   function wFormat(fmt, val) {
     const q = getActiveQuill();
     if (!q) return;
-    const cur = q.getFormat();
+    q.focus();
+    const sel = q.getSelection();
+    const cur = sel ? q.getFormat(sel.index, sel.length) : q.getFormat();
     if (val === undefined) {
       q.format(fmt, !cur[fmt]);
     } else {
+      // Toggle: if already this value, unset; otherwise set
       q.format(fmt, cur[fmt] === val ? false : val);
     }
   }
@@ -2389,9 +2392,12 @@
   function wInsertHR() {
     const q = getActiveQuill();
     if (!q) return;
+    q.focus();
     const sel = q.getSelection(true);
-    q.insertText(sel.index, '\n', 'user');
-    q.insertEmbed(sel.index, 'block', true, 'user');
+    const idx = sel ? sel.index : q.getLength();
+    // Insert a visual separator via HTML
+    const delta = q.clipboard.convert('<p>---</p>');
+    q.updateContents(delta, 'user');
   }
 
   function wInsertTable() {
