@@ -89,14 +89,15 @@
     }
 
     .logo-badge {
-      background: var(--green);
-      color: white;
-      padding: 0.25rem 0.6rem;
-      border-radius: 7px;
-      font-size: 1rem;
-      letter-spacing: 1px;
-      font-weight: 800;
-      box-shadow: 0 4px 12px rgba(45, 106, 79, 0.25);
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-badge img {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+      display: block;
     }
 
     .logo-wiki {
@@ -1043,7 +1044,7 @@
 <header>
   <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle Menu"><i class="ph ph-list"></i></button>
   <a class="logo" href="index.html">
-    <span class="logo-badge">YES</span>
+    <span class="logo-badge"><img src="logo.png" alt="YES"></span>
     <span class="logo-wiki">Wiki</span>
   </a>
   
