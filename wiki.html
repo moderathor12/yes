@@ -94,10 +94,15 @@
     }
 
     .logo-badge img {
-      height: 36px;
+      height: 56px;
       width: auto;
       object-fit: contain;
       display: block;
+      transition: transform 0.2s ease;
+    }
+
+    .logo:hover .logo-badge img {
+      transform: scale(1.02);
     }
 
     .logo-wiki {
@@ -1045,7 +1050,6 @@
   <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle Menu"><i class="ph ph-list"></i></button>
   <a class="logo" href="index.html">
     <span class="logo-badge"><img src="logo.png" alt="YES"></span>
-    <span class="logo-wiki">Wiki</span>
   </a>
   
   <div class="search-wrap">
