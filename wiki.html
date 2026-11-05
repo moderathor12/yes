@@ -1041,6 +1041,179 @@
       border-radius: 4px;
       font-weight: 700;
     }
+  
+    /* ── WIKI HISTORICAL ACTIVITIES & VOLUNTEERING STYLES ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem 1rem;
+      text-align: center;
+      box-shadow: 0 4px 14px rgba(45, 106, 79, 0.05);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--green);
+    }
+
+    .stat-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--green);
+      line-height: 1.1;
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .quote-banner {
+      background: linear-gradient(135deg, rgba(45, 106, 79, 0.06) 0%, rgba(116, 198, 157, 0.12) 100%);
+      border-left: 4px solid var(--green);
+      border-radius: 0 14px 14px 0;
+      padding: 1.5rem 1.75rem;
+      margin: 1.5rem 0 2rem;
+      color: var(--dark);
+      line-height: 1.7;
+    }
+
+    .quote-banner h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--green);
+      margin: 0 0 0.5rem;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .event-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--green);
+      border-radius: 0 14px 14px 0;
+      padding: 1.5rem;
+      margin: 1.75rem 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+    }
+
+    .event-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .event-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 0;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .event-meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(45, 106, 79, 0.1);
+      color: var(--green);
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .event-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+      background: var(--bg);
+      padding: 0.9rem 1.1rem;
+      border-radius: 10px;
+      margin-bottom: 1.25rem;
+      font-size: 0.88rem;
+    }
+
+    .event-meta-item strong {
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .event-subheading {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--dark-green);
+      margin: 1rem 0 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .related-box {
+      background: #fafcfb;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .related-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .related-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .related-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: white;
+      border: 1px solid var(--border);
+      color: var(--green);
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .related-pill:hover {
+      background: var(--green);
+      color: white;
+      border-color: var(--green);
+      transform: translateY(-1px);
+    }
+
   </style>
 </head>
 <body>
@@ -1113,6 +1286,8 @@
         <i class="ph ph-caret-right nav-arrow"></i>
       </button>
       <div class="sub-nav" id="nav-projects">
+        <a href="#" onclick="showPage('volunteering')" data-i18n="nav_proj_volunteering">Könüllülük Proqramı</a>
+        <a href="#" onclick="showPage('outreach')" data-i18n="nav_proj_outreach">Təhsil Səfərləri</a>
         <a href="#" onclick="showPage('projects', 'active')" data-i18n="nav_proj_active">Aktiv Layihələr</a>
         <a href="#" onclick="showPage('projects', 'completed')" data-i18n="nav_proj_done">Uğurlarımız</a>
       </div>
@@ -1160,7 +1335,9 @@
       nav_about_history: "History",
       nav_about_values: "Our Values",
       nav_team: "Team",
-      nav_projects: "Our Work",
+            nav_projects: "Our Work",
+      nav_proj_volunteering: "Volunteering Program",
+      nav_proj_outreach: "Educational Outreach",
       nav_proj_active: "Active Projects",
       nav_proj_done: "Our Successes",
       nav_docs: "Documents",
@@ -1187,10 +1364,15 @@
               <h3>About Us</h3>
               <p>Discover our mission, vision, values, and the history behind YES.</p>
             </a>
-            <a class="nav-card" href="#" onclick="showPage('projects')">
-              <div class="nav-card-icon"><i class="ph ph-folder-open"></i></div>
-              <h3>Our Impact</h3>
-              <p>Explore our active campaigns and read about our past successes.</p>
+            <a class="nav-card" href="#" onclick="showPage('volunteering')">
+              <div class="nav-card-icon"><i class="ph ph-users-three"></i></div>
+              <h3>Volunteering Program</h3>
+              <p>Explore our 16-member cohort, recruitment statistics, and community action.</p>
+            </a>
+            <a class="nav-card" href="#" onclick="showPage('outreach')">
+              <div class="nav-card-icon"><i class="ph ph-chalkboard-teacher"></i></div>
+              <h3>Educational Outreach</h3>
+              <p>Discover historical school visits across Bilasuvar, Aghdam, and Zarifa Aliyeva High School.</p>
             </a>
             <a class="nav-card" href="#" onclick="showPage('docs')">
               <div class="nav-card-icon"><i class="ph ph-scroll"></i></div>
@@ -1218,9 +1400,14 @@
             <li><strong>Inclusivity</strong> — We welcome voices from all backgrounds and communities.</li>
             <li><strong>Eco-Consciousness</strong> — The planet's health dictates every decision we make.</li>
           </ul>
-          <h2 class="section-title" id="history"><i class="ph ph-clock-counter-clockwise"></i> Our Story</h2>
+          <h2 class="section-title" id="history"><i class="ph ph-clock-counter-clockwise"></i> Our Story & Institutional Timeline</h2>
           <ul class="wiki-list">
-            <li><span class="tag">2026</span> <strong>Foundation:</strong> YES was established to address local ecological issues and rapidly grew to over 100+ members.</li>
+            <li><span class="tag">2026</span> <strong>Foundation:</strong> YES was established to address pressing ecological challenges through youth empowerment and community mobilization.</li>
+            <li><span class="tag">March 13</span> <strong>First Outreach (Bilasuvar):</strong> Conducted inaugural bilingual educational event at the Lyceum named after M. Ibrahimov (<a href="#" onclick="showPage('outreach', 'bilasuvar')">Details</a>).</li>
+            <li><span class="tag">March 18</span> <strong>Regional School Outreach (Aghdam):</strong> Held interactive sustainability seminar at Secondary School No. 34 (<a href="#" onclick="showPage('outreach', 'aghdam')">Details</a>).</li>
+            <li><span class="tag">April 9</span> <strong>Academic Seminar (Zarifa Aliyeva High School):</strong> Sustainability and youth action session engaging approximately 50 active students (<a href="#" onclick="showPage('outreach', 'zarifa')">Details</a>).</li>
+            <li><span class="tag">July 17</span> <strong>Volunteer Program Kick-off:</strong> Initial orientation and team cohesion gathering uniting the 16 selected cohort members (<a href="#" onclick="showPage('volunteering', 'kickoff')">Details</a>).</li>
+            <li><span class="tag">Milestone</span> <strong>Volunteer Recruitment:</strong> Processed 130 applications and conducted 46 interviews, selecting 16 dedicated volunteers (12.3% acceptance rate) (<a href="#" onclick="showPage('volunteering', 'recruitment')">Statistics</a>).</li>
           </ul>
         `,
         team: `
@@ -1265,15 +1452,242 @@
             </div>
           </div>
         `,
+        volunteering: `
+          <div class="breadcrumb">Wiki <span>›</span> Our Work <span>›</span> Volunteering Program</div>
+          <h1 class="page-title">YES <em>Volunteering Program</em></h1>
+
+          <div class="quote-banner">
+            <h3>One program. Many voices. Real action.</h3>
+            <p>The YES Volunteering Program brought together young people who believe that caring about the environment should go beyond simply talking about it. Throughout the program, volunteers learned, shared, created, discussed, and most importantly, took action.</p>
+            <p style="margin-top:0.75rem;">From environmental education and sustainability discussions to hands-on activities, every session provided an opportunity to turn curiosity into awareness and awareness into action. One of the most valuable outcomes was the community built throughout the program. Participants came from different backgrounds and brought different perspectives, united by one shared belief: <em>change starts when people decide to be part of it.</em></p>
+            <p style="margin-top:0.75rem; font-weight: 600;">The program demonstrated what young people can accomplish when they are given the space, knowledge, and opportunity to act. To every volunteer who contributed, asked questions, shared ideas, and made this journey meaningful: thank you for saying YES. This is only the beginning.</p>
+          </div>
+
+          <h2 class="section-title" id="overview"><i class="ph ph-compass"></i> Program Overview & Purpose</h2>
+          <p class="body-text">The YES Volunteering Program represents the cornerstone of institutional youth engagement within the Youth Environment Society (YES). Established to bridge environmental theory with direct civic responsibility, the initiative cultivates emerging environmental advocates by equipping them with practical leadership competencies, ecological literacy, and direct collaborative execution experience.</p>
+          <p class="body-text">Guided by the philosophy of youth-led ecological stewardship, the program was designed to transform passive concern into structured, measurable community action across regional and urban landscapes.</p>
+
+          <h2 class="section-title" id="recruitment"><i class="ph ph-chart-donut"></i> Volunteer Recruitment — Application Statistics</h2>
+          <p class="body-text">Recruitment for the volunteering cohort was conducted through an open, competitive public application cycle. The selection process prioritized passion for environmental protection, collaborative problem-solving potential, and community engagement commitment.</p>
+
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-num">130</div>
+              <div class="stat-label">Applications Received</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">46</div>
+              <div class="stat-label">Invited to Interviews</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">16</div>
+              <div class="stat-label">Volunteers Selected</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">12.3%</div>
+              <div class="stat-label">Acceptance Rate</div>
+            </div>
+          </div>
+
+          <p class="body-text">The rigorous evaluation process began with 130 formal applications submitted across various academic and professional backgrounds. Following comprehensive initial assessments, 46 prospective candidates advanced to structured individual and group interview panels. Ultimately, 16 dedicated volunteers were invited to join the cohort, yielding a competitive acceptance rate of 12.3%.</p>
+
+          <h2 class="section-title" id="kickoff"><i class="ph ph-calendar-check"></i> Institutional Milestone: Volunteer Kick-off Meeting</h2>
+          <div class="event-card">
+            <div class="event-header">
+              <h3 class="event-title">YES Volunteer Kick-off Meeting</h3>
+              <span class="event-meta-badge"><i class="ph ph-calendar-blank"></i> July 17</span>
+            </div>
+            <div class="event-meta-grid">
+              <div class="event-meta-item"><strong>Date</strong>July 17</div>
+              <div class="event-meta-item"><strong>Category</strong>Orientation & Cohort Induction</div>
+              <div class="event-meta-item"><strong>Participants</strong>Selected Volunteers & YES Leadership</div>
+            </div>
+            <p class="body-text">The meeting marked an important milestone in bringing the selected volunteers together as an empowered, unified cohort. As the primary community-building milestone of the program, the induction established essential interpersonal connections and mutual institutional trust.</p>
+            <div class="event-subheading"><i class="ph ph-check-circle"></i> Key Activities & Program Structure</div>
+            <ul class="wiki-list">
+              <li><strong>Organizational Mission Orientation:</strong> In-depth introduction to YES core principles, institutional governance, and developmental roadmap.</li>
+              <li><strong>Environmental Sustainability Awareness:</strong> An interactive thematic session examining contemporary climate challenges and local conservation priorities.</li>
+              <li><strong>Operational Planning:</strong> Comprehensive briefing on upcoming seasonal projects, field interventions, and departmental workflows.</li>
+              <li><strong>Ice-Breaker & Collaboration Exercises:</strong> Structured team-building activities fostering camaraderie among diverse participant backgrounds.</li>
+              <li><strong>Informal Networking:</strong> An informal coffee and dialogue session providing volunteers with dedicated space to exchange ideas and cultivate shared vision.</li>
+            </ul>
+          </div>
+
+          <h2 class="section-title" id="activities"><i class="ph ph-tree-evergreen"></i> Educational Activities & Community Building</h2>
+          <p class="body-text">Throughout the duration of the program, cohort members engaged in recurring educational roundtables, sustainability seminars, and collaborative problem-solving workshops. Beyond theoretical dialogue, volunteers actively supported YES outreach operations, directly contributing to school visits and environmental advocacy across multiple districts.</p>
+          <p class="body-text">The community forged during the program remains one of its most defining legacies: bringing together diverse perspectives united by the conviction that meaningful environmental transformation commences with proactive individual decisions.</p>
+
+          <h2 class="section-title" id="impact"><i class="ph ph-chart-line-up"></i> Program Impact & Legacy</h2>
+          <p class="body-text">The YES Volunteering Program demonstrated the tangible societal impact achieved when young leaders are provided knowledge, structured platforms, and real-world opportunities to lead. The cohort laid the operational foundation for ongoing ecological campaigns and established lasting alumni engagement across YES initiatives.</p>
+
+          <div class="related-box">
+            <div class="related-title"><i class="ph ph-link"></i> Related Wiki Pages</div>
+            <div class="related-pills">
+              <a class="related-pill" onclick="showPage('outreach')"><i class="ph ph-chalkboard-teacher"></i> Educational Outreach Activities</a>
+              <a class="related-pill" onclick="showPage('about', 'mission')"><i class="ph ph-target"></i> Mission & Vision</a>
+              <a class="related-pill" onclick="showPage('about', 'history')"><i class="ph ph-clock-counter-clockwise"></i> Organizational Story</a>
+              <a class="related-pill" onclick="showPage('team')"><i class="ph ph-users"></i> YES Team</a>
+              <a class="related-pill" onclick="showPage('projects', 'active')"><i class="ph ph-folder-open"></i> Active Projects</a>
+            </div>
+          </div>
+        `,
+        outreach: `
+          <div class="breadcrumb">Wiki <span>›</span> Our Work <span>›</span> Educational Outreach</div>
+          <h1 class="page-title">Educational <em>Outreach Activities</em></h1>
+          <p class="body-text">Educational outreach forms a central pillar of Youth Environment Society (YES). By visiting educational institutions and engaging students directly, YES delivers foundational ecological education, promotes climate awareness, and empowers youth to assume active roles in environmental sustainability.</p>
+
+          <h2 class="section-title" id="bilasuvar"><i class="ph ph-map-pin"></i> 1. First Educational Outreach Event — Bilasuvar</h2>
+          <div class="event-card">
+            <div class="event-header">
+              <h3 class="event-title">Bilasuvar Educational Outreach</h3>
+              <span class="event-meta-badge"><i class="ph ph-calendar-blank"></i> March 13</span>
+            </div>
+            <div class="event-meta-grid">
+              <div class="event-meta-item"><strong>Date</strong>March 13</div>
+              <div class="event-meta-item"><strong>Location</strong>Lyceum named after M. Ibrahimov, Bilasuvar, Azerbaijan</div>
+              <div class="event-meta-item"><strong>Activity Category</strong>Regional School Outreach / Environmental Literacy</div>
+              <div class="event-meta-item"><strong>Delivery Language</strong>Bilingual (Azerbaijani & English)</div>
+            </div>
+
+            <div class="event-subheading"><i class="ph ph-info"></i> Event Overview</div>
+            <p class="body-text">YES organized its first official educational outreach event at the Lyceum named after M. Ibrahimov in Bilasuvar, Azerbaijan. This landmark event initiated the society's regional outreach series, bringing structured sustainability discourse to secondary school students.</p>
+
+            <div class="event-subheading"><i class="ph ph-target"></i> Objectives</div>
+            <ul class="wiki-list">
+              <li>Introduce the mission, core values, and developmental goals of YES to young students.</li>
+              <li>Foster conceptual understanding of environmental sustainability and ecological balance.</li>
+              <li>Examine the global and local realities of climate change and highlight youth-led intervention models.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-book-open"></i> Topics Discussed</div>
+            <ul class="wiki-list">
+              <li><strong>Environmental Sustainability:</strong> Core ecological systems, responsible resource consumption, and everyday conservation practices.</li>
+              <li><strong>Climate Change:</strong> Mechanisms driving regional and global climatic shifts and their observable environmental impacts.</li>
+              <li><strong>Role of Youth in Addressing Environmental Challenges:</strong> Civic action, leadership, school environmental initiatives, and youth advocacy.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-users-three"></i> Participation & Engagement</div>
+            <p class="body-text">The outreach was conducted across two distinct student groups, delivered respectively in Azerbaijani and English. Each instructional session concluded with an active, interactive question-and-answer (Q&A) forum where participants engaged deeply on localized environmental concerns.</p>
+
+            <div class="event-subheading"><i class="ph ph-star"></i> Key Highlights & Institutional Significance</div>
+            <ul class="wiki-list">
+              <li>Historical inaugural outreach event in YES history, establishing the organizational template for subsequent school engagements.</li>
+              <li>Successful implementation of a bilingual delivery format, maximizing linguistic accessibility and student comprehension.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-git-branch"></i> Related YES Initiatives</div>
+            <p class="body-text">Linked with <a href="#" onclick="showPage('volunteering')">YES Volunteering Program</a> and the Regional Environmental Literacy Campaign.</p>
+          </div>
+
+          <h2 class="section-title" id="aghdam"><i class="ph ph-map-pin"></i> 2. Educational Session — Aghdam School No. 34</h2>
+          <div class="event-card">
+            <div class="event-header">
+              <h3 class="event-title">Aghdam Secondary School No. 34 Outreach</h3>
+              <span class="event-meta-badge"><i class="ph ph-calendar-blank"></i> March 18</span>
+            </div>
+            <div class="event-meta-grid">
+              <div class="event-meta-item"><strong>Date</strong>March 18</div>
+              <div class="event-meta-item"><strong>Location</strong>Secondary School No. 34, Aghdam, Azerbaijan</div>
+              <div class="event-meta-item"><strong>Activity Category</strong>Regional School Outreach / Community Empowerment</div>
+              <div class="event-meta-item"><strong>Engagement Format</strong>Interactive Educational Seminar</div>
+            </div>
+
+            <div class="event-subheading"><i class="ph ph-info"></i> Event Overview</div>
+            <p class="body-text">YES conducted an educational session at Secondary School No. 34 in Aghdam, Azerbaijan. The initiative engaged local students in substantive discussions on sustainability principles and youth stewardship.</p>
+
+            <div class="event-subheading"><i class="ph ph-target"></i> Objectives</div>
+            <ul class="wiki-list">
+              <li>Introduce secondary students to foundational sustainability principles and ecological preservation.</li>
+              <li>Demonstrate how young individuals can tangibly contribute to regional rehabilitation and a resilient future.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-book-open"></i> Topics Discussed</div>
+            <ul class="wiki-list">
+              <li><strong>The Importance of Sustainability:</strong> Balancing community development with natural ecosystem safeguards.</li>
+              <li><strong>Youth Agency in Future Building:</strong> Practical environmental habits, waste reduction, and proactive youth citizenship.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-users-three"></i> Participation & Engagement</div>
+            <p class="body-text">The session was highly interactive, characterized by notable enthusiasm and sustained dialogue from participating students, who actively shared their observations regarding local flora, conservation, and school-wide eco-practices.</p>
+
+            <div class="event-subheading"><i class="ph ph-star"></i> Key Highlights & Institutional Significance</div>
+            <ul class="wiki-list">
+              <li>Extending educational outreach to the Karabakh region, affirming YES's commitment to geographically inclusive environmental advocacy.</li>
+              <li>High-energy, student-centric dialogue fostering immediate enthusiasm for ecological projects.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-git-branch"></i> Related YES Initiatives</div>
+            <p class="body-text">Associated with <a href="#" onclick="showPage('volunteering')">YES Volunteering Program</a> and the Community Regeneration Educational Framework.</p>
+          </div>
+
+          <h2 class="section-title" id="zarifa"><i class="ph ph-map-pin"></i> 3. Educational Session — Zarifa Aliyeva High School</h2>
+          <div class="event-card">
+            <div class="event-header">
+              <h3 class="event-title">Zarifa Aliyeva High School Session</h3>
+              <span class="event-meta-badge"><i class="ph ph-calendar-blank"></i> April 9</span>
+            </div>
+            <div class="event-meta-grid">
+              <div class="event-meta-item"><strong>Date</strong>April 9</div>
+              <div class="event-meta-item"><strong>Location</strong>Zarifa Aliyeva High School</div>
+              <div class="event-meta-item"><strong>Activity Category</strong>High School Academic Seminar / Youth Action</div>
+              <div class="event-meta-item"><strong>Participation</strong>Approximately 50 Students</div>
+            </div>
+
+            <div class="event-subheading"><i class="ph ph-info"></i> Event Overview</div>
+            <p class="body-text">YES organized a high-impact educational session at Zarifa Aliyeva High School, dedicated to environmental sustainability frameworks and youth contributions toward a greener future.</p>
+
+            <div class="event-subheading"><i class="ph ph-target"></i> Objectives</div>
+            <ul class="wiki-list">
+              <li>Explore advanced sustainability strategies and systemic ecological approaches with high school scholars.</li>
+              <li>Inspire academic youth to take active initiative in leading institutional and community environmental efforts.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-book-open"></i> Topics Discussed</div>
+            <ul class="wiki-list">
+              <li><strong>Environmental Sustainability:</strong> Ecological footprints, biodiversity protection, and sustainable lifestyle practices.</li>
+              <li><strong>Youth Contribution to a Better Future:</strong> Innovation, research, leadership, and collaborative grassroots mobilization.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-users-three"></i> Participation & Engagement</div>
+            <p class="body-text">Approximately 50 students participated actively throughout the session. The attendees demonstrated genuine interest, sustained engagement, and offered insightful perspectives during open thematic deliberations.</p>
+
+            <div class="event-subheading"><i class="ph ph-star"></i> Key Highlights & Institutional Significance</div>
+            <ul class="wiki-list">
+              <li>Broad attendance with approximately 50 actively contributing secondary students.</li>
+              <li>Advanced intellectual inquiries regarding ecological sustainability and societal responsibility.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-git-branch"></i> Related YES Initiatives</div>
+            <p class="body-text">Connected to <a href="#" onclick="showPage('volunteering')">YES Volunteering Program</a> and Youth Leadership in Ecological Stewardship.</p>
+          </div>
+
+          <div class="related-box">
+            <div class="related-title"><i class="ph ph-link"></i> Related Wiki Pages</div>
+            <div class="related-pills">
+              <a class="related-pill" onclick="showPage('volunteering')"><i class="ph ph-users"></i> YES Volunteering Program</a>
+              <a class="related-pill" onclick="showPage('volunteering', 'recruitment')"><i class="ph ph-chart-bar"></i> Volunteer Recruitment Statistics</a>
+              <a class="related-pill" onclick="showPage('volunteering', 'kickoff')"><i class="ph ph-calendar"></i> Volunteer Kick-off Meeting</a>
+              <a class="related-pill" onclick="showPage('about', 'mission')"><i class="ph ph-target"></i> Mission & Vision</a>
+              <a class="related-pill" onclick="showPage('projects', 'completed')"><i class="ph ph-check-circle"></i> Past Successes</a>
+            </div>
+          </div>
+        `,
         projects: `
           <div class="breadcrumb">Wiki <span>›</span> Our Work</div>
           <h1 class="page-title">Our Impact & <em>Projects</em></h1>
-          <h2 class="section-title" id="active"><i class="ph ph-play-circle"></i> Active Initiatives</h2>
+          <h2 class="section-title" id="active"><i class="ph ph-play-circle"></i> Key Initiatives</h2>
           <ul class="wiki-list">
-            <li><span class="tag closed">Closed</span> <strong>Volunteer Program</strong> — The registration for our volunteer program is now closed.</li>
+            <li><span class="tag closed">Cohort Active</span> <strong><a href="#" onclick="showPage('volunteering')">YES Volunteering Program</a></strong> — 16 selected volunteers working on environmental awareness and community action (<a href="#" onclick="showPage('volunteering', 'recruitment')">12.3% acceptance rate</a>).</li>
+            <li><span class="tag">Ongoing</span> <strong><a href="#" onclick="showPage('outreach')">Educational Outreach Program</a></strong> — Interactive sustainability sessions conducted at schools across Bilasuvar, Aghdam, and Baku.</li>
           </ul>
-          <h2 class="section-title" id="completed"><i class="ph ph-check-circle"></i> Past Successes</h2>
-          <p class="body-text">We are just getting started! Stay tuned for our future achievements.</p>
+          <h2 class="section-title" id="completed"><i class="ph ph-check-circle"></i> Historical Milestones & Successes</h2>
+          <ul class="wiki-list">
+            <li><span class="tag">March 13</span> <strong><a href="#" onclick="showPage('outreach', 'bilasuvar')">Bilasuvar Lyceum Outreach</a></strong> — Inaugural bilingual educational event conducted in Azerbaijani and English.</li>
+            <li><span class="tag">March 18</span> <strong><a href="#" onclick="showPage('outreach', 'aghdam')">Aghdam School No. 34 Session</a></strong> — Interactive sustainability session introducing youth to ecological stewardship.</li>
+            <li><span class="tag">April 9</span> <strong><a href="#" onclick="showPage('outreach', 'zarifa')">Zarifa Aliyeva High School Session</a></strong> — High school seminar with approximately 50 active student participants.</li>
+            <li><span class="tag">July 17</span> <strong><a href="#" onclick="showPage('volunteering', 'kickoff')">Volunteer Kick-off Meeting</a></strong> — First collaborative orientation and community-building gathering for the selected cohort.</li>
+            <li><span class="tag">Milestone</span> <strong><a href="#" onclick="showPage('volunteering', 'recruitment')">130 Volunteer Applications</a></strong> — Competitive recruitment campaign resulting in 16 selected volunteers.</li>
+          </ul>
         `,
         docs: `
           <div class="breadcrumb">Wiki <span>›</span> Documents</div>
@@ -1311,7 +1725,9 @@
       nav_about_history: "Tarixçə",
       nav_about_values: "Dəyərlərimiz",
       nav_team: "Komanda",
-      nav_projects: "Fəaliyyətimiz",
+            nav_projects: "Fəaliyyətimiz",
+      nav_proj_volunteering: "Könüllülük Proqramı",
+      nav_proj_outreach: "Təhsil Səfərləri",
       nav_proj_active: "Aktiv Layihələr",
       nav_proj_done: "Uğurlarımız",
       nav_docs: "Sənədlər",
@@ -1338,10 +1754,15 @@
               <h3>Haqqımızda</h3>
               <p>Missiyamızı, vizyonumuzu, dəyərlərimizi və YES-in yaranma tarixini kəşf edin.</p>
             </a>
-            <a class="nav-card" href="#" onclick="showPage('projects')">
-              <div class="nav-card-icon"><i class="ph ph-folder-open"></i></div>
-              <h3>Fəaliyyətimiz</h3>
-              <p>Aktiv kampaniyalarımızla tanış olun və keçmiş uğurlarımız haqqında oxuyun.</p>
+            <a class="nav-card" href="#" onclick="showPage('volunteering')">
+              <div class="nav-card-icon"><i class="ph ph-users-three"></i></div>
+              <h3>Könüllülük Proqramı</h3>
+              <p>16 nəfərlik könüllü heyətimiz, qəbul statistikası və icma fəaliyyətimiz.</p>
+            </a>
+            <a class="nav-card" href="#" onclick="showPage('outreach')">
+              <div class="nav-card-icon"><i class="ph ph-chalkboard-teacher"></i></div>
+              <h3>Təhsil Səfərləri</h3>
+              <p>Biləsuvar, Ağdam və Zərifə Əliyeva Liseyi məktəb tədbirlərinin tarixi qeydləri.</p>
             </a>
             <a class="nav-card" href="#" onclick="showPage('docs')">
               <div class="nav-card-icon"><i class="ph ph-scroll"></i></div>
@@ -1369,9 +1790,14 @@
             <li><strong>İnklüzivlik</strong> — Bütün cəmiyyətlərdən və təbəqələrdən gələn səsləri məmnuniyyətlə qəbul edirik.</li>
             <li><strong>Ekoloji Şüur</strong> — Planetin sağlamlığı verdiyimiz hər bir qərarı müəyyən edir.</li>
           </ul>
-          <h2 class="section-title" id="history"><i class="ph ph-clock-counter-clockwise"></i> Tarixçəmiz</h2>
+          <h2 class="section-title" id="history"><i class="ph ph-clock-counter-clockwise"></i> Tarixçəmiz və İnkişaf Xronologiyası</h2>
           <ul class="wiki-list">
-            <li><span class="tag">2026</span> <strong>Yaranma:</strong> YES yerli ekoloji problemləri həll etmək məqsədi ilə təsis edildi və fəaliyyətə başladı, qısa müddətdə 100-dən çox üzvə çatdıq.</li>
+            <li><span class="tag">2026</span> <strong>Yaranma:</strong> YES yerli ekoloji problemləri həll etmək və gənclər hərəkatı formalaşdırmaq məqsədilə təsis olundu.</li>
+            <li><span class="tag">13 Mart</span> <strong>İlk Təhsil Səfəri (Biləsuvar):</strong> M. İbrahimov adına Liseydə ilk ikidilli məktəb tədbiri keçirildi (<a href="#" onclick="showPage('outreach', 'bilasuvar')">Ətraflı</a>).</li>
+            <li><span class="tag">18 Mart</span> <strong>Regional Maarifləndirmə (Ağdam):</strong> 34 nömrəli məktəbdə şagirdlərlə dayanıqlılıq dialoqu təşkil edildi (<a href="#" onclick="showPage('outreach', 'aghdam')">Ətraflı</a>).</li>
+            <li><span class="tag">9 Aprel</span> <strong>Ekoloji Seminar (Zərifə Əliyeva Liseyi):</strong> Təxminən 50 fəal şagirdin iştirak etdiyi genişmiqyaslı görüş (<a href="#" onclick="showPage('outreach', 'zarifa')">Ətraflı</a>).</li>
+            <li><span class="tag">17 İyul</span> <strong>Könüllülərin İlk Görüşü (Kick-off):</strong> Seçilmiş 16 könüllünün ilk oriyentasiya və komanda toplantısı (<a href="#" onclick="showPage('volunteering', 'kickoff')">Ətraflı</a>).</li>
+            <li><span class="tag">Nəticə</span> <strong>Könüllü Seçimi:</strong> 130 müraciət daxil oldu, 46 nəfər müsahibəyə dəvət edildi və 16 könüllü seçildi (12.3% qəbul göstəricisi) (<a href="#" onclick="showPage('volunteering', 'recruitment')">Statistika</a>).</li>
           </ul>
         `,
         team: `
@@ -1416,15 +1842,242 @@
             </div>
           </div>
         `,
+        volunteering: `
+          <div class="breadcrumb">Wiki <span>›</span> Fəaliyyətimiz <span>›</span> Könüllülük Proqramı</div>
+          <h1 class="page-title">YES <em>Könüllülük Proqramı</em></h1>
+
+          <div class="quote-banner">
+            <h3>Bir proqram. Çoxlu səslər. Real fəaliyyət.</h3>
+            <p>YES Könüllülük Proqramı ətraf mühitin qeydinə qalmağın sadəcə danışmaqdan ibarət olmadığını bilən və real addım atmağa inanan gəncləri bir araya gətirdi. Proqram boyu könüllülər öyrəndilər, bölüşdülər, yaratdılar, müzakirə etdilər və ən başlıcası, fəaliyyətə keçdilər.</p>
+            <p style="margin-top:0.75rem;">Ekoloji maarifləndirmə və dayanıqlılıq müzakirələrindən tutmuş praktiki fəaliyyətlərə qədər hər bir sessiya marağı şüura, şüuru isə real fəaliyyətə çevirmək üçün unikal fürsət yaratdı. Ən dəyərli nailiyyətlərdən biri proqram boyu qurulan güclü icma oldu. Müxtəlif mühitlərdən gələn və fərqli baxışlara malik iştirakçılar vahid bir inam ətrafında birləşdilər: <em>dəyişiklik insanlar onun bir parçası olmağa qərar verdikdə başlayır.</em></p>
+            <p style="margin-top:0.75rem; font-weight: 600;">Bu proqram gənclərə zəruri məkan, bilik və imkan verildikdə nə qədər böyük işlər görə biləcəyini əyani şəkildə sübut etdi. Töhfə verən, suallar ünvanlayan, fikirlərini bölüşən və bu səyahəti mənalı edən hər bir könüllüyə təşəkkür edirik: YES dediyiniz üçün minnətdarıq. Bu hələ başlanğıcdır.</p>
+          </div>
+
+          <h2 class="section-title" id="overview"><i class="ph ph-compass"></i> Proqramın İcmalı və Məqsədi</h2>
+          <p class="body-text">YES Könüllülük Proqramı Youth Environment Society (YES) təşkilatının gənclərin cəlb olunması və ekoloji liderliyin inkişafı sahəsindəki ən mühüm təşəbbüslərindən biridir. Nəzəri ekoloji bilikləri birbaşa ictimai məsuliyyətlə birləşdirmək məqsədilə təsis edilmiş bu proqram gənclərə liderlik bacarıqları, ekoloji savadlılıq və birgə fəaliyyət təcrübəsi aşılayır.</p>
+          <p class="body-text">Gənclərin rəhbərlik etdiyi ekoloji fəaliyyət fəlsəfəsinə əsaslanan proqram passiv narahatlığı regional və şəhər miqyasında ölçülə bilən ictimai təsirlərə çevirmək üçün hazırlanmışdır.</p>
+
+          <h2 class="section-title" id="recruitment"><i class="ph ph-chart-donut"></i> Könüllü Qəbulu — Müraciət Statistikaları</h2>
+          <p class="body-text">Könüllülər heyətinin formalaşdırılması açıq və rəqabətli ictimai müraciət mərhələsi vasitəsilə həyata keçirilmişdir. Seçim prosesində ətraf mühitə qayğı, komandada birgə çalışma həvəsi və ictimai fəallıq meyarları əsas tutulmuşdur.</p>
+
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-num">130</div>
+              <div class="stat-label">Daxil Olan Müraciət</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">46</div>
+              <div class="stat-label">Müsahibəyə Dəvət</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">16</div>
+              <div class="stat-label">Seçilmiş Könüllü</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">12.3%</div>
+              <div class="stat-label">Qəbul Göstəricisi</div>
+            </div>
+          </div>
+
+          <p class="body-text">Seçim mərhələsi müxtəlif təhsil və ixtisas sahələrindən daxil olmuş 130 rəsmi müraciətin təhlili ilə başlamışdır. Hərtərəfli ilkin qiymətləndirmədən sonra 46 namizəd müsahibə mərhələsinə dəvət edilmişdir. Nəticədə 16 fəal könüllü təşkilatın proqramına qəbul edilmiş və qəbul göstəricisi 12.3% təşkil etmişdir.</p>
+
+          <h2 class="section-title" id="kickoff"><i class="ph ph-calendar-check"></i> Tarixi Hadisə: Könüllülərin Kick-off Toplantısı</h2>
+          <div class="event-card">
+            <div class="event-header">
+              <h3 class="event-title">YES Könüllülərinin İlk Görüşü (Kick-off)</h3>
+              <span class="event-meta-badge"><i class="ph ph-calendar-blank"></i> 17 İyul</span>
+            </div>
+            <div class="event-meta-grid">
+              <div class="event-meta-item"><strong>Tarix</strong>17 İyul</div>
+              <div class="event-meta-item"><strong>Kateqoriya</strong>Orientasiya & Komanda Quruculuğu</div>
+              <div class="event-meta-item"><strong>İştirakçılar</strong>Seçilmiş Könüllülər & YES Rəhbərliyi</div>
+            </div>
+            <p class="body-text">Bu görüş seçilmiş könüllüləri bir araya gətirmək və vahid icma ruhunu formalaşdırmaq yolunda mühüm tarixi addım oldu. Könüllülük proqramının ilkin icma quruculuğu fəaliyyəti kimi bu toplantı qarşılıqlı etimadın və təşkilati həmrəyliyin təməlini qoydu.</p>
+            <div class="event-subheading"><i class="ph ph-check-circle"></i> Görüşün Əsas Proqramı və Tərkibi</div>
+            <ul class="wiki-list">
+              <li><strong>Təşkilati Missiya ilə Tanışlıq:</strong> YES-in əsas məqsədləri, fəaliyyət prinsipləri və inkişaf xəritəsi barədə ətraflı təqdimat.</li>
+              <li><strong>Ekoloji Dayanıqlılıq Maarifləndirməsi:</strong> Müasir ekoloji çağırışlar və yerli mühafizə prioritetləri üzrə interaktiv sessiya.</li>
+              <li><strong>Gələcək Fəaliyyət Planları:</strong> Qarşıda duran mövsümi layihələrin, fəaliyyət istiqamətlərinin və tapşırıqların bölüşdürülməsi.</li>
+              <li><strong>Ice-breaker Fəaliyyətləri:</strong> Könüllülərin bir-biri ilə daha yaxından tanış olması və komanda ruhunun yaranması üçün interaktiv oyunlar.</li>
+              <li><strong>Qeyri-rəsmi Ünsiyyət və Qəhvə Fasiləsi:</strong> İştirakçıların fikir mübadiləsi aparması və ümumi baxış formalaşdırması üçün səmimi şəbəkələşmə mühiti.</li>
+            </ul>
+          </div>
+
+          <h2 class="section-title" id="activities"><i class="ph ph-tree-evergreen"></i> Təhsil Fəaliyyətləri və İcma Birliyi</h2>
+          <p class="body-text">Proqram müddətində iştirakçılar davamlı seminar, dəyirmi masa və praktiki ekoloji fəaliyyətlərə cəlb olunmuşlar. Nəzəri müzakirələrlə yanaşı, könüllülər təşkilatın məktəb səfərlərində və regional təhsil layihələrində fəal iştirak edərək ekoloji maarifləndirməyə bilavasitə töhfə vermişlər.</p>
+          <p class="body-text">Proqramın ən böyük mirası müxtəlif perspektivlərə malik gənclərin vahid amal uğrunda yaratdığı güclü icma həmrəyliyi olmuşdur.</p>
+
+          <h2 class="section-title" id="impact"><i class="ph ph-chart-line-up"></i> Proqramın Əhəmiyyəti və Təsiri</h2>
+          <p class="body-text">YES Könüllülük Proqramı gənc nəslə lazımi məkan, bilik və səlahiyyət verildikdə onların nə qədər səmərəli ictimai dəyişiklik yarada biləcəyini nümayiş etdirdi. Proqram gələcək ekoloji kampaniyaların təşkilati özəyini təşkil etmişdir.</p>
+
+          <div class="related-box">
+            <div class="related-title"><i class="ph ph-link"></i> Əlaqəli Wiki Səhifələri</div>
+            <div class="related-pills">
+              <a class="related-pill" onclick="showPage('outreach')"><i class="ph ph-chalkboard-teacher"></i> Maarifləndirici Məktəb Səfərləri</a>
+              <a class="related-pill" onclick="showPage('about', 'mission')"><i class="ph ph-target"></i> Missiya & Vizyon</a>
+              <a class="related-pill" onclick="showPage('about', 'history')"><i class="ph ph-clock-counter-clockwise"></i> Təşkilat Tarixçəsi</a>
+              <a class="related-pill" onclick="showPage('team')"><i class="ph ph-users"></i> YES Komandası</a>
+              <a class="related-pill" onclick="showPage('projects', 'active')"><i class="ph ph-folder-open"></i> Aktiv Layihələr</a>
+            </div>
+          </div>
+        `,
+        outreach: `
+          <div class="breadcrumb">Wiki <span>›</span> Fəaliyyətimiz <span>›</span> Təhsil Səfərləri</div>
+          <h1 class="page-title">Təhsil və <em>Maarifləndirmə Səfərləri</em></h1>
+          <p class="body-text">Məktəblərdə və təhsil ocaqlarında maarifləndirmə Youth Environment Society (YES) fəaliyyətinin əsas təməl daşlarından biridir. Təhsil müəssisələrinə səfərlər edərək şagirdlərlə birbaşa ünsiyyət quran YES gənc nəsildə ekoloji savadlılığı artırır, iqlim dəyişikliyi barədə məlumatlılıq yaradır və onların dayanıqlı gələcəyin qurulmasında fəal rol oynamasını təşviq edir.</p>
+
+          <h2 class="section-title" id="bilasuvar"><i class="ph ph-map-pin"></i> 1. İlk Maarifləndirici Təhsil Tədbiri — Biləsuvar</h2>
+          <div class="event-card">
+            <div class="event-header">
+              <h3 class="event-title">Biləsuvar Təhsil Səfəri</h3>
+              <span class="event-meta-badge"><i class="ph ph-calendar-blank"></i> 13 Mart</span>
+            </div>
+            <div class="event-meta-grid">
+              <div class="event-meta-item"><strong>Tarix</strong>13 Mart</div>
+              <div class="event-meta-item"><strong>Məkan</strong>M. İbrahimov adına Lisey, Biləsuvar, Azərbaycan</div>
+              <div class="event-meta-item"><strong>Fəaliyyət Kateqoriyası</strong>Regional Məktəb Səfəri / Ekoloji Savadlılıq</div>
+              <div class="event-meta-item"><strong>Tədris Dili</strong>İkidilli (Azərbaycan & İngilis dili)</div>
+            </div>
+
+            <div class="event-subheading"><i class="ph ph-info"></i> Tədbirin İcmalı</div>
+            <p class="body-text">YES ilk rəsmi təhsil səfərini Biləsuvar rayonunda yerləşən M. İbrahimov adına liseydə təşkil etdi. Bu səfər təşkilatın regional məktəblilərlə iş silsiləsinin əsasını qoydu və şagirdlərlə interaktiv ekoloji dialoqun təməlini formalaşdırdı.</p>
+
+            <div class="event-subheading"><i class="ph ph-target"></i> Məqsədlər</div>
+            <ul class="wiki-list">
+              <li>YES-in missiyasını, təşkilati dəyərlərini və məqsədlərini şagirdlərə təqdim etmək.</li>
+              <li>Ekoloji dayanıqlılıq (Environmental Sustainability) anlayışını dərindən izah etmək.</li>
+              <li>İqlim dəyişikliyi reallıqlarını və gənclərin ekoloji problemlərin həllində oynaya biləcəyi rolu nümayiş etdirmək.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-book-open"></i> Müzakirə Olunan Mövzular</div>
+            <ul class="wiki-list">
+              <li><strong>Ekoloji Dayanıqlılıq:</strong> Təbii resurslardan məsuliyyətli istifadə, ekosistemin qorunması və gündəlik həyat vərdişləri.</li>
+              <li><strong>İqlim Dəyişikliyi:</strong> Qlobal və regional iqlim böhranının fəsadları və onların qarşısının alınması yolları.</li>
+              <li><strong>Ekoloji Çağırışlarda Gənclərin Rolu:</strong> Gənclərin təbiəti qorumaq üçün ata biləcəyi fərdi və ictimai addımlar.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-users-three"></i> İştirak və Maraq</div>
+            <p class="body-text">Tədbir iki fərqli şagird qrupu üçün ayrılıqda həm Azərbaycan, həm də İngilis dillərində təqdim olundu. Hər iki sessiya aktiv və interaktiv Sual-Cavab (Q&A) diskussiyası ilə yekunlaşdı, şagirdlər ekoloji problemlərə dair çoxsaylı maraqlı suallar ünvanladılar.</p>
+
+            <div class="event-subheading"><i class="ph ph-star"></i> Əsas Nailiyyətlər və Təşkilati Əhəmiyyət</div>
+            <ul class="wiki-list">
+              <li>Təşkilatın tarixində ilk rəsmi regional təhsil tədbiri; gələcək səfərlər üçün nümunəvi modelin qurulması.</li>
+              <li>İkidilli (Azərbaycan və İngilis) təqdimat formatının uğurla həyata keçirilməsi.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-git-branch"></i> Əlaqəli Təşəbbüslər</div>
+            <p class="body-text"><a href="#" onclick="showPage('volunteering')">YES Könüllülük Proqramı</a> və Regional Ekoloji Savadlılıq Kampaniyası ilə sıx bağlıdır.</p>
+          </div>
+
+          <h2 class="section-title" id="aghdam"><i class="ph ph-map-pin"></i> 2. Maarifləndirici Sessiya — Ağdam 34 Nömrəli Məktəb</h2>
+          <div class="event-card">
+            <div class="event-header">
+              <h3 class="event-title">Ağdam 34 Nömrəli Məktəb Görüşü</h3>
+              <span class="event-meta-badge"><i class="ph ph-calendar-blank"></i> 18 Mart</span>
+            </div>
+            <div class="event-meta-grid">
+              <div class="event-meta-item"><strong>Tarix</strong>18 Mart</div>
+              <div class="event-meta-item"><strong>Məkan</strong>34 Nömrəli Tam Orta Məktəb, Ağdam, Azərbaycan</div>
+              <div class="event-meta-item"><strong>Fəaliyyət Kateqoriyası</strong>Regional Maarifləndirmə / Gənclər İcması</div>
+              <div class="event-meta-item"><strong>Format</strong>İnteraktiv Təhsil Sessiyası</div>
+            </div>
+
+            <div class="event-subheading"><i class="ph ph-info"></i> Tədbirin İcmalı</div>
+            <p class="body-text">YES komandası Ağdam rayonunda fəaliyyət göstərən 34 nömrəli tam orta məktəbdə şagirdlərlə maarifləndirici sessiya təşkil etdi. Tədbir şagirdlərə ekoloji dəyərləri aşılamaq məqsədi daşıyırdı.</p>
+
+            <div class="event-subheading"><i class="ph ph-target"></i> Məqsədlər</div>
+            <ul class="wiki-list">
+              <li>Şagirdləri dayanıqlılığın (sustainability) vacibliyi ilə yaxından tanış etmək.</li>
+              <li>Gənclərin daha gözəl və sağlam gələcəyin formalaşdırılmasındakı rolunu göstərmək.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-book-open"></i> Müzakirə Olunan Mövzular</div>
+            <ul class="wiki-list">
+              <li><strong>Dayanıqlılığın Önəmi:</strong> Təbiətlə harmoniyada yaşamaq və resursları qorumaq prinsipləri.</li>
+              <li><strong>Gənclərin Gələcəyə Töhfəsi:</strong> Yerli ətraf mühitin qorunmasında şagirdlərin gündəlik fəaliyyətləri.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-users-three"></i> İştirak və Maraq</div>
+            <p class="body-text">Sessiya yüksək dərəcədə interaktiv xarakter daşıdı. Şagirdlər ekoloji mövzulara böyük maraq və fəallıq göstərərək öz fikirlərini bölüşdülər.</p>
+
+            <div class="event-subheading"><i class="ph ph-star"></i> Əsas Nailiyyətlər və Təşkilati Əhəmiyyət</div>
+            <ul class="wiki-list">
+              <li>Maarifləndirmə coğrafiyasının Qarabağ regionuna çatdırılması və regional inklüzivliyin təmin edilməsi.</li>
+              <li>Şagirdlərin yüksək təşəbbüskarlığı və yerli təbiət mühafizəsinə səmimi marağı.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-git-branch"></i> Əlaqəli Təşəbbüslər</div>
+            <p class="body-text"><a href="#" onclick="showPage('volunteering')">YES Könüllülük Proqramı</a> və İcma Əsaslı Ekoloji Fəaliyyət xətti ilə əlaqəlidir.</p>
+          </div>
+
+          <h2 class="section-title" id="zarifa"><i class="ph ph-map-pin"></i> 3. Maarifləndirici Sessiya — Zərifə Əliyeva Adına Lisey</h2>
+          <div class="event-card">
+            <div class="event-header">
+              <h3 class="event-title">Zərifə Əliyeva Liseyi Maarifləndirmə Görüşü</h3>
+              <span class="event-meta-badge"><i class="ph ph-calendar-blank"></i> 9 Aprel</span>
+            </div>
+            <div class="event-meta-grid">
+              <div class="event-meta-item"><strong>Tarix</strong>9 Aprel</div>
+              <div class="event-meta-item"><strong>Məkan</strong>Zərifə Əliyeva Adına Lisey</div>
+              <div class="event-meta-item"><strong>Fəaliyyət Kateqoriyası</strong>Lisey Maarifləndirməsi / Ekoloji Seminar</div>
+              <div class="event-meta-item"><strong>İştirakçı Sayı</strong>Təxminən 50 Şagird</div>
+            </div>
+
+            <div class="event-subheading"><i class="ph ph-info"></i> Tədbirin İcmalı</div>
+            <p class="body-text">YES Zərifə Əliyeva adına liseyin şagirdləri üçün dayanıqlılıq mövzusuna və gənclərin daha yaxşı bir gələcək qurulmasına verə biləcəyi töhfələrə həsr olunmuş genişmiqyaslı maarifləndirici sessiya təşkil etdi.</p>
+
+            <div class="event-subheading"><i class="ph ph-target"></i> Məqsədlər</div>
+            <ul class="wiki-list">
+              <li>Şagirdlərlə ekoloji dayanıqlılıq strategiyalarını dərindən araşdırmaq.</li>
+              <li>Gəncləri ekoloji layihələr və ictimai təşəbbüslərdə liderlik etməyə həvəsləndirmək.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-book-open"></i> Müzakirə Olunan Mövzular</div>
+            <ul class="wiki-list">
+              <li><strong>Dayanıqlılıq və Təbii Tarazlıq:</strong> Bioloji müxtəlifliyin qorunması və tullantıların azaldılması.</li>
+              <li><strong>Gənclərin Dayanıqlı Gələcəyə Töhfəsi:</strong> Elmi maraq, eko-innovasiyalar və birgə komanda işi.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-users-three"></i> İştirak və Maraq</div>
+            <p class="body-text">Sessiyada təxminən 50 şagird fəal şəkildə iştirak etdi. Şagirdlər tədbir boyu səmimi maraq və yüksək cəlb olunma nümayiş etdirərək fəal diskussiyalara qoşuldular.</p>
+
+            <div class="event-subheading"><i class="ph ph-star"></i> Əsas Nailiyyətlər və Təşkilati Əhəmiyyət</div>
+            <ul class="wiki-list">
+              <li>Təxminən 50 nəfərlik geniş və fəal şagird auditoriyasının cəlb olunması.</li>
+              <li>Şagirdlər tərəfindən yüksək səviyyəli sualların ünvanlanması və dərin analitik müzakirələr.</li>
+            </ul>
+
+            <div class="event-subheading"><i class="ph ph-git-branch"></i> Əlaqəli Təşəbbüslər</div>
+            <p class="body-text"><a href="#" onclick="showPage('volunteering')">YES Könüllülük Proqramı</a> və Gənclər Ekoloji Liderlik Təşəbbüsü ilə bağlıdır.</p>
+          </div>
+
+          <div class="related-box">
+            <div class="related-title"><i class="ph ph-link"></i> Əlaqəli Wiki Səhifələri</div>
+            <div class="related-pills">
+              <a class="related-pill" onclick="showPage('volunteering')"><i class="ph ph-users"></i> YES Könüllülük Proqramı</a>
+              <a class="related-pill" onclick="showPage('volunteering', 'recruitment')"><i class="ph ph-chart-bar"></i> Könüllü Qəbulu Statistikaları</a>
+              <a class="related-pill" onclick="showPage('volunteering', 'kickoff')"><i class="ph ph-calendar"></i> Könüllülərin İlk Görüşü (Kick-off)</a>
+              <a class="related-pill" onclick="showPage('about', 'mission')"><i class="ph ph-target"></i> Missiya & Vizyon</a>
+              <a class="related-pill" onclick="showPage('projects', 'completed')"><i class="ph ph-check-circle"></i> Uğurlarımız</a>
+            </div>
+          </div>
+        `,
         projects: `
           <div class="breadcrumb">Wiki <span>›</span> Fəaliyyətimiz</div>
           <h1 class="page-title">Fəaliyyətimiz və <em>Layihələr</em></h1>
-          <h2 class="section-title" id="active"><i class="ph ph-play-circle"></i> Aktiv Təşəbbüslər</h2>
+          <h2 class="section-title" id="active"><i class="ph ph-play-circle"></i> Əsas Təşəbbüslər</h2>
           <ul class="wiki-list">
-            <li><span class="tag closed">Bağlı</span> <strong>Könüllülük Proqramı</strong> — Könüllülük proqramına qeydiyyat başa çatmışdır.</li>
+            <li><span class="tag closed">Heyət Fəaliyyətdə</span> <strong><a href="#" onclick="showPage('volunteering')">YES Könüllülük Proqramı</a></strong> — Ekoloji maarifləndirmə və icma fəaliyyəti həyata keçirən 16 seçilmiş könüllü (<a href="#" onclick="showPage('volunteering', 'recruitment')">12.3% qəbul göstəricisi</a>).</li>
+            <li><span class="tag">Davam edir</span> <strong><a href="#" onclick="showPage('outreach')">Təhsil və Maarifləndirmə Səfərləri</a></strong> — Biləsuvar, Ağdam və Bakı məktəbliləri ilə interaktiv dayanıqlılıq sessiyaları.</li>
           </ul>
-          <h2 class="section-title" id="completed"><i class="ph ph-check-circle"></i> Keçmiş Uğurlarımız</h2>
-          <p class="body-text">Biz hələ yeni başlayırıq! Gələcək uğurlarımız üçün bizi izləməyə davam edin.</p>
+          <h2 class="section-title" id="completed"><i class="ph ph-check-circle"></i> Tarixi Nailiyyətlər və Uğurlar</h2>
+          <ul class="wiki-list">
+            <li><span class="tag">13 Mart</span> <strong><a href="#" onclick="showPage('outreach', 'bilasuvar')">Biləsuvar Liseyi Təhsil Səfəri</a></strong> — İlk tarixi ikidilli (Azərbaycan və İngilis dili) maarifləndirmə tədbiri.</li>
+            <li><span class="tag">18 Mart</span> <strong><a href="#" onclick="showPage('outreach', 'aghdam')">Ağdam 34 Nömrəli Məktəb Görüşü</a></strong> — Şagirdlərlə dayanıqlılıq və ekoloji təşəbbüskarlıq dialoqu.</li>
+            <li><span class="tag">9 Aprel</span> <strong><a href="#" onclick="showPage('outreach', 'zarifa')">Zərifə Əliyeva Liseyi Görüşü</a></strong> — Təxminən 50 fəal şagirdin iştirak etdiyi genişmiqyaslı ekoloji seminar.</li>
+            <li><span class="tag">17 İyul</span> <strong><a href="#" onclick="showPage('volunteering', 'kickoff')">Könüllülərin İlk Görüşü (Kick-off)</a></strong> — Seçilmiş 16 könüllünün ilk oriyentasiya və komanda toplantısı.</li>
+            <li><span class="tag">Nəticə</span> <strong><a href="#" onclick="showPage('volunteering', 'recruitment')">130 Könüllü Müraciəti</a></strong> — Yüksək rəqabətli seçim kampaniyası nəticəsində 16 nəfərin heyətə qəbulu.</li>
+          </ul>
         `,
         docs: `
           <div class="breadcrumb">Wiki <span>›</span> Sənədlər</div>
@@ -1485,13 +2138,18 @@
       if(btn) btn.classList.add('active-main');
     } else {
       // Find the parent nav toggle and set active
-      const subNav = document.getElementById('nav-' + pageId);
+      const parentNavKey = (pageId === 'volunteering' || pageId === 'outreach') ? 'projects' : pageId;
+      const subNav = document.getElementById('nav-' + parentNavKey);
       if (subNav && subNav.previousElementSibling) {
         subNav.previousElementSibling.classList.add('active-main');
         // ensure it's open
         subNav.classList.add('open');
         subNav.previousElementSibling.classList.add('open');
       }
+      // Highlight sub-nav link if present
+      document.querySelectorAll('.sub-nav a').forEach(a => a.classList.remove('active'));
+      const activeSubLink = document.querySelector(`.sub-nav a[onclick*="'${pageId}'"]`);
+      if (activeSubLink) activeSubLink.classList.add('active');
     }
 
     // Scroll to hash if provided, else scroll to top
