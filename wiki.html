@@ -1269,6 +1269,7 @@
       <div class="sub-nav" id="nav-about">
         <a href="#" onclick="showPage('about', 'mission')" data-i18n="nav_about_mission">Missiya & Vizyon</a>
         <a href="#" onclick="showPage('about', 'values')" data-i18n="nav_about_values">Dəyərlərimiz</a>
+        <a href="#" onclick="showPage('about', 'history')" data-i18n="nav_about_history">Tarixçəmiz & Xronologiya</a>
       </div>
     </div>
 
@@ -1332,7 +1333,7 @@
       nav_home: "Home",
       nav_about: "About Us",
       nav_about_mission: "Mission & Vision",
-      nav_about_history: "History",
+      nav_about_history: "Our Story & Institutional Timeline",
       nav_about_values: "Our Values",
       nav_team: "Team",
             nav_projects: "Our Work",
@@ -1722,7 +1723,7 @@
       nav_home: "Ana Səhifə",
       nav_about: "Haqqımızda",
       nav_about_mission: "Missiya & Vizyon",
-      nav_about_history: "Tarixçə",
+      nav_about_history: "Tarixçəmiz & İnkişaf Xronologiyası",
       nav_about_values: "Dəyərlərimiz",
       nav_team: "Komanda",
             nav_projects: "Fəaliyyətimiz",
@@ -2148,7 +2149,13 @@
       }
       // Highlight sub-nav link if present
       document.querySelectorAll('.sub-nav a').forEach(a => a.classList.remove('active'));
-      const activeSubLink = document.querySelector(`.sub-nav a[onclick*="'${pageId}'"]`);
+      let activeSubLink = null;
+      if (hashId) {
+        activeSubLink = document.querySelector(`.sub-nav a[onclick*="'${pageId}', '${hashId}'"]`);
+      }
+      if (!activeSubLink) {
+        activeSubLink = document.querySelector(`.sub-nav a[onclick*="'${pageId}'"]`);
+      }
       if (activeSubLink) activeSubLink.classList.add('active');
     }
 
