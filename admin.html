@@ -5141,7 +5141,7 @@
       file_size: _wrSelectedFile.size,
       category,
       is_visible: isVisible,
-      uploaded_by: currentUser?.email || null
+      uploaded_by: (await sb.auth.getUser())?.data?.user?.email || null
     };
 
     const { error: dbErr } = await sb.from('wiki_reports').insert(insertPayload);
