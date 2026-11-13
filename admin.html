@@ -256,9 +256,14 @@
     .modal-overlay.open { opacity: 1; pointer-events: auto; }
     .modal-box {
       background: white; border-radius: 20px; width: 100%; max-width: 680px;
-      max-height: 90vh; overflow-y: auto; padding: 2rem;
+      max-height: 94vh; overflow-y: auto; padding: 2rem;
       box-shadow: 0 25px 60px rgba(0,0,0,0.25);
       transform: scale(0.95); transition: 0.25s;
+    }
+    /* Article editor modal — wider to fit the full ribbon toolbar + word canvas */
+    .article-modal-box {
+      max-width: 1100px;
+      padding: 1.5rem;
     }
     .modal-overlay.open .modal-box { transform: scale(1); }
     .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
@@ -414,7 +419,7 @@
     /* ══════════════════════════════════════════════
        WYSIWYG WORD-LIKE EDITOR STYLES
     ══════════════════════════════════════════════ */
-    .wysiwyg-section { margin-top: 0.5rem; position: relative; }
+    .wysiwyg-section { margin-top: 0.5rem; position: relative; width: 100%; }
 
     /* Top bar */
     .wysiwyg-topbar {
@@ -438,19 +443,19 @@
     /* Ribbon */
     .word-ribbon {
       background: #f8f8f8; border: 1px solid #d0cece; border-bottom: none;
-      user-select: none;
+      user-select: none; overflow-x: auto; width: 100%;
     }
-    .ribbon-tabs { display: flex; border-bottom: 1px solid #d0cece; background: #fafafa; }
+    .ribbon-tabs { display: flex; border-bottom: 1px solid #d0cece; background: #fafafa; overflow-x: auto; }
     .ribbon-tab {
       background: none; border: none; padding: 0.45rem 1.1rem;
       font-size: 0.78rem; font-weight: 700; cursor: pointer; color: #555;
       border-bottom: 2px solid transparent; letter-spacing: 0.04em;
-      transition: 0.15s;
+      transition: 0.15s; white-space: nowrap;
     }
     .ribbon-tab:hover { color: var(--green); background: #f0fdf4; }
     .ribbon-tab.active { color: var(--green); border-bottom-color: var(--green); background: white; }
-    .ribbon-content { display: flex; flex-wrap: wrap; gap: 0.25rem; padding: 0.45rem 0.7rem; align-items: center; background: white; }
-    .ribbon-group { display: flex; align-items: center; gap: 0.2rem; }
+    .ribbon-content { display: flex; flex-wrap: wrap; gap: 0.25rem; padding: 0.45rem 0.7rem; align-items: center; background: white; width: 100%; }
+    .ribbon-group { display: flex; align-items: center; gap: 0.2rem; flex-wrap: wrap; }
     .ribbon-sep { width: 1px; background: #e0e0e0; height: 26px; margin: 0 0.35rem; }
     .ribbon-btn {
       background: white; border: 1px solid #dcdcdc; border-radius: 5px;
@@ -478,7 +483,7 @@
     .word-workspace {
       background: #cfd4dc; padding: 1.5rem 1rem;
       border: 1px solid #c0c4cc; border-radius: 0 0 10px 10px;
-      min-height: 480px; max-height: 640px;
+      min-height: 500px; max-height: 580px;
       overflow-y: auto; overflow-x: auto;
       display: flex; flex-direction: column; align-items: center;
     }
@@ -763,11 +768,6 @@
       body > *:not(#print-target) { display: none !important; }
       #print-target { display: block !important; }
       .word-ribbon, .wysiwyg-topbar, .wysiwyg-lang-tabs, .word-ruler-h, .word-ruler-v, .word-ruler-corner { display: none !important; }
-      .word-workspace { background: white; padding: 0; border: none; max-height: none; }
-      .word-page { box-shadow: none; margin: 0; padding: 1in; }
-    }
-      #print-target { display: block !important; }
-      .word-ribbon, .wysiwyg-topbar, .wysiwyg-lang-tabs { display: none !important; }
       .word-workspace { background: white; padding: 0; border: none; max-height: none; }
       .word-page { box-shadow: none; margin: 0; padding: 1in; }
     }
@@ -1266,7 +1266,7 @@
 
 <!-- ── ARTICLE MODAL ─────────────────────────────────── -->
 <div class="modal-overlay" id="article-modal">
-  <div class="modal-box">
+  <div class="modal-box article-modal-box">
     <div class="modal-header">
       <h2 id="modal-title" data-i18n="modal_article_new">Yeni Məqalə</h2>
       <button class="modal-close" onclick="closeModal()">×</button>
@@ -2940,7 +2940,7 @@
         'color', 'background', 'font', 'size',
         'header', 'align', 'list', 'indent',
         'blockquote', 'code-block', 'link', 'image',
-        'divider', 'customTable'
+        'divider', 'customTable', 'pageBreak'
       ],
     };
 
@@ -4003,6 +4003,7 @@
     document.getElementById('art-title-az').value = '';
     document.getElementById('art-image').value = '';
     document.getElementById('art-category').value = '';
+    initWYSIWYG();
     if (quillEN) quillEN.setContents([]);
     if (quillAZ) quillAZ.setContents([]);
     document.getElementById('art-desc-en').value = '';
@@ -4012,6 +4013,7 @@
     populateCategorySelect();
     document.getElementById('article-modal').classList.add('open');
     switchEditorLang('en');
+    switchRibbonTab('home', document.querySelector('.ribbon-tab'));
   }
 
   function showEditModal(idx) {
@@ -4022,6 +4024,8 @@
     document.getElementById('art-title-en').value = art.title_en || '';
     document.getElementById('art-title-az').value = art.title_az || '';
     document.getElementById('art-image').value = art.image || '';
+    // Ensure WYSIWYG is initialized before loading content
+    initWYSIWYG();
     // Load content — handle both legacy Markdown and new HTML
     const loadContent = (editor, raw) => {
       if (!editor || raw === undefined) return;
@@ -4048,6 +4052,7 @@
     populateCategorySelect(art.category);
     document.getElementById('article-modal').classList.add('open');
     switchEditorLang('en');
+    switchRibbonTab('home', document.querySelector('.ribbon-tab'));
   }
 
   function closeModal() {
