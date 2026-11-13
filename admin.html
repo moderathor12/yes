@@ -1252,6 +1252,7 @@
       </div>
       <p id="wr-progress-text" style="font-size:0.8rem; margin-top:0.4rem; color:var(--text-muted);">Yüklənir...</p>
     </div>
+    <div id="wr-error-box" style="display:none; background:#fef2f2; border:1px solid #fca5a5; border-radius:10px; padding:0.75rem 1rem; margin-bottom:1rem; color:#dc2626; font-size:0.85rem;"></div>
 
     <div style="display:flex; gap:1rem; justify-content:flex-end; margin-top:1.5rem;">
       <button class="btn btn-ghost" onclick="closeWikiReportModal()">Ləğv et</button>
@@ -5039,6 +5040,12 @@
     filterWikiReports(_wrCurrentFilter);
   }
 
+  function showWrError(msg) {
+    const box = document.getElementById('wr-error-box');
+    if (box) { box.textContent = '⚠ ' + msg; box.style.display = 'block'; }
+    notify(msg, 'error');
+  }
+
   function openWikiReportUploadModal() {
     _wrSelectedFile = null;
     document.getElementById('wr-title-en').value = '';
@@ -5050,10 +5057,14 @@
     document.getElementById('wr-file-name').textContent = '';
     document.getElementById('wr-upload-progress').style.display = 'none';
     document.getElementById('wr-upload-btn-text').textContent = 'Yüklə';
+    const errBox = document.getElementById('wr-error-box');
+    if (errBox) { errBox.style.display = 'none'; errBox.textContent = ''; }
     document.getElementById('wiki-report-modal').classList.add('open');
   }
 
   function closeWikiReportModal() {
+    const errBox = document.getElementById('wr-error-box');
+    if (errBox) { errBox.style.display = 'none'; errBox.textContent = ''; }
     document.getElementById('wiki-report-modal').classList.remove('open');
   }
 
@@ -5107,7 +5118,7 @@
       .upload(uniqueName, _wrSelectedFile, { contentType: 'application/pdf', upsert: false });
 
     if (storageErr) {
-      notify('Fayl yükləmə xətası: ' + storageErr.message, 'error');
+      showWrError('Fayl yükləmə xətası: ' + storageErr.message);
       btn.textContent = 'Yüklə';
       document.getElementById('wr-upload-progress').style.display = 'none';
       return;
@@ -5120,7 +5131,7 @@
     const { data: urlData } = sb.storage.from(WIKI_REPORTS_BUCKET).getPublicUrl(uniqueName);
     const fileUrl = urlData.publicUrl;
 
-    const { error: dbErr } = await sb.from('wiki_reports').insert({
+    const insertPayload = {
       title,
       title_az: titleAz || null,
       description: descEn || null,
@@ -5131,14 +5142,18 @@
       category,
       is_visible: isVisible,
       uploaded_by: currentUser?.email || null
-    });
+    };
+
+    const { error: dbErr } = await sb.from('wiki_reports').insert(insertPayload);
 
     document.getElementById('wr-progress-bar').style.width = '100%';
 
     if (dbErr) {
-      notify('DB xətası: ' + dbErr.message, 'error');
+      showWrError('DB xətası: ' + dbErr.message + ' (Kod: ' + dbErr.code + ')');
       btn.textContent = 'Yüklə';
       document.getElementById('wr-upload-progress').style.display = 'none';
+      // Try to clean up the uploaded file from storage
+      await sb.storage.from(WIKI_REPORTS_BUCKET).remove([uniqueName]);
       return;
     }
 
