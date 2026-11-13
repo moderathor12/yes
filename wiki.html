@@ -13,6 +13,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
   <link rel="stylesheet" href="css/accessibility.css?v=2.1">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
     :root {
@@ -390,6 +391,78 @@
       flex: 1;
       overflow: hidden;
       position: relative;
+    }
+
+    /* ── REPORT CARDS (dynamic wiki reports) ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .wiki-report-loading {
+      display: flex; align-items: center; gap: 0.6rem;
+      color: var(--text-muted); padding: 1.5rem 0; font-size: 0.95rem;
+    }
+
+    .wiki-reports-grid {
+      display: flex; flex-direction: column; gap: 1rem; margin-top: 0.5rem;
+    }
+
+    .wiki-report-card {
+      display: flex; align-items: flex-start; gap: 1.2rem;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.2rem 1.4rem;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .wiki-report-card:hover {
+      box-shadow: var(--shadow-md); transform: translateY(-2px);
+    }
+
+    .wiki-report-icon {
+      flex-shrink: 0; width: 48px; height: 48px;
+      background: rgba(229,62,62,0.08); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; color: #e53e3e;
+    }
+
+    .wiki-report-body { flex: 1; min-width: 0; }
+
+    .wiki-report-meta {
+      display: flex; align-items: center; gap: 0.6rem;
+      flex-wrap: wrap; margin-bottom: 0.4rem;
+    }
+
+    .wiki-report-date {
+      font-size: 0.78rem; color: var(--text-muted);
+    }
+
+    .wiki-report-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem; font-weight: 600;
+      color: var(--dark); margin: 0 0 0.3rem;
+    }
+
+    .wiki-report-desc {
+      font-size: 0.88rem; color: var(--text-muted);
+      margin: 0 0 0.3rem; line-height: 1.5;
+    }
+
+    .wiki-report-size {
+      font-size: 0.78rem; color: var(--text-muted);
+      display: flex; align-items: center; gap: 0.3rem; margin: 0;
+    }
+
+    .wiki-report-btn {
+      flex-shrink: 0; display: inline-flex; align-items: center;
+      gap: 0.4rem; background: var(--green); color: #fff;
+      border: none; border-radius: 10px; padding: 0.55rem 1.1rem;
+      font-size: 0.85rem; font-weight: 600; cursor: pointer;
+      text-decoration: none; transition: background 0.2s;
+      align-self: center; white-space: nowrap;
+    }
+    .wiki-report-btn:hover { background: var(--dark-green); }
+
+    @media (max-width: 540px) {
+      .wiki-report-card { flex-direction: column; }
+      .wiki-report-btn { width: 100%; justify-content: center; }
     }
 
     /* ── SIDEBAR (dark like index.html pillars section) ── */
@@ -1697,7 +1770,9 @@
             <strong>Transparency Commitment:</strong> We believe in open data. All our major reports and organizational charters are available for public viewing.
           </div>
           <h2 class="section-title" id="reports"><i class="ph ph-chart-bar"></i> Reports</h2>
-          <p class="body-text">Reports and official documentation will be published here.</p>
+          <div id="wiki-reports-public-list">
+            <div class="wiki-report-loading"><i class="ph ph-spinner" style="animation:spin 1s linear infinite;"></i> Loading reports...</div>
+          </div>
         `,
         contact: `
           <div class="breadcrumb">Wiki <span>›</span> Contact & Support</div>
@@ -2087,7 +2162,9 @@
             <strong>Şəffaflıq Öhdəliyi:</strong> Biz açıq məlumatlara inanırıq. Bütün əsas hesabatlarımız və təşkilati nizamnamələrimiz ictimaiyyətə açıqdır.
           </div>
           <h2 class="section-title" id="reports"><i class="ph ph-chart-bar"></i> Hesabatlar</h2>
-          <p class="body-text">Hesabatlar və rəsmi sənədlər burada dərc olunacaq.</p>
+          <div id="wiki-reports-public-list">
+            <div class="wiki-report-loading"><i class="ph ph-spinner" style="animation:spin 1s linear infinite;"></i> Hesabatlar yüklənir...</div>
+          </div>
         `,
         contact: `
           <div class="breadcrumb">Wiki <span>›</span> Əlaqə & Dəstək</div>
@@ -2174,6 +2251,11 @@
       closeSidebar();
     }
     
+    // Load dynamic wiki reports when docs page is shown
+    if (pageId === 'docs') {
+      setTimeout(loadWikiReportsPublic, 50);
+    }
+
     // Clear search if any
     const searchEl = document.getElementById('searchInput');
     if (searchEl) searchEl.value = '';
@@ -2546,6 +2628,87 @@
   window.addEventListener('load', () => {
     applyLanguage();
   });
+
+  // ── WIKI REPORTS — PUBLIC DISPLAY ──────────────────────────────────────────
+  const WIKI_SB_URL  = 'https://wqcugmhjfuvnwxhspytw.supabase.co';
+  const WIKI_SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxY3VnbWhqZnV2bnd4aHNweXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMzY2NzcsImV4cCI6MjA5MTYxMjY3N30.A2rZNI2hOpDNC_JLeQNO9Is50HswX-jB5he9wNOpYLo';
+  let wikiSb = null;
+
+  function getWikiSb() {
+    if (!wikiSb && window.supabase) {
+      wikiSb = window.supabase.createClient(WIKI_SB_URL, WIKI_SB_KEY);
+    }
+    return wikiSb;
+  }
+
+  async function loadWikiReportsPublic() {
+    const container = document.getElementById('wiki-reports-public-list');
+    if (!container) return;
+
+    const sb = getWikiSb();
+    if (!sb) {
+      container.innerHTML = '<p class="body-text">Reports and official documentation will be published here.</p>';
+      return;
+    }
+
+    try {
+      const { data, error } = await sb
+        .from('wiki_reports')
+        .select('id, title, title_az, description, description_az, file_url, file_name, file_size, category, created_at')
+        .eq('is_visible', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        container.innerHTML = '<p class="body-text">Reports and official documentation will be published here.</p>';
+        return;
+      }
+
+      const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
+      const catLabels = { report:'Report', annual:'Annual Report', financial:'Financial Report', activity:'Activity Report', other:'Other' };
+
+      container.innerHTML = `
+        <div class="wiki-reports-grid">
+          ${data.map(r => {
+            const title = (lang === 'az' && r.title_az) ? r.title_az : r.title;
+            const desc  = (lang === 'az' && r.description_az) ? r.description_az : (r.description || '');
+            const size  = r.file_size ? (r.file_size / 1024 < 1024
+              ? (r.file_size / 1024).toFixed(0) + ' KB'
+              : (r.file_size / 1048576).toFixed(1) + ' MB') : '';
+            const date  = new Date(r.created_at).toLocaleDateString(lang === 'az' ? 'az-AZ' : 'en-GB', { year:'numeric', month:'long', day:'numeric' });
+            const cat   = catLabels[r.category] || r.category || 'Report';
+            return `
+              <div class="wiki-report-card">
+                <div class="wiki-report-icon">
+                  <i class="ph ph-file-pdf"></i>
+                </div>
+                <div class="wiki-report-body">
+                  <div class="wiki-report-meta">
+                    <span class="tag">${cat}</span>
+                    <span class="wiki-report-date">${date}</span>
+                  </div>
+                  <h3 class="wiki-report-title">${escWikiHtml(title)}</h3>
+                  ${desc ? `<p class="wiki-report-desc">${escWikiHtml(desc)}</p>` : ''}
+                  ${size ? `<p class="wiki-report-size"><i class="ph ph-database"></i> ${size}</p>` : ''}
+                </div>
+                <a href="${r.file_url}" target="_blank" rel="noopener" class="wiki-report-btn">
+                  <i class="ph ph-download-simple"></i>
+                  ${lang === 'az' ? 'Yüklə' : 'Download'}
+                </a>
+              </div>`;
+          }).join('')}
+        </div>`;
+    } catch(err) {
+      container.innerHTML = '<p class="body-text">Reports and official documentation will be published here.</p>';
+      console.warn('Wiki reports load error:', err);
+    }
+  }
+
+  function escWikiHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
 </script>
 
   <script src="js/accessibility.js?v=2.1" defer></script>
